@@ -1,11 +1,13 @@
 
 import { Box, colors, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material"
-import { getJokes, getSingleUser, GetTodoApi } from "./AllGetApi"
+import { getJokes, getSingleUser, } from "./AllGetApi"
 import { useEffect, useState } from "react"
 import { DeleteUser, postJokes, UpdateUser } from "./AllPostApi"
+import { useNavigate } from "react-router-dom"
 
 
 const User = () => {
+    const navigate = useNavigate()
     const [details, setDetails] = useState({
         username: "",
         email: "",
@@ -18,8 +20,7 @@ const User = () => {
     const { data: singleUserData } = getSingleUser({
         id: singleId
     })
-    const {data: todoData} = GetTodoApi()
-    console.log(todoData)
+
     const { mutateAsync } = postJokes()
     const { mutateAsync: deleteUser } = DeleteUser()
     const { mutateAsync: updateUser } = UpdateUser()
@@ -90,6 +91,8 @@ const User = () => {
 
     return (
         <>
+
+           
             <div style={{
                 display: "flex",
                 flexDirection: "column",
@@ -145,6 +148,11 @@ const User = () => {
                         />
                     </div>
                     <button onClick={saveData}>Submit</button>
+                </div>
+                <div>
+                    <button onClick={() => navigate("/items")}>
+                        Go to Items
+                    </button>
                 </div>
 
                 <>

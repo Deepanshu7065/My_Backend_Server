@@ -1,42 +1,50 @@
 
 import { Box, colors, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material"
-import { getJokes, getSingleUser, GetTodoApi } from "./AllGetApi"
+import { getJokes, GetProductApi, getSingleUser, } from "./AllGetApi"
 import { useEffect, useState } from "react"
-import { DeleteTodo, DeleteUser, postJokes, UpdateTodo, UpdateUser } from "./AllPostApi"
+import { AddProductItems, DeleteTodo, DeleteUser, postJokes, UpdateUser } from "./AllPostApi"
 
 
 const Todo = () => {
     const [details, setDetails] = useState({
-        title: "",
+        product_name: "",
         description: "",
-        createdBy: ""
+        createdBy: "",
+        price: "",
+        quantity: "",
+
     })
     const [open, setOpen] = useState(false)
     const [jokes, setJokes] = useState([])
     const [singleId, setSingleId] = useState("")
     const { data } = getJokes()
+
     const { data: singleUserData } = getSingleUser({
         id: singleId
     })
-    const { data: todoData } = GetTodoApi()
-    console.log(todoData)
-    const { mutateAsync } = UpdateTodo()
+    const { data: todoData } = GetProductApi()
+    const { mutateAsync } = AddProductItems()
     const { mutateAsync: deleteUser } = DeleteTodo()
 
 
 
 
     const handleChange = (e: any) => {
-        setDetails({ ...details, [e.target.name]: e.target.value })
+        setDetails({
+            ...details,
+            [e.target.name]: e.target.name === "price" ? Number(e.target.value) : e.target.name === "quantity" ? Number(e.target.value) : e.target.value
+        })
     }
 
     const saveData = async () => {
         try {
             await mutateAsync({ data: details })
             setDetails({
-                title: "",
+                product_name: "",
                 description: "",
-                createdBy: ""
+                createdBy: "",
+                price: "",
+                quantity: "",
             })
 
         } catch (error) {
@@ -46,9 +54,13 @@ const Todo = () => {
     }
 
     useEffect(() => {
-        setJokes(data?.data)
-    }, [data])
-
+        if (data?.data?.length > 0) {
+            setDetails((prevDetails) => ({
+                ...prevDetails,
+                createdBy: prevDetails.createdBy || data?.data[0]._id,
+            }));
+        }
+    }, [data]);
     const handleSetID = (id: any) => {
         setSingleId(id)
     }
@@ -84,26 +96,26 @@ const Todo = () => {
                 }}>
                     <div style={{ color: "red", alignItems: "center", display: "flex", gap: 20, justifyContent: "space-around", width: "100%" }}>
                         <span style={{ color: "red", fontWeight: "bold", fontSize: "25px" }}>
-                            Name :
+                            Products Name :
                         </span>
                         <TextField
-                            name="title"
-                            label="Username"
+                            name="product_name"
+                            label="product_name"
                             onChange={handleChange}
-                            value={details.title}
+                            value={details.product_name}
                         />
                     </div>
                     <div style={{ alignItems: "center", display: "flex", gap: 20, justifyContent: "space-around", width: "100%" }}>
                         <span style={{ color: "red", fontWeight: "bold", fontSize: "25px" }}>
-                            email =
+                            User =
                         </span>
                         <select
                             name="createdBy"
                             value={details.createdBy}
                             onChange={handleChange}
                         >
-                            
-                            {data?.data.map((user :any) => (
+
+                            {data?.data.map((user: any) => (
                                 <option key={user._id} value={user._id}>
                                     {user.username}
                                 </option>
@@ -113,12 +125,34 @@ const Todo = () => {
                     </div>
                     <div style={{ alignItems: "center", display: "flex", gap: 20, justifyContent: "space-around", width: "100%" }}>
                         <span style={{ color: "red", fontWeight: "bold", fontSize: "25px" }}>
-                            password =
+                            Description =
                         </span>
                         <TextField
                             name="description"
                             label="Password"
                             value={details.description}
+                            onChange={handleChange}
+                        />
+                    </div>
+                    <div style={{ alignItems: "center", display: "flex", gap: 20, justifyContent: "space-around", width: "100%" }}>
+                        <span style={{ color: "red", fontWeight: "bold", fontSize: "25px" }}>
+                            Price =
+                        </span>
+                        <TextField
+                            name="price"
+                            label="Password"
+                            value={details.price}
+                            onChange={handleChange}
+                        />
+                    </div>
+                    <div style={{ alignItems: "center", display: "flex", gap: 20, justifyContent: "space-around", width: "100%" }}>
+                        <span style={{ color: "red", fontWeight: "bold", fontSize: "25px" }}>
+                            Quantity =
+                        </span>
+                        <TextField
+                            name="quantity"
+                            label="Password"
+                            value={details.quantity}
                             onChange={handleChange}
                         />
                     </div>
@@ -157,9 +191,11 @@ const Todo = () => {
                         ))}
                     </div>
 
-
+                  
                 </>
             </div >
+
+
         </>
     )
 

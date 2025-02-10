@@ -5,7 +5,7 @@ import mongoose from "mongoose";
 
 const TodoSchema = new mongoose.Schema(
     {
-        title: {
+        product_name: {
             type: String,
             required: true
         },
@@ -17,12 +17,14 @@ const TodoSchema = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: "User",
         },
-        subTodo: [
-            {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: "SubTodo",
-            }
-        ]
+        price: {
+            type: Number,
+            required: true
+        },
+        quantity: {
+            type: Number,
+            required: true
+        }
     },
     { timestamps: true }
 )

@@ -39,11 +39,11 @@ export const getSingleUser = ({ id }: { id: string }) => {
 }
 
 
-export const GetTodoApi = () => {
-    const getSingleUserApi = async () => {
+export const GetProductApi = () => {
+    const getProduct = async () => {
         try {
 
-            const response = await axios.get(`${baseUrl}/todo`)
+            const response = await axios.get(`${baseUrl}/items/`)
             return response.data
         } catch (error) {
             console.log(error)
@@ -51,9 +51,10 @@ export const GetTodoApi = () => {
         }
     }
     return useQuery({
-        queryKey: ["jokestodo", ],
-        queryFn: getSingleUserApi,
-    
+        queryKey: ["products",],
+        queryFn: getProduct,
+
     })
 }
+
 

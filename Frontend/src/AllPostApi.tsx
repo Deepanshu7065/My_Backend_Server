@@ -63,21 +63,20 @@ export const UpdateUser = () => {
     })
 }
 
-export const UpdateTodo = () => {
+export const AddProductItems = () => {
     const queryClient = useQueryClient()
-    const updateUserApi = async ({ id, data }: any) => {
+    const AddProductItems = async ({ data }: any) => {
         try {
-
-            const response = await axios.post(`${baseUrl}/todo/add`, data)
+            const response = await axios.post(`${baseUrl}/items/add`, data)
             return response
         } catch (error) {
             console.log(error)
         }
     }
     return useMutation({
-        mutationFn: updateUserApi,
+        mutationFn: AddProductItems,
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["jokestodo"] })
+            queryClient.invalidateQueries({ queryKey: ["products"] })
         }
     })
 }
@@ -99,7 +98,32 @@ export const DeleteTodo = () => {
     return useMutation({
         mutationFn: deleteUserApi,
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["jokestodo"] })
+            queryClient.invalidateQueries({ queryKey: ["products"] })
         }
     })
 }
+
+
+export const loginVerify = () => {
+    const queryClient = useQueryClient()
+    const loginVerifyApi = async ({ data }: any) => {
+        try {
+            const response = await axios.post(`${baseUrl}/login`, data, {
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+            return response
+        } catch (error) {
+
+        }
+    }
+    return useMutation({
+        mutationFn: loginVerifyApi,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["jokes"] })
+        }
+    })
+}
+
+

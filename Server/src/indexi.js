@@ -67,7 +67,9 @@ app.post("/api/v1/user/add", authenticate, async (req, res) => {
             password
         })
         await user.save();
-        res.send({ message: "User added successfully!" })
+        const accessToken = user.generateAccessToken();
+        const refreshToken = user.generateRefreshToken();
+        res.send({accessToken, user, message: "User added successfully!" })
 
     } catch (error) {
         res.status(500).json({ error: error.message });

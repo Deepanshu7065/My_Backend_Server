@@ -19,7 +19,7 @@ import { pages } from './Pages/page';
 
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
-const Navbar = ({ children }: any) => {
+const Navbar = () => {
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
 
@@ -57,84 +57,111 @@ const Navbar = ({ children }: any) => {
                     alignItems: 'center',
                     bgcolor: 'white',
                 }}>
-                <Container maxWidth="xl">
-                    <Toolbar disableGutters>
-                        <Typography
-                            variant="h6"
-                            noWrap
-                            component="div"
-                            sx={{ mr: 2, display: { xs: 'none', md: 'flex', } }}
-                        >
-                            LOGO
-                        </Typography>
+                <Container style={{
+                    display: 'flex',
+                    maxWidth: "100%",
+                    alignItems: 'center',
+                }}>
 
-                        {isMobile ? (
-                            <>
-                                <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none', }, }}>
-                                    <IconButton
-                                        size="large"
-                                        aria-label="open navigation menu"
-                                        aria-controls="menu-appbar"
-                                        aria-haspopup="true"
-                                        onClick={handleOpenNavMenu}
-                                        color="inherit"
-                                    >
-                                        <MenuIcon />
-                                    </IconButton>
-                                    <Menu
-                                        id="menu-appbar"
-                                        anchorEl={anchorElNav}
-                                        anchorOrigin={{
-                                            vertical: 'bottom',
-                                            horizontal: 'left',
-                                        }}
-                                        keepMounted
-                                        transformOrigin={{
-                                            vertical: 'top',
-                                            horizontal: 'left',
-                                        }}
-                                        open={Boolean(anchorElNav)}
-                                        onClose={handleCloseNavMenu}
-                                        sx={{
-                                            display: { xs: 'block', md: 'none' },
-                                        }}
-                                    >
-                                        {pages.map((page: any, index) => (
-                                            <MenuItem key={index} onClick={() => navigate(page.path)}>
-                                                <Typography textAlign="center">{page.title}</Typography>
-                                            </MenuItem>
-                                        ))}
-                                    </Menu>
+                    <Typography
+                        variant="h6"
+                        noWrap
+                        component="div"
+                        sx={{
+                            mr: 2, display: { xs: 'none', md: 'flex', },
+                            fontFamily: 'monospace',
+                            fontWeight: 700,
+                            color: 'inherit',
+                            textDecoration: 'none',
+                        }}
+                    >
+                        Bat Repair
+                    </Typography>
+
+                    <Box sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        width: "80%"
+                    }}>
+                        <Box>
+                            {isMobile ? (
+                                <>
+                                    <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' }, alignItems: 'center' }}>
+                                        <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none', }, }}>
+                                            <IconButton
+                                                size="large"
+                                                aria-label="open navigation menu"
+                                                aria-controls="menu-appbar"
+                                                aria-haspopup="true"
+                                                onClick={handleOpenNavMenu}
+                                                color="inherit"
+                                            >
+                                                <MenuIcon />
+                                            </IconButton>
+                                            <Menu
+                                                id="menu-appbar"
+                                                anchorEl={anchorElNav}
+                                                anchorOrigin={{
+                                                    vertical: 'bottom',
+                                                    horizontal: 'left',
+                                                }}
+                                                keepMounted
+                                                transformOrigin={{
+                                                    vertical: 'top',
+                                                    horizontal: 'left',
+                                                }}
+                                                open={Boolean(anchorElNav)}
+                                                onClose={handleCloseNavMenu}
+                                                sx={{
+                                                    display: { xs: 'block', md: 'none' },
+                                                }}
+                                            >
+                                                {pages.map((page: any, index) => (
+                                                    <MenuItem key={index} onClick={() => navigate(page.path)}>
+                                                        <Typography textAlign="center">{page.title}</Typography>
+                                                    </MenuItem>
+                                                ))}
+                                            </Menu>
+                                        </Box>
+                                        <Typography
+                                            variant="h6"
+                                            noWrap
+                                            component="div"
+                                            sx={{
+                                                flexGrow: 1, display: { xs: 'flex', md: 'none' },
+                                                fontFamily: 'monospace',
+                                                fontWeight: 700,
+                                                color: 'inherit',
+                                                textDecoration: 'none',
+                                            }}
+                                        >
+                                            Bat Repair
+                                        </Typography>
+                                    </Box>
+
+                                </>
+                            ) : (
+                                <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex', color: "black" } }}>
+                                    {pages.map((page, index) => (
+                                        <Typography
+                                            key={index}
+                                            onClick={() => {
+                                                navigate(page.path)
+                                            }}
+                                            // selected button background color is deffrent
+                                            sx={{
+                                                ml: 2, display: 'block', cursor: 'pointer', color: page.path === window.location.pathname ? "red" : "black"
+                                            }}
+                                        >
+                                            {page.title}
+                                        </Typography>
+                                    ))}
                                 </Box>
-                                <Typography
-                                    variant="h6"
-                                    noWrap
-                                    component="div"
-                                    sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}
-                                >
-                                    LOGO
-                                </Typography>
-                            </>
-                        ) : (
-                            <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex', color: "black" } }}>
-                                {pages.map((page, index) => (
-                                    <Button
-                                        key={index}
-                                        onClick={() => {
-                                            navigate(page.path)
-                                        }}
-                                        // selected button background color is deffrent
-                                        sx={{
-                                            my: 2, display: 'block', color: "black", bgcolor: page.path === window.location.pathname ? "red" : "white"
-                                        }}
-                                    >
-                                        {page.title}
-                                    </Button>
-                                ))}
-                            </Box>
-                        )}
+                            )}
+                        </Box>
 
-                        <Box sx={{ flexGrow: 0 }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', flexGrow: 1, minWidth: "150px", marginLeft: "20px" }}>
                             <Tooltip title="Open settings">
                                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                                     <Avatar alt="User Avatar" src="/static/images/avatar/1.jpg" />
@@ -155,14 +182,23 @@ const Navbar = ({ children }: any) => {
                                 open={Boolean(anchorElUser)}
                                 onClose={handleCloseUserMenu}
                             >
-                                {settings.map((setting) => (
-                                    <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                                        <Typography textAlign="center">{setting}</Typography>
-                                    </MenuItem>
-                                ))}
+                                <MenuItem>
+                                    <Typography
+                                        textAlign="center"
+                                        onClick={() => {
+                                            navigate("/login");
+                                            localStorage.removeItem("token");
+                                        }}
+                                        sx={{ paddingRight: '20px' }}
+                                    >
+                                        LogOut
+                                    </Typography>
+                                </MenuItem>
                             </Menu>
                         </Box>
-                    </Toolbar>
+
+
+                    </Box>
                 </Container>
             </AppBar >
 

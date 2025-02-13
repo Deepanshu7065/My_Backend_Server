@@ -12,6 +12,7 @@ const Todo = () => {
         createdBy: "",
         price: "",
         quantity: "",
+        image: "",
 
     })
     const [open, setOpen] = useState(false)
@@ -37,15 +38,25 @@ const Todo = () => {
     }
 
     const saveData = async () => {
+        const formData = new FormData();
+        formData.append("product_name", details.product_name);
+        formData.append("description", details.description);
+        formData.append("createdBy", details.createdBy);
+        formData.append("price", details.price);
+        formData.append("quantity", details.quantity);
+        if (details.image) {
+            formData.append("image", details.image);
+        }
         try {
-            await mutateAsync({ data: details })
-            setDetails({
-                product_name: "",
-                description: "",
-                createdBy: "",
-                price: "",
-                quantity: "",
-            })
+            await mutateAsync({ data: formData })
+            // setDetails({
+            //     product_name: "",
+            //     description: "",
+            //     createdBy: "",
+            //     price: "",
+            //     quantity: "",
+            //     image: "",
+            // })
 
         } catch (error) {
             console.log(error)
@@ -78,8 +89,7 @@ const Todo = () => {
                 flexDirection: "column",
                 justifyContent: "center",
                 alignItems: "center",
-                marginTop: -210,
-                width: "100vw",
+                width: "100%",
                 height: "100vh"
             }}>
                 <h1 style={{ color: "green" }}>Hello Connect my server</h1>
@@ -156,6 +166,18 @@ const Todo = () => {
                             onChange={handleChange}
                         />
                     </div>
+                    <div>
+                        <span style={{ color: "red", fontWeight: "bold", fontSize: "25px" }}>
+                            Image =
+                        </span>
+                        <TextField
+                            name="image"
+                            type="file"
+                            onChange={(e: any) => {
+                                setDetails({ ...details, image: e.target.files[0] })
+                            }}
+                        />
+                    </div>
                     <button onClick={saveData}>Submit</button>
                 </div>
 
@@ -181,7 +203,7 @@ const Todo = () => {
                             }}>
                                 <h3>{item.title}</h3>
                                 <p>{item.description}</p>
-                                <p>Created By: {item.createdBy?.username} ({item.createdBy?.email})</p> {/* Show createdBy details */}
+                                <p>Created By: {item.createdBy?.username} ({item.createdBy?.email})</p>
                                 <button onClick={() => {
                                     handleSetID(item?._id)
                                     setOpen(true)
@@ -191,7 +213,7 @@ const Todo = () => {
                         ))}
                     </div>
 
-                  
+
                 </>
             </div >
 

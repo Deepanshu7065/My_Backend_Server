@@ -10,6 +10,7 @@ import AuthContainer from "./Login";
 import "./App.css";
 import { ThemeProvider } from "styled-components";
 import createThemeI from "./createTheme";
+import ShopBats from "./ShopBats/ShopBats";
 
 function App() {
   const queryClient = new QueryClient({
@@ -42,6 +43,7 @@ function App() {
               <Route path="/about" element={<Todo />} />
               <Route path="/services" element={<User />} />
               <Route path="/" element={<Dashboard />} />
+              <Route path="/shop_bats" element={<ShopBats />} />
             </Route>
             <Route path="/login" element={<AuthContainer />} />
           </Routes>

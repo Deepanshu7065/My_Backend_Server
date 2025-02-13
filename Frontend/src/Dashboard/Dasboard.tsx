@@ -1,7 +1,9 @@
 import { Box, Paper, Typography, Button, colors, Card } from "@mui/material";
 import RenderServiceAvailable from "./RenderServiceAvailable";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
+    const navigate = useNavigate()
 
     const CardData = [
         {
@@ -107,7 +109,8 @@ const Dashboard = () => {
                             fontFamily: "Poppins, sans-serif",
                             fontSize: "1rem",
                             '&:hover': { bgcolor: "#ddd" }
-                        }}>
+                        }} onClick={() => navigate("/shop_bats")}
+                        >
                             Shop Bats
                         </Button>
                     </Box>

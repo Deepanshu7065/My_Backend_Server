@@ -1,55 +1,16 @@
 import { Box, Card, CardContent, Typography } from '@mui/material'
 import { GetProductApi } from '../AllGetApi'
-import { baseUrl } from '../ApiEndPoint'
+import { imageUrl } from '../ApiEndPoint'
+import { useNavigate } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { setProductDetails } from '../Store/ProductDetailsSlice'
+import { ProductTypes } from '../AllTypes'
 
 const ShopBats = () => {
+    const navigate = useNavigate()
     const { data: card } = GetProductApi()
+    const dispatch = useDispatch()
 
-
-    // const card = [
-    //     {
-    //         id: "1",
-    //         image: "./images (7).jpeg",
-    //         title: "bat",
-    //         description: "hhh",
-    //         price: "120"
-    //     },
-    //     {
-    //         id: "2",
-    //         image: "./images (7).jpeg",
-    //         title: "dddd",
-    //         description: "e",
-    //         price: "12"
-    //     },
-    //     {
-    //         id: "3",
-    //         image: "./images (7).jpeg",
-    //         title: "ddd",
-    //         description: "e",
-    //         price: "12"
-    //     },
-    //     {
-    //         id: "4",
-    //         image: "./images (7).jpeg",
-    //         title: "d",
-    //         description: "e",
-    //         price: "12"
-    //     },
-    //     {
-    //         id: "5",
-    //         image: "./images (7).jpeg",
-    //         title: "d",
-    //         description: "e",
-    //         price: "12"
-    //     },
-    //     {
-    //         id: "6",
-    //         image: "./images (7).jpeg",
-    //         title: "d",
-    //         description: "e",
-    //         price: "12"
-    //     }
-    // ]
     return (
         <Box sx={{
             width: "100vw",
@@ -93,7 +54,7 @@ const ShopBats = () => {
                     alignItems: "stretch",
                     pb: 2,
                 }}>
-                    {card?.map((items: any) => {
+                    {card?.map((items: ProductTypes, idx: number) => {
                         return (
 
                             <Card sx={{
@@ -107,10 +68,15 @@ const ShopBats = () => {
                                     transform: "scale(1.01)",
                                     boxShadow: "0px 8px 10px rgba(0, 0, 0, 0.4)"
                                 }
-                            }}>
-                                <Box key={items.id}>
+                            }}
+                                onClick={() => {
+                                    navigate(`/details?id=${items._id}`)
+                                    dispatch(setProductDetails(items))
+                                }}
+                            >
+                                <Box key={idx}>
                                     <img
-                                        src={`http://172.30.2.67:8000${items.image}`}
+                                        src={`${imageUrl}${items.image}`}
                                         style={{ width: "100%", minHeight: "350px", maxHeight: "350px", objectFit: "cover" }}
                                     />
 

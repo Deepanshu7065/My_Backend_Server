@@ -110,8 +110,8 @@ export const loginVerify = () => {
         try {
             const response = await axios.post(`${baseUrl}/login`, data, {
                 headers: {
-                    "Content-Type": "application/json"
-                }
+                    'Content-Type': 'application/json',
+                },
             })
             return response
         } catch (error) {

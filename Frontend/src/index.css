@@ -12,3 +12,17 @@
     font-size: 1.5rem;
     font-weight: 600;
 }
+
+
+.table_size {
+    /* width: 500px; */
+}
+
+.table_size table {
+    width: 100%;
+    padding: 10px;
+}
+
+.table_size tr td {
+    padding: 5px;
+}

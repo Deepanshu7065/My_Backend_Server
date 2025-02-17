@@ -14,9 +14,7 @@
 }
 
 
-.table_size {
-    /* width: 500px; */
-}
+
 
 .table_size table {
     width: 100%;
@@ -25,4 +23,31 @@
 
 .table_size tr td {
     padding: 5px;
+}
+
+.table_cart table {
+    width: 100%;
+    padding: 10px;
+    border-collapse: collapse;
+    border: 1px solid rgb(177, 173, 173);
+    margin-top: 20px;
+    border-radius: 10px;
+}
+
+.table_cart tr td {
+    padding: 15px;
+    border: none;
+    font-size: 14px;
+    font-weight: 900;
+    font-family: 'Dancing Script', cursive;
+}
+
+.table_cart tr th {
+    padding: 10px;
+    border: 1px solid rgb(177, 173, 173);
+    color: rgb(148, 144, 144);
+    text-align: left;
+    font-size: 14px;
+    font-weight: 900;
+    font-family: 'Poppins', monospace;
 }

@@ -21,24 +21,24 @@
 //     "__v": 0
 // }
 export interface ProductTypes {
-    _id   : string
-    product_name: string
-    description: string
-    createdBy: {
-        _id: string
-        username: string
-        email: string
-        password: string
-        createdAt: string
-        updatedAt: string
-        __v: number
+    _id?: string
+    product_name?: string
+    description?: string
+    createdBy?: {
+        _id?: string
+        username?: string
+        email?: string
+        password?: string
+        createdAt?: string
+        updatedAt?: string
+        __v?: number
     }
-    price: number
-    quantity: number
-    image: string
-    fileName: string
-    path: string
-    createdAt: string
-    updatedAt: string
+    price?: number
+    quantity?: number
+    image?: string
+    fileName?: string
+    path?: string
+    createdAt?: string
+    updatedAt?: string
     __v: number
 }

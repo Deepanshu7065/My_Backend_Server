@@ -15,6 +15,8 @@ app.use(morgan("dev"));
 app.use(cors());
 app.use(express.json());
 
+app.use("/api/v1", LoginRoutes);
+app.use("/api/v1", VerifyRoutes);
 
 app.use("/api/v1", imageGetRoutes)
 app.use("/api/v1", authenticate, productsRoutes);
@@ -22,8 +24,6 @@ app.use("/api/v1", authenticate, imageRoutes);
 app.use("/uploads", express.static("uploads"));
 app.use("/api/v1", authenticate, UserRoutes);
 
-app.use("/api/v1", LoginRoutes);
-app.use("/api/v1", VerifyRoutes);
 
 app.use(bodyParser.json());
 app.use(express.json({ limit: "50mb", extended: true }));

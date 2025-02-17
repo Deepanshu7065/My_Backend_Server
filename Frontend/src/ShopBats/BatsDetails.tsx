@@ -1,7 +1,8 @@
-import { Autocomplete, Box, colors, Divider, FormControl, Input, Skeleton, Stack, TextField, Typography } from "@mui/material"
+import { Box, colors, Divider, FormControl, Input, Skeleton, Stack, TextField, Typography } from "@mui/material"
 import { GetProductById } from "../AllGetApi"
 import { imageUrl } from "../ApiEndPoint";
 import { useState } from "react";
+import { ArrowBack } from "@mui/icons-material";
 
 const BatsDetails = () => {
     const queryParams = new URLSearchParams(window.location.search);
@@ -20,6 +21,16 @@ const BatsDetails = () => {
         }}>
             {/* Product Name */}
 
+            <ArrowBack sx={{
+                cursor: "pointer",
+                fontSize: "1.5rem",
+                position: "absolute",
+                right: 10,
+                top: 70
+            }}
+                onClick={() => window.history.back()}
+            />
+
             <Box sx={{
                 width: { xs: "100%", md: "80%" },
                 display: "flex",
@@ -28,6 +39,7 @@ const BatsDetails = () => {
                 gap: 1,
                 height: "100%"
             }}>
+
                 <Box sx={{
                     width: { xs: "100%", md: "40%" },
                     textAlign: "left"

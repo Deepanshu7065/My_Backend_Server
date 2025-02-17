@@ -14,11 +14,15 @@ import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { pages } from './Pages/page';
+import { ShoppingCart } from '@mui/icons-material';
+import { useSelector } from 'react-redux';
+import { RootState } from './Store';
 
 
 const Navbar = () => {
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
+    const product = useSelector((state: RootState) => state.ProductId.products)
 
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -158,7 +162,31 @@ const Navbar = () => {
                             )}
                         </Box>
 
-                        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', flexGrow: 1, minWidth: "150px", marginLeft: "20px" }}>
+                        <Box sx={{ gap: 2, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', flexGrow: 1, minWidth: "150px", marginLeft: "20px" }}>
+                            <Tooltip title="View Cart">
+                                <div style={{ position: "relative", cursor: "pointer" }} onClick={() => navigate("/cart")}>
+                                    <span
+                                        style={{
+                                            position: "absolute",
+                                            top: "-15px",
+                                            right: "-10px",
+                                            background: "grey",
+                                            color: "white",
+                                            borderRadius: "50%",
+                                            width: "20px",
+                                            height: "20px",
+                                            display: "flex",
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                            fontSize: "12px",
+                                            fontWeight: "bold",
+                                        }}
+                                    >
+                                        {product?.length}
+                                    </span>
+                                    <ShoppingCart />
+                                </div>
+                            </Tooltip>
                             <Tooltip title="Open settings">
                                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                                     <Avatar alt="User Avatar" src="/static/images/avatar/1.jpg" />

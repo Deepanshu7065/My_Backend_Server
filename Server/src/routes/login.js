@@ -5,9 +5,7 @@ import jwt from "jsonwebtoken";
 const router = express.Router();
 
 router.post("/login", async (req, res) => {
-    console.log("🔹 Received Login Request");
 
-    console.log("🔍 Request Headers:", req.headers); 
 
     try {
         const { email, password } = req.body;
@@ -35,7 +33,6 @@ router.post("/login", async (req, res) => {
             sameSite: "strict"
         });
 
-        console.log("✅ Login Successful:", { email, accessToken });
 
         return res.json({ accessToken, user: { username: isUser.username, email: isUser.email } });
 

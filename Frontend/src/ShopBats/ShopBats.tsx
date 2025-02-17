@@ -1,15 +1,17 @@
-import { Box, Card, CardContent, Typography } from '@mui/material'
+import { Box, Card, CardContent, colors, Typography } from '@mui/material'
 import { GetProductApi } from '../AllGetApi'
 import { imageUrl } from '../ApiEndPoint'
 import { useNavigate } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
-import { setProductDetails } from '../Store/ProductDetailsSlice'
+import { useDispatch, useSelector } from 'react-redux'
+import { setIncreaseQuantity, setProductDetails } from '../Store/ProductDetailsSlice'
 import { ProductTypes } from '../AllTypes'
+import { RootState } from '../Store'
 
 const ShopBats = () => {
     const navigate = useNavigate()
     const { data: card } = GetProductApi()
     const dispatch = useDispatch()
+    const products = useSelector((state: RootState) => state.ProductId.products)
 
     return (
         <Box sx={{
@@ -55,13 +57,12 @@ const ShopBats = () => {
                     pb: 2,
                 }}>
                     {card?.map((items: ProductTypes, idx: number) => {
+                        const productQuantity = products?.map(p => p._id === items._id ? p.quantity : 0).reduce((a, b) => a + b, 0);
                         return (
-
                             <Card sx={{
                                 minWidth: { xs: "100%", sm: "30%", md: "30%" },
                                 minHeight: { xs: "200px", sm: "300px", md: "400px" },
                                 boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.3)",
-                                cursor: "pointer",
                                 transition: "transform 0.3s , box-shadow 0.3s ease",
                                 scrollSnapAlign: "start",
                                 "&:hover": {
@@ -69,70 +70,109 @@ const ShopBats = () => {
                                     boxShadow: "0px 8px 10px rgba(0, 0, 0, 0.4)"
                                 }
                             }}
-                                onClick={() => {
-                                    navigate(`/details?id=${items._id}`)
-                                    dispatch(setProductDetails(items))
-                                }}
-                            >
-                                <Box key={idx}>
-                                    <img
-                                        src={`${imageUrl}${items.image}`}
-                                        style={{ width: "100%", minHeight: "350px", maxHeight: "350px", objectFit: "cover" }}
-                                    />
 
+                            >
+                                <Box key={idx} sx={{ position: "relative", overflow: "hidden" }}>
+                                    <div style={{ position: "relative" }}>
+                                        <img
+                                            src={`${imageUrl}${items.image}`}
+                                            style={{
+                                                width: "100%",
+                                                minHeight: "350px",
+                                                maxHeight: "350px",
+                                                objectFit: "cover",
+                                                filter: "blur(1px)",
+                                            }}
+                                        />
+                                        <div
+                                            style={{
+                                                position: "absolute",
+                                                top: 0,
+                                                left: 0,
+                                                width: "100%",
+                                                height: "100%",
+                                                display: "flex",
+                                                justifyContent: "center",
+                                                alignItems: "center",
+                                                backgroundColor: "rgba(0, 0, 0, 0.1)",
+                                                color: colors.grey[300],
+                                                fontSize: "1.1rem",
+                                                fontWeight: "bold",
+                                                cursor: "pointer",
+                                            }}
+                                            onClick={() => {
+                                                navigate(`/details?id=${items._id}`);
+                                                dispatch(setProductDetails(items as any));
+                                            }}
+                                        >
+                                            See Details
+                                        </div>
+                                    </div>
                                     <CardContent>
-                                        <Typography sx={{
-                                            fontSize: { sm: "0.8rem", md: "1.2rem" },
-                                            fontWeight: "bold",
-                                            display: "flex",
-                                            width: "100%",
-                                            fontFamily: "monospace, cursive",
-                                            alignItems: "flex-start",
-                                            mt: 1
-                                        }}>
+                                        <Typography
+                                            sx={{
+                                                fontSize: { sm: "0.8rem", md: "1.2rem" },
+                                                fontWeight: "bold",
+                                                display: "flex",
+                                                width: "100%",
+                                                fontFamily: "monospace, cursive",
+                                                alignItems: "flex-start",
+                                                mt: 1,
+                                            }}
+                                        >
                                             {items.product_name}
                                         </Typography>
-                                        <Typography sx={{
-                                            fontSize: { sm: "0.5rem", md: "0.8rem" },
-                                            fontWeight: "bold",
-                                            display: "flex",
-                                            width: "100%",
-                                            fontFamily: "monospace, cursive",
-                                            alignItems: "flex-start",
-                                            mt: 1,
-                                        }}>
+                                        <Typography
+                                            sx={{
+                                                fontSize: { sm: "0.5rem", md: "0.8rem" },
+                                                fontWeight: "bold",
+                                                display: "flex",
+                                                width: "100%",
+                                                fontFamily: "monospace, cursive",
+                                                alignItems: "flex-start",
+                                                mt: 1,
+                                            }}
+                                        >
                                             {items.description}
                                         </Typography>
-                                        <Typography sx={{
-                                            fontSize: { sm: "0.5rem", md: "1.4rem" },
-                                            display: "flex",
-                                            width: "100%",
-                                            fontFamily: "monospace, cursive",
-                                            alignItems: "flex-start",
-                                            mt: 1,
-                                            color: "green"
-                                        }}>
+                                        <Typography
+                                            sx={{
+                                                fontSize: { sm: "0.5rem", md: "1.4rem" },
+                                                display: "flex",
+                                                width: "100%",
+                                                fontFamily: "monospace, cursive",
+                                                alignItems: "flex-start",
+                                                mt: 1,
+                                                color: "green",
+                                            }}
+                                        >
                                             $ {items.price}
                                         </Typography>
-                                        <button style={{
-                                            width: "100%",
-                                            height: "30px",
-                                            borderRadius: "10px",
-                                            backgroundColor: "#050825",
-                                            color: "white",
-                                            border: "none",
-                                            fontSize: "1rem",
-                                            cursor: "pointer",
-                                            display: "flex",
-                                            justifyContent: "center",
-                                            alignItems: "center",
-                                            gap: 10
-                                        }}>
-                                            Add To Cart
+                                        <button
+                                            style={{
+                                                width: "100%",
+                                                height: "30px",
+                                                borderRadius: "10px",
+                                                backgroundColor: "#050825",
+                                                color: "white",
+                                                border: "none",
+                                                fontSize: "1rem",
+                                                cursor: "pointer",
+                                                display: "flex",
+                                                justifyContent: "center",
+                                                alignItems: "center",
+                                                gap: 10,
+                                            }}
+                                            onClick={() => {
+                                                dispatch(setProductDetails(items as any));
+                                                dispatch(setIncreaseQuantity(items._id as string));
+                                            }}
+                                        >
+                                            Add To Cart ({productQuantity})
                                         </button>
-
                                     </CardContent>
                                 </Box>
+
                             </Card>
                         )
                     }

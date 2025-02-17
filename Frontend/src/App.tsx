@@ -13,6 +13,7 @@ import createThemeI from "./createTheme";
 import ShopBats from "./ShopBats/ShopBats";
 import BatsDetails from "./ShopBats/BatsDetails";
 import AllModalList from "./AllModalList";
+import ViewCart from "./Cart/ViewCart";
 
 function App() {
   const queryClient = new QueryClient({
@@ -47,6 +48,7 @@ function App() {
               <Route path="/" element={<Dashboard />} />
               <Route path="/shop_bats" element={<ShopBats />} />
               <Route path="/details" element={<BatsDetails />} />
+              <Route path="/cart" element={<ViewCart />} />
             </Route>
             <Route path="/login" element={<AuthContainer />} />
           </Routes>

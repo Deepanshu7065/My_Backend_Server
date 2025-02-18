@@ -15,13 +15,16 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { pages } from './Pages/page';
 import { ShoppingCart } from '@mui/icons-material';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from './Store';
+import { Button } from '@mui/material';
+import { setCustomerUser } from './Store/CustomerUserSaveSlice';
 
 
 const Navbar = () => {
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
+    const dispatch = useDispatch()
     const product = useSelector((state: RootState) => state.ProductId.products)
 
     const theme = useTheme();
@@ -45,6 +48,23 @@ const Navbar = () => {
     };
 
     const navigate = useNavigate()
+
+    const { user } = useSelector((state: RootState) => state?.CustomerUser)
+    const filteredPages = pages.filter(page =>
+        !(page.title === "Users" && (!user?.userName || user?.userType === "Customer"))
+    );
+
+    const handleLogout = () => {
+        localStorage.removeItem("token")
+        localStorage.removeItem("user")
+        dispatch(setCustomerUser({
+            userName: "",
+            email: "",
+            phone: 0,
+            userType: ""
+        }))
+        setAnchorElUser(null)
+    }
 
     return (
         <>
@@ -144,15 +164,20 @@ const Navbar = () => {
                                 </>
                             ) : (
                                 <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex', color: "black" } }}>
-                                    {pages.map((page, index) => (
+                                    {filteredPages.map((page, index) => (
                                         <Typography
                                             key={index}
                                             onClick={() => {
-                                                navigate(page.path)
+                                                if (page.title !== "Users" || user?.userType !== "Customer") {
+                                                    navigate(page.path);
+                                                }
                                             }}
-                                            // selected button background color is deffrent
                                             sx={{
-                                                ml: 2, display: 'block', cursor: 'pointer', color: page.path === window.location.pathname ? "red" : "black"
+                                                ml: 2,
+                                                display: 'block',
+                                                cursor: page.title === "Users" && user?.userType === "Customer" ? 'not-allowed' : 'pointer',
+                                                color: page.path === window.location.pathname ? "red" : "black",
+                                                opacity: page.title === "Users" && user?.userType === "Customer" ? 0.5 : 1,
                                             }}
                                         >
                                             {page.title}
@@ -162,9 +187,22 @@ const Navbar = () => {
                             )}
                         </Box>
 
-                        <Box sx={{ gap: 2, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', flexGrow: 1, minWidth: "150px", marginLeft: "20px" }}>
+                        <Box sx={{
+                            gap: 2,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'flex-end',
+                            minWidth: "150px",
+                            marginLeft: "20px",
+                            textAlign: "center",
+                            alignContent: "center"
+                        }}>
                             <Tooltip title="View Cart">
-                                <div style={{ position: "relative", cursor: "pointer" }} onClick={() => navigate("/cart")}>
+                                <div style={{
+                                    position: "relative",
+                                    cursor: "pointer",
+                                    marginTop: "10px"
+                                }} onClick={() => navigate("/cart")}>
                                     <span
                                         style={{
                                             position: "absolute",
@@ -187,11 +225,24 @@ const Navbar = () => {
                                     <ShoppingCart />
                                 </div>
                             </Tooltip>
-                            <Tooltip title="Open settings">
-                                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                    <Avatar alt="User Avatar" src="/static/images/avatar/1.jpg" />
-                                </IconButton>
-                            </Tooltip>
+                            {user?.userName ?
+                                (
+                                    <Tooltip title="Open settings">
+                                        <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                                            <Avatar alt="User Avatar" src="/static/images/avatar/1.jpg" sx={{
+                                                width: 25,
+                                                height: 25,
+                                                padding: 2
+                                            }} />
+                                        </IconButton>
+                                    </Tooltip>
+                                ) : (
+                                    <Button variant="outlined" onClick={() => navigate("/login")}>
+                                        Login
+                                    </Button>
+                                )}
+
+
                             <Menu
                                 id="menu-appbar"
                                 anchorEl={anchorElUser}
@@ -210,10 +261,7 @@ const Navbar = () => {
                                 <MenuItem>
                                     <Typography
                                         textAlign="center"
-                                        onClick={() => {
-                                            navigate("/login");
-                                            localStorage.removeItem("token");
-                                        }}
+                                        onClick={handleLogout}
                                         sx={{ paddingRight: '20px' }}
                                     >
                                         LogOut

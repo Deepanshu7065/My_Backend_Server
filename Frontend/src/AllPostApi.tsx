@@ -3,7 +3,7 @@ import { baseUrl } from "./ApiEndPoint"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 
-export const postJokes = () => {
+export const postUser = () => {
     const queryClient = useQueryClient()
     const postJokesApi = async ({ data }: any) => {
         try {
@@ -44,7 +44,7 @@ export const DeleteUser = () => {
     })
 }
 
-export const UpdateUser = () => {
+export const UpdateUserApi = () => {
     const queryClient = useQueryClient()
     const updateUserApi = async ({ id, data }: any) => {
         try {

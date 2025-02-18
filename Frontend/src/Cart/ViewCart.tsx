@@ -4,11 +4,23 @@ import { RootState } from '../Store'
 import { imageUrl } from '../ApiEndPoint'
 import { setDecreaseQuantity, setIncreaseQuantity, setRemoveProduct } from '../Store/ProductDetailsSlice'
 import { Delete } from '@mui/icons-material'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 const ViewCart = () => {
     const products = useSelector((state: RootState) => state.ProductId.products)
     const dispatch = useDispatch()
+    const { user } = useSelector((state: RootState) => state.CustomerUser)
+    const navigate = useNavigate()
+
+    const handleProceed = () => {
+        if (user?.userName === "") {
+            alert("Please login first")
+            navigate("/login")
+
+        } else {
+            navigate("/checkout")
+        }
+    }
 
     // const products = [
     //     {
@@ -148,7 +160,43 @@ const ViewCart = () => {
                                         })}
                                     </tbody>
                                 </table>
+
                             </div>
+                            <Stack width="100%"
+                                height="10%" bgcolor={"white"}
+                                direction="row"
+                                justifyContent={"flex-end"} mt={5}>
+                                <Stack spacing={1} direction="column" alignItems={"flex-end"}>
+                                    <Typography sx={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        fontWeight: "bold",
+                                        gap: 2,
+                                        fontSize: "1.2rem"
+                                    }}>
+                                        <span style={{ fontWeight: "bold", fontFamily: "monospace" }}>
+                                            Total:
+                                        </span>
+                                        <span style={{ fontWeight: "bold", fontFamily: "monospace" }}>
+                                            ${products.reduce((acc, item) => acc + Number(item.price ?? 0) * Number(item.quantity), 0)}
+                                        </span>
+                                    </Typography>
+                                    <Button sx={{
+                                        backgroundColor: colors.grey[900],
+                                        color: "white",
+                                        borderRadius: "10px",
+                                        padding: 1,
+                                        fontSize: "0.8rem",
+                                        width: "200px",
+                                        fontFamily: "monospace, cursive",
+                                        fontWeight: "bold",
+                                    }}
+                                        onClick={handleProceed}
+                                    >
+                                        Proceed To CheckOut
+                                    </Button>
+                                </Stack>
+                            </Stack>
                         </Stack>
                     ) : (
                         <Box sx={{
@@ -203,7 +251,7 @@ const ViewCart = () => {
 
 
             </Box>
-        </Box>
+        </Box >
     )
 }
 

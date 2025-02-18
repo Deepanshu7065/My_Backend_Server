@@ -51,3 +51,31 @@
     font-weight: 900;
     font-family: 'Poppins', monospace;
 }
+
+
+.table_user_all table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid rgb(177, 173, 173);
+    margin-top: 20px;
+    border-radius: 10px;
+}
+
+.table_user_all tr td {
+    padding: 15px;
+    border: none;
+    font-size: 14px;
+    font-weight: 300;
+    font-family: 'Poppins', monospace;
+    align-items: flex-start;
+}
+
+.table_user_all tr th {
+    padding: 10px;
+    border: 1px solid rgb(177, 173, 173);
+    color: rgb(148, 144, 144);
+    text-align: left;
+    font-size: 14px;
+    font-weight: 900;
+    font-family: monospace;
+}

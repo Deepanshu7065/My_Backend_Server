@@ -1,4 +1,5 @@
 
+
 export const pages = [
     {
         title: "Home",
@@ -13,5 +14,9 @@ export const pages = [
     }, {
         title: "Contact",
         path: "/contact",
+    }, {
+        title: "Users",
+        path: "/users",
     }
 ]
+

@@ -1,5 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import ProductDetailsSlice from "./Store/ProductDetailsSlice";
+import CustomerUserSlice from "./Store/CustomerUserSaveSlice";
+import EditUserSlice from "./Store/EditUserSlice";
 
 
 
@@ -7,6 +9,8 @@ import ProductDetailsSlice from "./Store/ProductDetailsSlice";
 export const store = configureStore({
     reducer: {
         ProductId: ProductDetailsSlice,
+        CustomerUser: CustomerUserSlice,
+        EditUser: EditUserSlice
     }
 })
 

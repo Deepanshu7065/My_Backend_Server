@@ -2,9 +2,13 @@ import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import axios from "axios";
 import { baseUrl } from "./ApiEndPoint";
+import { useDispatch } from "react-redux";
+import { setCustomerUser } from "./Store/CustomerUserSaveSlice";
 
 function AuthVerifier() {
     const navigate = useNavigate();
+    const dispatch = useDispatch()
+
 
     useEffect(() => {
         const token = localStorage.getItem("token");
@@ -24,11 +28,10 @@ function AuthVerifier() {
                     );
                     if (res.data.user) {
                         localStorage.setItem("user", JSON.stringify(res.data.user));
-                        // navigate("/");
+                        const user = JSON.parse(localStorage.getItem("user") as string);
+                        dispatch(setCustomerUser(user))
                     }
-                } else {
-                    navigate("/login");
-                }
+                } 
             } catch (error) {
                 console.log(error);
             }

@@ -1,7 +1,9 @@
 import { Box, Button, TextField, Typography, Paper } from "@mui/material";
 import { useState } from "react";
-import { loginVerify, postJokes } from "./AllPostApi";
+import { loginVerify, postUser, } from "./AllPostApi";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setCustomerUser } from "./Store/CustomerUserSaveSlice";
 
 
 const AuthContainer = () => {
@@ -19,6 +21,7 @@ const Login = ({ setPage }: any) => {
     const { mutateAsync } = loginVerify();
     const [logindata, setLoginData] = useState({ email: "", password: "" });
     const navigate = useNavigate()
+    const dispatch = useDispatch()
 
     const subMit = async () => {
         try {
@@ -26,6 +29,8 @@ const Login = ({ setPage }: any) => {
             if (res?.status === 200) {
                 localStorage.setItem("token", res?.data?.accessToken);
                 localStorage.setItem("user", JSON.stringify(res?.data?.user));
+                const user = JSON.parse(localStorage.getItem("user") as string);
+                dispatch(setCustomerUser(user))
                 navigate("/")
             }
 
@@ -127,16 +132,28 @@ const Login = ({ setPage }: any) => {
 };
 
 const Register = ({ setPage }: any) => {
+    const dispatch = useDispatch()
     const navigate = useNavigate();
-    const [registerData, setRegisterData] = useState({ username: "", email: "", password: "" });
-    const { mutateAsync } = postJokes();
+    const [registerData, setRegisterData] = useState({ username: "", email: "", password: "", phone: "" });
+    const { mutateAsync } = postUser();
 
     const handleSubmitRegister = async () => {
         try {
-            const res = await mutateAsync({ data: registerData });
+            const res = await mutateAsync({
+                data: {
+                    userName: registerData.username,
+                    email: registerData.email,
+                    password: registerData.password,
+                    phone: Number(registerData.phone),
+                    userType: "customer"
+                }
+            });
             if (res?.status === 200) {
                 navigate("/");
                 localStorage.setItem("token", res?.data?.accessToken);
+                localStorage.setItem("user", JSON.stringify(res?.data?.user));
+                const user = JSON.parse(localStorage.getItem("user") as string);
+                dispatch(setCustomerUser(user))
             }
         } catch (error) {
             console.log(error);
@@ -172,7 +189,27 @@ const Register = ({ setPage }: any) => {
                     zIndex: 2,
                     bgcolor: "rgba(255, 255, 255, 0.8)"
                 }}>
+
                     <Typography variant="h5" fontFamily={"Pacifico"} mb={2} fontWeight={600}>Register</Typography>
+                    <TextField
+                        label={
+                            <Box sx={{ display: "flex", alignItems: "center" }}>
+                                Phone
+                            </Box>
+                        }
+                        fullWidth
+                        margin="normal"
+                        sx={{
+                            "& .MuiInputBase-root": {
+                                color: "black",
+                                fontFamily: "monospace",
+
+                            },
+                            fontFamily: "Pacifico"
+                        }}
+                        value={registerData.phone}
+                        onChange={(e) => setRegisterData({ ...registerData, phone: e.target.value })}
+                    />
                     <TextField
                         label={
                             <Box sx={{ display: "flex", alignItems: "center" }}>

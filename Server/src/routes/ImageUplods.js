@@ -53,7 +53,7 @@ router.post("/items/add", upload.single("image"), async (req, res) => {
     }
 });
 
-// ✅ Update API
+
 router.patch("/items/update/:id", upload.single("image"), async (req, res) => {
     try {
         const itemUpdate = await TodoModal.findById(req.params.id);

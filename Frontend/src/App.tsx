@@ -1,5 +1,5 @@
-import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
-import User from "./User";
+import { Navigate, Outlet, Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import User from "./User/User";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Todo from "./Todo";
 import AuthVerifier from "./AuthVerifiee";
@@ -14,6 +14,10 @@ import ShopBats from "./ShopBats/ShopBats";
 import BatsDetails from "./ShopBats/BatsDetails";
 import AllModalList from "./AllModalList";
 import ViewCart from "./Cart/ViewCart";
+import AddUser from "./User/AddUser";
+import { useSelector } from "react-redux";
+import { RootState } from "./Store";
+
 
 function App() {
   const queryClient = new QueryClient({
@@ -35,6 +39,10 @@ function App() {
     return config;
 
   })
+  const token = localStorage.getItem("token" as string);
+  const { user } = useSelector((state: RootState) => state.CustomerUser)
+
+
 
   return (
     <ThemeProvider theme={createThemeI}>
@@ -44,13 +52,16 @@ function App() {
           <Routes>
             <Route element={<Navbar />} >
               <Route path="/about" element={<Todo />} />
-              <Route path="/services" element={<User />} />
               <Route path="/" element={<Dashboard />} />
               <Route path="/shop_bats" element={<ShopBats />} />
               <Route path="/details" element={<BatsDetails />} />
               <Route path="/cart" element={<ViewCart />} />
+              {user?.userType === "Admin" && (<>
+                <Route path="/users" element={<User />} />
+                <Route path="/add-user" element={<AddUser />} />
+              </>)}
             </Route>
-            <Route path="/login" element={<AuthContainer />} />
+            <Route path="/login" element={!token ? <AuthContainer /> : <Navigate to="/" />} />
           </Routes>
         </Router>
         <AllModalList />

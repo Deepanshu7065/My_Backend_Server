@@ -29,7 +29,16 @@ const upload = multer({ storage: storage });
 
 router.post("/items/add", upload.single("image"), async (req, res) => {
     try {
-        const { product_name, description, createdBy, price, quantity } = req.body;
+        const {
+            product_name,
+            description,
+            createdBy,
+            price,
+            quantity,
+            size,
+            brand,
+            more_details
+        } = req.body;
         if (!req.file) {
             return res.status(400).json({ error: "Image is required" });
         }
@@ -41,7 +50,10 @@ router.post("/items/add", upload.single("image"), async (req, res) => {
             quantity,
             path: `/uploads/${req.file.filename}`,
             fileName: req.file.filename,
-            image: `/uploads/${req.file.filename}`
+            image: `/uploads/${req.file.filename}`,
+            size,
+            brand,
+            more_details,
         });
 
         await todo.save();
@@ -66,6 +78,9 @@ router.patch("/items/update/:id", upload.single("image"), async (req, res) => {
         itemUpdate.createdBy = req.body.createdBy || itemUpdate.createdBy;
         itemUpdate.price = req.body.price || itemUpdate.price;
         itemUpdate.quantity = req.body.quantity || itemUpdate.quantity;
+        itemUpdate.size = req.body.size || itemUpdate.size;
+        itemUpdate.brand = req.body.brand || itemUpdate.brand;
+        itemUpdate.more_details = req.body.more_details || itemUpdate.more_details;
 
         if (req.file) {
             itemUpdate.image = `/uploads/${req.file.filename}`;
@@ -77,5 +92,27 @@ router.patch("/items/update/:id", upload.single("image"), async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
+
+router.delete("/items/delete/:id", async (req, res) => {
+    try {
+        const itemDelete = await TodoModal.findByIdAndDelete(req.params.id);
+
+        if (!itemDelete) {
+            return res.status(404).json({ error: "Item not found" });
+        }
+
+        if (itemDelete.image) {
+            const imagePath = path.join(uploadDir, path.basename(itemDelete.image));
+            if (fs.existsSync(imagePath)) {
+                fs.unlinkSync(imagePath);
+            }
+        }
+
+        return res.json({ message: "Item deleted successfully", item: itemDelete });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 
 export default router;

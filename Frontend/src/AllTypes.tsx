@@ -20,13 +20,18 @@
 //     "updatedAt": "2025-02-14T06:04:45.996Z",
 //     "__v": 0
 // }
+
+export interface AllProductsTypes {
+    products: ProductTypes[]
+    totalProduct: number
+}
 export interface ProductTypes {
     _id?: string
     product_name?: string
     description?: string
     createdBy?: {
         _id?: string
-        username?: string
+        userName?: string
         email?: string
         password?: string
         createdAt?: string
@@ -41,4 +46,20 @@ export interface ProductTypes {
     createdAt?: string
     updatedAt?: string
     __v: number
+}
+
+export interface AllUserTypes {
+    users: UserType[]
+    totalUser: number
+}
+export interface UserType {
+    _id?: string
+    userName?: string
+    email?: string
+    phone?: number
+    userType?: string
+    token?: string
+    createdAt?: string
+    updatedAt?: string
+    __v?: number
 }

@@ -17,6 +17,8 @@ import ViewCart from "./Cart/ViewCart";
 import AddUser from "./User/AddUser";
 import { useSelector } from "react-redux";
 import { RootState } from "./Store";
+import MobileUserView from "./User/MobileUserView";
+import AddBatsForm from "./ShopBats/AddBatsForm";
 
 
 function App() {
@@ -51,7 +53,7 @@ function App() {
           <AuthVerifier />
           <Routes>
             <Route element={<Navbar />} >
-              <Route path="/about" element={<Todo />} />
+              <Route path="/add_bat" element={<AddBatsForm />} />
               <Route path="/" element={<Dashboard />} />
               <Route path="/shop_bats" element={<ShopBats />} />
               <Route path="/details" element={<BatsDetails />} />
@@ -59,6 +61,7 @@ function App() {
               {user?.userType === "Admin" && (<>
                 <Route path="/users" element={<User />} />
                 <Route path="/add-user" element={<AddUser />} />
+                <Route path="/users_view" element={<MobileUserView />} />
               </>)}
             </Route>
             <Route path="/login" element={!token ? <AuthContainer /> : <Navigate to="/" />} />

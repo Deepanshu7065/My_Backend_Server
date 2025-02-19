@@ -138,9 +138,23 @@ const Navbar = () => {
                                                     display: { xs: 'block', md: 'none' },
                                                 }}
                                             >
-                                                {pages.map((page: any, index) => (
-                                                    <MenuItem key={index} onClick={() => navigate(page.path)}>
-                                                        <Typography textAlign="center">{page.title}</Typography>
+                                                {filteredPages.map((page, index) => (
+                                                    <MenuItem
+                                                        key={index}
+                                                        onClick={() => {
+                                                            if (page.title !== "Users" || user?.userType !== "Customer") {
+                                                                navigate(page.path);
+                                                            }
+                                                        }}
+                                                        sx={{
+                                                            ml: 2,
+                                                            display: 'block',
+                                                            cursor: page.title === "Users" && user?.userType === "Customer" ? 'not-allowed' : 'pointer',
+                                                            color: page.path === window.location.pathname ? "red" : "black",
+                                                            opacity: page.title === "Users" && user?.userType === "Customer" ? 0.5 : 1,
+                                                        }}
+                                                    >
+                                                        {page.title}
                                                     </MenuItem>
                                                 ))}
                                             </Menu>
@@ -272,7 +286,7 @@ const Navbar = () => {
                     </Box>
                 </Container>
             </AppBar >
-            <Box sx={{ display: 'flex', }}>
+            <Box sx={{ display: 'flex',  }}>
                 <Outlet />
             </Box>
         </>

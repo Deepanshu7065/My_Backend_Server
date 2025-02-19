@@ -6,7 +6,7 @@ import { postUser } from "../AllPostApi";
 // const image = [
 //     "public/cricket.avif",
 // ]
-const Footer = () => {
+export const Footer = () => {
     return (
         <Box sx={{
             mt: 4,

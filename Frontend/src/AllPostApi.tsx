@@ -88,7 +88,7 @@ export const DeleteTodo = () => {
     const deleteUserApi = async ({ id }: any) => {
         try {
 
-            const response = await axios.delete(`${baseUrl}/todo/delete/${id}`)
+            const response = await axios.delete(`${baseUrl}/items/delete/${id}`)
             return response
         } catch (error) {
             console.log(error)

@@ -6,14 +6,42 @@ const router = express.Router();
 
 router.get("/users", async (req, res) => {
     try {
-        const users = await UserModal.find();
-        return res.json(users)
-    }
-    catch (error) {
+        const { search, filter } = req.query;
+        let query = {};
+
+        if (search) {
+            if (!isNaN(Number(search))) {
+                query = {
+                    $expr: {
+                        $regexMatch: {
+                            input: { $toString: "$phone" },
+                            regex: search,
+                            options: "i"
+                        }
+                    }
+                }
+            } else {
+                query.$or = [
+                    { userName: { $regex: search, $options: "i" } },
+                    { email: { $regex: search, $options: "i" } }
+                ];
+            }
+        }
+
+        if (filter && filter !== "All") {
+            query.userType = filter;
+        }
+        const totalUser = await UserModal.countDocuments(query);
+        const users = await UserModal.find(query);
+        return res.json({
+            totalUser,
+            users
+        });
+    } catch (error) {
         res.status(500).json({ error: error.message });
     }
+});
 
-})
 
 router.get("/user/:id", async (req, res) => {
     try {

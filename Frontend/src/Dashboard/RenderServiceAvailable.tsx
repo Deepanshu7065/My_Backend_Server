@@ -1,29 +1,31 @@
-import { Box, Card, CardActions, CardContent, Stack } from '@mui/material'
+import { Box, Card, CardActions, CardContent, Stack, useMediaQuery } from '@mui/material'
 import React from 'react'
 
 const RenderServiceAvailable = () => {
+    const mobile = useMediaQuery("(max-width:600px)")
     return (
         <Box sx={{
-            width: "80%",
+            width: mobile ? "100%" : "80%",
             display: "flex",
             justifyContent: "center",
             gap: 5,
-            mt: 5
+            mt: 5,
+            flexDirection: mobile ? "column" : "row"
         }}>
             <Card sx={{
-                width: "50%",
+                width: mobile ? "100%" : "50%",
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
                 flexDirection: "column",
                 bgcolor: "white",
-                height: "600px",
+                height: { xs: "200px", md: "600px" },
                 transition: "all 0.4s ease-in-out",
                 "&:hover": {
                     transform: "scale(1.02)",
                 }
             }}>
-                <Stack width="auto" height="90%">
+                <Stack width="100%" height={"90%"}>
                     <img src='./Cricket-Bat-Ball.jpg' alt='repair' style={{ width: "100%", height: "100%" }} />
                 </Stack>
 
@@ -41,13 +43,13 @@ const RenderServiceAvailable = () => {
                 </Stack>
             </Card>
             <Card sx={{
-                width: "50%",
+                width: mobile ? "100%" : "50%",
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
                 flexDirection: "column",
                 bgcolor: "white",
-                height: "600px",
+                height: { xs: "200px", md: "600px" },
                 transition: "all 0.4s ease-in-out",
                 "&:hover": {
                     transform: "scale(1.02)",
@@ -79,7 +81,7 @@ const RenderServiceAvailable = () => {
 
             </Card>
 
-        </Box>
+        </Box >
     )
 }
 

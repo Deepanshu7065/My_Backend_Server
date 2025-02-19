@@ -37,6 +37,18 @@ const TodoSchema = new mongoose.Schema(
             type: String,
             required: true
         },
+        brand: {
+            type: String,
+            required: true
+        },
+        size: {
+            type: String,
+            required: true
+        },
+        more_details: {
+            type: String,
+            required: true
+        }
 
     },
     { timestamps: true }

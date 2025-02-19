@@ -17,7 +17,7 @@ if (!fs.existsSync(uploadDir)) {
 router.get("/uploads/:filename", async (req, res) => {
     try {
         const filePath = path.join(uploadDir, req.params.filename);
-        console.log(filePath, "sadjkfhahks");
+       
 
         if (!fs.existsSync(filePath)) {
             return res.status(404).json({ error: "File not found" });

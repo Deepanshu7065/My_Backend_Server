@@ -1,8 +1,9 @@
 
 import { Box, colors, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material"
-import { getJokes, GetProductApi, getSingleUser, } from "./AllGetApi"
+import { GetProductApi, getSingleUser, getUsers, } from "./AllGetApi"
 import { useEffect, useState } from "react"
-import { AddProductItems, DeleteTodo, DeleteUser, postJokes, UpdateUser } from "./AllPostApi"
+import { AddProductItems, DeleteTodo, DeleteUser, } from "./AllPostApi"
+import { UserType } from "./AllTypes"
 
 
 const Todo = () => {
@@ -18,19 +19,24 @@ const Todo = () => {
     const [open, setOpen] = useState(false)
     const [jokes, setJokes] = useState([])
     const [singleId, setSingleId] = useState("")
-    const { data } = getJokes()
+    const { data } = getUsers({
+        search: "",
+        filter: ""
+    })
 
     const { data: singleUserData } = getSingleUser({
         id: singleId
     })
-    const { data: todoData } = GetProductApi()
+    const { data: todoData } = GetProductApi({
+        search: ""
+    })
     const { mutateAsync } = AddProductItems()
     const { mutateAsync: deleteUser } = DeleteTodo()
 
 
 
 
-    const handleChange = (e: any) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setDetails({
             ...details,
             [e.target.name]: e.target.name === "price" ? Number(e.target.value) : e.target.name === "quantity" ? Number(e.target.value) : e.target.value
@@ -65,10 +71,10 @@ const Todo = () => {
     }
 
     useEffect(() => {
-        if (data?.data?.length > 0) {
-            setDetails((prevDetails) => ({
+        if ((data?.users?.length ?? 0) > 0) {
+            setDetails((prevDetails: any) => ({
                 ...prevDetails,
-                createdBy: prevDetails.createdBy || data?.data[0]._id,
+                createdBy: prevDetails?.createdBy || data?.users[0]._id,
             }));
         }
     }, [data]);
@@ -122,12 +128,12 @@ const Todo = () => {
                         <select
                             name="createdBy"
                             value={details.createdBy}
-                            onChange={handleChange}
+                            onChange={(e) => setDetails({ ...details, createdBy: e.target.value })}
                         >
 
-                            {data?.data.map((user: any) => (
+                            {data?.users?.map((user) => (
                                 <option key={user._id} value={user._id}>
-                                    {user.username}
+                                    {user.userName}
                                 </option>
                             ))}
                         </select>
@@ -191,7 +197,7 @@ const Todo = () => {
                         marginTop: 50
 
                     }}>
-                        {todoData?.map((item: any) => (
+                        {todoData?.products?.map((item: any) => (
                             <div style={{
                                 display: "flex",
                                 justifyContent: "center",
@@ -203,7 +209,7 @@ const Todo = () => {
                             }}>
                                 <h3>{item.title}</h3>
                                 <p>{item.description}</p>
-                                <p>Created By: {item.createdBy?.username} ({item.createdBy?.email})</p>
+                                <p>Created By: {item.createdBy?.userName} ({item.createdBy?.email})</p>
                                 <button onClick={() => {
                                     handleSetID(item?._id)
                                     setOpen(true)

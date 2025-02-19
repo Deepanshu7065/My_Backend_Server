@@ -6,8 +6,8 @@ export const pages = [
         path: "/",
 
     }, {
-        title: "About",
-        path: "/about",
+        title: "Add Bat",
+        path: "/add_bat",
     }, {
         title: "Shop Bats",
         path: "/shop_bats",

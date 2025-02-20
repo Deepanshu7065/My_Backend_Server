@@ -48,7 +48,11 @@ const TodoSchema = new mongoose.Schema(
         more_details: {
             type: String,
             required: true
-        }
+        },
+        weight: {
+            type: Number,
+            required: true
+        },
 
     },
     { timestamps: true }

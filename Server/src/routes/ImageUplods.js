@@ -37,7 +37,8 @@ router.post("/items/add", upload.single("image"), async (req, res) => {
             quantity,
             size,
             brand,
-            more_details
+            more_details,
+            weight
         } = req.body;
         if (!req.file) {
             return res.status(400).json({ error: "Image is required" });
@@ -54,6 +55,7 @@ router.post("/items/add", upload.single("image"), async (req, res) => {
             size,
             brand,
             more_details,
+            weight
         });
 
         await todo.save();
@@ -72,6 +74,12 @@ router.patch("/items/update/:id", upload.single("image"), async (req, res) => {
         if (!itemUpdate) {
             return res.status(404).json({ error: "Item not found" });
         }
+        if(req.file && itemUpdate.image){
+            const imagePath = path.join(uploadDir, path.basename(itemUpdate.image));
+            if (fs.existsSync(imagePath)) {
+                fs.unlinkSync(imagePath);
+            }
+        }
 
         itemUpdate.product_name = req.body.product_name || itemUpdate.product_name;
         itemUpdate.description = req.body.description || itemUpdate.description;
@@ -81,13 +89,15 @@ router.patch("/items/update/:id", upload.single("image"), async (req, res) => {
         itemUpdate.size = req.body.size || itemUpdate.size;
         itemUpdate.brand = req.body.brand || itemUpdate.brand;
         itemUpdate.more_details = req.body.more_details || itemUpdate.more_details;
+        itemUpdate.weight = req.body.weight || itemUpdate.weight;
 
         if (req.file) {
             itemUpdate.image = `/uploads/${req.file.filename}`;
         }
 
         await itemUpdate.save();
-        return res.json(itemUpdate);
+        const updatedItem = await itemUpdate.populate("createdBy", "username email");
+        return res.json(updatedItem)
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

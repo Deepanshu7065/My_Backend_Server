@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 interface CustomerUserState {
     user: {
+        _id: string
         userName: string;
         email: string;
         phone: number;
@@ -12,6 +13,7 @@ interface CustomerUserState {
 
 const initialState: CustomerUserState = {
     user: {
+        _id: "",
         userName: "",
         email: "",
         phone: 0,

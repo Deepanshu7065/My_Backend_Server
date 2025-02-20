@@ -45,7 +45,11 @@ export interface ProductTypes {
     path?: string
     createdAt?: string
     updatedAt?: string
-    __v: number
+    __v: number;
+    brand?: string
+    size?: string
+    more_details?: string
+    weight?: number
 }
 
 export interface AllUserTypes {

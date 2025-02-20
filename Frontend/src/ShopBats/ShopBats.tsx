@@ -58,9 +58,7 @@ const ShopBats = () => {
                 overflowY: "auto",
                 overflowX: "hidden",
                 "&::-webkit-scrollbar": {
-                    width: "4px",
-                    backgroundColor: "grey",
-                    height: "4px"
+                   display: "none"
                 }
             }}>
 

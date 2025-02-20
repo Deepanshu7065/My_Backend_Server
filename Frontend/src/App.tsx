@@ -19,6 +19,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "./Store";
 import MobileUserView from "./User/MobileUserView";
 import AddBatsForm from "./ShopBats/AddBatsForm";
+import RenderMobileEditBats from "./ShopBats/RenderMobileEdit";
 
 
 function App() {
@@ -53,12 +54,13 @@ function App() {
           <AuthVerifier />
           <Routes>
             <Route element={<Navbar />} >
-              <Route path="/add_bat" element={<AddBatsForm />} />
               <Route path="/" element={<Dashboard />} />
               <Route path="/shop_bats" element={<ShopBats />} />
               <Route path="/details" element={<BatsDetails />} />
               <Route path="/cart" element={<ViewCart />} />
               {user?.userType === "Admin" && (<>
+                <Route path="/add_bat" element={<AddBatsForm />} />
+                <Route path="/view_edit_bat" element={<RenderMobileEditBats />} />
                 <Route path="/users" element={<User />} />
                 <Route path="/add-user" element={<AddUser />} />
                 <Route path="/users_view" element={<MobileUserView />} />

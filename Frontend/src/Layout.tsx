@@ -51,8 +51,10 @@ const Navbar = () => {
 
     const { user } = useSelector((state: RootState) => state?.CustomerUser)
     const filteredPages = pages.filter(page =>
-        !(page.title === "Users" && (!user?.userName || user?.userType === "Customer"))
+        !(page.title === "Users" && (!user?.userName || user?.userType === "Customer")) &&
+        !(page.title === "AddBat" && (!user?.userName || user?.userType === "Customer"))
     );
+    
 
     const handleLogout = () => {
         localStorage.removeItem("token")
@@ -286,7 +288,7 @@ const Navbar = () => {
                     </Box>
                 </Container>
             </AppBar >
-            <Box sx={{ display: 'flex',  }}>
+            <Box sx={{ display: 'flex', }}>
                 <Outlet />
             </Box>
         </>

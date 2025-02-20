@@ -6,7 +6,7 @@ export const pages = [
         path: "/",
 
     }, {
-        title: "Add Bat",
+        title: "AddBat",
         path: "/add_bat",
     }, {
         title: "Shop Bats",

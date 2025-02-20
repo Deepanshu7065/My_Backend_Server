@@ -126,4 +126,22 @@ export const loginVerify = () => {
     })
 }
 
+export const updateProductPostApi = () => {
+    const queryClient = useQueryClient()
+    const updateProductPostApi = async ({ id, data }: any) => {
+        try {
+            const response = await axios.patch(`${baseUrl}/items/update/${id}`, data)
+            return response
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    return useMutation({
+        mutationFn: updateProductPostApi,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["products"] })
+        }
+    })
+}
 

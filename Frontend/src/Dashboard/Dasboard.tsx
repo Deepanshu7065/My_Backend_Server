@@ -97,8 +97,10 @@ const Dashboard = () => {
                             fontFamily: "Poppins, sans-serif",
                             fontSize: "1rem",
                             '&:hover': { bgcolor: "#ddd" }
-                        }}>
-                            Get Started
+                        }}
+                            onClick={() => navigate("/repair")}
+                        >
+                            Bat Repair
                         </Button>
                         <Button sx={{
                             bgcolor: "white",

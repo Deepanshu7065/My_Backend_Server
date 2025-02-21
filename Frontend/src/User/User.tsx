@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom"
 import { Delete, Edit, Forward, } from "@mui/icons-material"
 import { useDispatch } from "react-redux"
 import { setUserId } from "../Store/EditUserSlice"
+import { CustomPagination } from "../ShopBats/AddBatsForm"
 
 
 const User = () => {
@@ -15,6 +16,8 @@ const User = () => {
     const [value, setValue] = useState(0);
     const [search, setSearch] = useState("")
     const [filter, setFilter] = useState("All")
+    const [page, setPage] = useState(1)
+    const [limit, setLimit] = useState(10)
     const handleChangeTabs = (_: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
         setFilter(newValue === 0 ? "All" : newValue === 1 ? "Customer" : "Admin")
@@ -22,7 +25,9 @@ const User = () => {
     const [jokes, setJokes] = useState([])
     const { data } = getUsers({
         search,
-        filter: filter
+        filter: filter,
+        page,
+        limit
     })
 
     const { mutateAsync: deleteUser } = DeleteUser()
@@ -251,9 +256,21 @@ const User = () => {
                                     </tbody>
                                 </table>
                             </div>
-
                         </Box>
-
+                        <Stack sx={{
+                            width: "100%",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            textAlign: "center"
+                        }}>
+                            <CustomPagination
+                                page={page}
+                                limit={limit}
+                                setPage={setPage}
+                                total={Math.ceil((data?.totalUser ?? 0) / limit)}
+                                setLimit={setLimit}
+                            />
+                        </Stack>
                     </Box>
                 </Box>
             )}

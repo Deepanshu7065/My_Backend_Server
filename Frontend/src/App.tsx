@@ -18,8 +18,10 @@ import AddUser from "./User/AddUser";
 import { useSelector } from "react-redux";
 import { RootState } from "./Store";
 import MobileUserView from "./User/MobileUserView";
-import AddBatsForm from "./ShopBats/AddBatsForm";
+import AddBatsForm, { TableRender } from "./ShopBats/AddBatsForm";
 import RenderMobileEditBats from "./ShopBats/RenderMobileEdit";
+import RepairUploadBat from "./Repair/RepairUploadBat";
+import RepairAllOrders from "./Repair/RepairAllOrders";
 
 
 function App() {
@@ -58,12 +60,15 @@ function App() {
               <Route path="/shop_bats" element={<ShopBats />} />
               <Route path="/details" element={<BatsDetails />} />
               <Route path="/cart" element={<ViewCart />} />
+              <Route path="/repair" element={<RepairUploadBat />} />
+              <Route path="/repair_orders" element={<RepairAllOrders />} />
               {user?.userType === "Admin" && (<>
                 <Route path="/add_bat" element={<AddBatsForm />} />
                 <Route path="/view_edit_bat" element={<RenderMobileEditBats />} />
                 <Route path="/users" element={<User />} />
                 <Route path="/add-user" element={<AddUser />} />
                 <Route path="/users_view" element={<MobileUserView />} />
+                <Route path="all_view_edit_bat" element={<TableRender />} />
               </>)}
             </Route>
             <Route path="/login" element={!token ? <AuthContainer /> : <Navigate to="/" />} />

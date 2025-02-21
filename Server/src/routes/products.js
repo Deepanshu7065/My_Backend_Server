@@ -6,19 +6,29 @@ const router = express.Router();
 
 router.get("/products", async (req, res) => {
     try {
-        const { search } = req.query
+        const { search, page = 1, limit } = req.query
         let query = {}
         if (search) {
-            query.$or =[
+            query.$or = [
                 { product_name: { $regex: search, $options: "i" } },
                 { description: { $regex: search, $options: "i" } }
             ]
         }
         const totalProduct = await TodoModal.countDocuments(query);
-        const products = await TodoModal.find(query).populate("createdBy");
+        let productsQuery = TodoModal.find(query).populate("createdBy");
+
+        if (limit) {
+            const parsedLimit = parseInt(limit);
+            const parsedPage = parseInt(page);
+            productsQuery = productsQuery
+                .skip((parsedPage - 1) * parsedLimit)
+                .limit(parsedLimit);
+        }
+
+        const products = await productsQuery;
         return res.json({
             totalProduct,
-            products
+            products,
         })
     } catch (error) {
         res.status(500).json({ error: error.message });

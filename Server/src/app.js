@@ -10,6 +10,7 @@ import UserRoutes from "./routes/UserApi.js"
 import LoginRoutes from "./routes/login.js"
 import VerifyRoutes from "./routes/VerifyToken.js"
 import userGetRoutes from "./routes/UserGetAndUpdate.js"
+import uploadsRepairs from "./routes/UploadDetailsForRepair.js"
 
 const app = express();
 app.use(morgan("dev"));
@@ -25,6 +26,7 @@ app.use("/api/v1", UserRoutes);
 
 app.use("/api/v1", authenticate, userGetRoutes)
 app.use("/api/v1", authenticate, imageRoutes);
+app.use("/api/v1", authenticate, uploadsRepairs);
 app.use("/uploads", express.static("uploads"));
 
 

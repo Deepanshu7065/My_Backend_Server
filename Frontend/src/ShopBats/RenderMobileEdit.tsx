@@ -6,13 +6,18 @@ import { imageUrl } from "../ApiEndPoint"
 import { DeleteTodo } from "../AllPostApi"
 import { useDispatch } from "react-redux"
 import { setEditProductId } from "../Store/EditProductSlice"
+import { CustomPagination } from "./AddBatsForm"
 
 
 const RenderMobileEditBats = () => {
     const [search, setSearch] = useState("")
     const { data: products, refetch } = GetProductApi({
-        search: search
+        search: search,
+        page: 1,
+        limit: 10
     })
+    const [page, setPage] = useState(1)
+    const [limit, setLimit] = useState(10)
     const dispatch = useDispatch()
     const { mutateAsync: deleteProduct } = DeleteTodo()
     const handleDelete = async (id: string) => {
@@ -160,6 +165,13 @@ const RenderMobileEditBats = () => {
                     ))
                 }
             </Box>
+            <CustomPagination
+                page={page}
+                setPage={setPage}
+                limit={limit}
+                setLimit={setLimit}
+                total={Math.ceil((products?.totalProduct ?? 0) / limit)}
+            />
         </Box >
     )
 

@@ -6,9 +6,13 @@ import { AllProductsTypes, AllUserTypes, ProductTypes } from "./AllTypes"
 export const getUsers = ({
     search,
     filter,
+    page,
+    limit
 }: {
     search: string,
-    filter: string
+    filter: string,
+    page?: number,
+    limit?: number
 }) => {
     const getJokesApi = async () => {
         try {
@@ -16,7 +20,9 @@ export const getUsers = ({
             const response = await axios.get(`${baseUrl}/users`, {
                 params: {
                     search,
-                    filter
+                    filter,
+                    page,
+                    limit
                 }
             })
             return response.data as AllUserTypes
@@ -26,7 +32,7 @@ export const getUsers = ({
         }
     }
     return useQuery({
-        queryKey: ["jokes", search, filter],
+        queryKey: ["jokes", search, filter, page, limit],
         queryFn: getJokesApi
     })
 }
@@ -53,15 +59,21 @@ export const getSingleUser = ({ id }: { id: string }) => {
 
 export const GetProductApi = ({
     search,
+    page,
+    limit
 }: {
-    search: string
+    search: string;
+    page?: number;
+    limit?: number
 }) => {
     const getProduct = async () => {
         try {
 
             const response = await axios.get(`${baseUrl}/products`, {
                 params: {
-                    search
+                    search,
+                    page,
+                    limit
                 }
             })
             return response.data as AllProductsTypes
@@ -71,7 +83,7 @@ export const GetProductApi = ({
         }
     }
     return useQuery({
-        queryKey: ["products", search],
+        queryKey: ["products", search, page, limit],
         queryFn: getProduct,
 
     })
@@ -93,5 +105,22 @@ export const GetProductById = ({ id }: { id: string }) => {
         queryKey: ["products", id],
         queryFn: getProduct,
         enabled: !!id
+    })
+}
+
+export const GetRepairAllApi = () => {
+    const getRepair = async () => {
+        try {
+            const response = await axios.get(`${baseUrl}/upload_repair`)
+            return response.data
+        } catch (error) {
+            console.log(error)
+
+        }
+    }
+    return useQuery({
+        queryKey: ["repair"],
+        queryFn: getRepair,
+
     })
 }

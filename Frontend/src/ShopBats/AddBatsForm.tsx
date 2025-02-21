@@ -1,15 +1,14 @@
 import * as React from 'react';
-import { Box, Stepper, Step, StepLabel, StepContent, Button, Paper, Typography, TextField, MenuItem, colors, Stack, Card, CardContent, useMediaQuery, IconButton } from '@mui/material';
-import { Footer } from '../User/AddUser';
+import { Box, Stepper, Step, StepLabel, StepContent, Button, Paper, Typography, TextField, colors, Stack, useMediaQuery, IconButton, LinearProgress, Pagination, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import { AddProductItems, DeleteTodo } from '../AllPostApi';
 import { GetProductApi, getUsers } from '../AllGetApi';
 import { imageUrl } from '../ApiEndPoint';
-import { Delete, Edit, EditNotifications } from '@mui/icons-material';
-import RenderMobileEditBats from './RenderMobileEdit';
+import { Delete, Edit } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { setEditProductId } from '../Store/EditProductSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../Store';
+import { Footer } from '../User/AddUser';
 
 const steps = [
     { label: 'Product Details' },
@@ -21,11 +20,8 @@ const steps = [
 export default function AddBatsForm() {
     const [activeStep, setActiveStep] = React.useState(0);
     const { user } = useSelector((state: RootState) => state.CustomerUser)
-    const { data: products, refetch } = GetProductApi({
-        search: "",
-    })
     const navigate = useNavigate()
-    const { mutateAsync: deleteProduct } = DeleteTodo()
+
     const [details, setDetails] = React.useState({
         product_name: '',
         createdBy: user?._id,
@@ -40,7 +36,6 @@ export default function AddBatsForm() {
 
     });
     const { mutateAsync } = AddProductItems()
-    const dispatch = useDispatch()
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -124,7 +119,6 @@ export default function AddBatsForm() {
         try {
             await mutateAsync({ data: formData })
             handleReset()
-            refetch()
 
         } catch (error) {
             console.log(error)
@@ -160,27 +154,7 @@ export default function AddBatsForm() {
                         />
                     </>
                 );
-            // case 1:
-            //     return (
-            //         <>
-            //             <Typography variant="h6">Select User</Typography>
-            //             <TextField
-            //                 fullWidth
-            //                 select
-            //                 name="createdBy"
-            //                 value={details.createdBy}
-            //                 onChange={handleChange}
-            //                 sx={{ mt: 2 }}
-            //                 size={"small"}
-            //             >
-            //                 {users?.users?.map((user) => (
-            //                     <MenuItem key={user._id} value={user._id}>
-            //                         {user.userName}
-            //                     </MenuItem>
-            //                 ))}
-            //             </TextField>
-            //         </>
-            //     );
+
             case 1:
                 return (
                     <>
@@ -274,18 +248,7 @@ export default function AddBatsForm() {
         }
     };
 
-    const handleDelete = async (product_id: string) => {
-        const isConfirmed = window.confirm("Are you sure you want to delete this product?");
-        if (!isConfirmed) return
-        try {
-            await deleteProduct({ id: product_id })
-            refetch()
 
-        }
-        catch (error) {
-            throw error
-        }
-    }
 
     return (
         <Box sx={{
@@ -309,8 +272,9 @@ export default function AddBatsForm() {
                 width: "100%",
                 gap: 2,
                 alignItems: "center",
+                height: "90vh",
             }}>
-                <Paper
+                {/* <Paper
                     elevation={3}
                     sx={{
                         display: { xs: "none", md: "flex" },
@@ -334,20 +298,19 @@ export default function AddBatsForm() {
                             height: "60vh"
                         }}
                     />
-                </Paper>
+                </Paper> */}
                 <Paper
                     elevation={3}
                     sx={{
                         maxWidth: 800,
                         width: { xs: "100%", md: "90%" },
                         p: { xs: 1, md: 3 },
-                        height: "auto",
-                        maxHeight: "80vh",
+                        height: "70vh",
                         overflowY: "auto",
                         display: "flex",
                         flexDirection: "column",
                         gap: 2,
-                        mt: { xs: 10, md: 5 },
+                        mt: { xs: 5, md: 5 },
                     }}>
                     <Stepper activeStep={activeStep} orientation="vertical">
                         {steps.map((step, index) => (
@@ -359,7 +322,7 @@ export default function AddBatsForm() {
                                             display: "flex",
                                             flexDirection: "column",
                                             gap: { xs: 0, md: 2 },
-                                            backgroundColor: colors.grey[100],
+                                            // backgroundColor: colors.grey[50],
                                             padding: { xs: 1, md: 2 },
                                             borderRadius: 2,
                                             textAlign: "center"
@@ -395,120 +358,59 @@ export default function AddBatsForm() {
                             </Button>
                         </Box>
                     )}
+                    {!mobile &&
+                        <Stack sx={{
+                            position: "relative",
+                            width: "100%",
+                            bottom: 3,
+                            height: "100%",
+                            justifyContent: "flex-end"
+                        }}>
+                            <Button
+                                variant="contained"
+                                sx={{
+                                    m: 1,
+                                    backgroundColor: colors.grey[700],
+                                    color: "white",
+                                    fontWeight: "bold",
+                                }}
+                                onClick={() => navigate("/all_view_edit_bat")}
+                            >
+                                View All Product
+                            </Button>
+                        </Stack>
+                    }
                 </Paper>
+                {!mobile && (
+                    <Paper
+                        elevation={3}
+                        sx={{
+                            width: "70%",
+                            height: "70vh",
+                            overflowY: "auto",
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: 2,
+                            mt: { xs: 2, md: 5 },
+                            bgcolor: colors.grey[100],
+                            justifyContent: "flex-start",
+                        }}
+                    >
+                        <img src={"public/cricket.avif"}
+                            alt=''
+                            style={{
+                                width: "100%",
+                                objectFit: "cover",
+                                height: "100%"
+                            }}
+                        />
+
+                    </Paper >
+                )}
             </Box>
 
-            {!mobile ? (
-                <Paper
-                    elevation={3}
-                    sx={{
-                        maxWidth: "100%",
-                        width: "100%",
-                        p: { xs: 0, md: 1 },
-                        height: "25vh",
-                        overflowY: "auto",
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: 2,
-                        mt: { xs: 2, md: 1 },
-                        bgcolor: colors.grey[100],
-                    }}
-                >
 
-                    <Box sx={{
-                        overflowY: "auto",
-                        maxHeight: "25vh",
-                        backgroundColor: "white",
-                        "&::-webkit-scrollbar": {
-                            width: "4px",
-                            height: "8px",
-                        },
-                        "&::-webkit-scrollbar-track": {
-                            backgroundColor: "#f1f1f1",
-                        },
-                        "&::-webkit-scrollbar-thumb": {
-                            backgroundColor: "#888",
-                        }
-                    }}>
-
-                        <table style={{
-                            width: "100%",
-                            borderCollapse: "collapse",
-                            border: "1px solid #ddd",
-                            tableLayout: "fixed",
-                            wordWrap: "break-word",
-                            fontSize: "12px",
-                            fontFamily: "monospace",
-                        }}>
-                            <tr style={{ backgroundColor: "#f2f2f2", }}>
-                                <th align='left' style={{ width: "50px", padding: "10px", fontFamily: "monospace", }}>Image</th>
-                                <th align='left' style={{ width: "200px", padding: "10px", fontFamily: "monospace", }}>Name</th>
-                                <th align='left' style={{ width: "50px", padding: "10px", fontFamily: "monospace", }} > Quantity</th>
-                                <th align='left' style={{ width: "50px", padding: "10px", fontFamily: "monospace", }} > Brand</th>
-                                <th align='left' style={{ width: "50px", padding: "10px", fontFamily: "monospace", }}>Size</th>
-                                <th align='left' style={{ width: "50px", padding: "10px", fontFamily: "monospace", }}>Price</th>
-                                <th align='left' style={{ width: "100px", padding: "10px", fontFamily: "monospace", }}>Description</th>
-                                <th align='center' style={{ width: "200px", padding: "10px", fontFamily: "monospace", }}>More Details</th>
-                                <th align='right' style={{ width: "50px", padding: "10px", fontFamily: "monospace", }}>Weight</th>
-                                <th align="right" style={{ width: "50px", padding: "10px", fontFamily: "monospace", }}>Action</th>
-                            </tr>
-                            {products?.products?.map((product, index) => (
-                                <tr key={index} style={{
-                                    borderBottom: "1px solid #ddd",
-                                }}>
-                                    <td align="left" style={{ padding: "1px" }}>
-                                        <img src={`${imageUrl}${product.image}`} alt={product.product_name} style={{ width: "50px" }} />
-                                    </td>
-                                    <td style={{
-                                        fontFamily: "monospace",
-                                        fontWeight: "bold",
-                                        width: "200px",
-                                        padding: "10px"
-                                    }}>{product.product_name}</td>
-                                    <td style={{
-                                        fontFamily: "monospace",
-                                        width: "50px",
-                                        padding: "10px"
-                                    }}>{product.quantity}</td>
-                                    <td style={{
-                                        fontFamily: "monospace",
-                                        width: "50px",
-                                        padding: "10px"
-                                    }}>{product.brand}</td>
-                                    <td style={{
-                                        fontFamily: "monospace",
-                                    }}>{product.size}</td>
-                                    <td style={{
-                                        fontFamily: "monospace",
-                                    }}>{product.price}</td>
-                                    <td style={{
-                                        fontFamily: "monospace",
-                                    }}>{product.description}</td>
-                                    <td style={{
-                                        fontFamily: "monospace",
-                                        color: "grey"
-                                    }} align='center'>{product.more_details}</td>
-                                    <td style={{
-                                        fontFamily: "monospace",
-                                    }} align='right'>{product.weight}</td>
-                                    <td style={{
-                                        fontFamily: "monospace",
-                                    }} align="right">
-                                        <IconButton onClick={() => { dispatch(setEditProductId(product?._id || '')) }}>
-                                            <Edit />
-                                        </IconButton>
-                                        <IconButton onClick={() => { handleDelete(product?._id || '') }}>
-                                            <Delete />
-                                        </IconButton>
-                                    </td>
-                                </tr>
-                            ))}
-
-                        </table>
-                    </Box>
-                </Paper >
-
-            ) : (
+            {mobile && (
                 <Stack sx={{
                     position: "fixed",
                     width: "100%",
@@ -528,7 +430,234 @@ export default function AddBatsForm() {
                 </Stack>
             )
             }
+            <Box sx={{
+                position: "fixed",
+                width: "100%",
+                flex: 1,
+                bottom: 1
+            }}>
+                <Footer />
+            </Box>
         </Box >
     );
 }
 
+
+
+export const TableRender = () => {
+    const [page, setPage] = React.useState(1);
+    const [limit, setLimit] = React.useState(10);
+    const { data: products, isLoading, refetch } = GetProductApi({
+        search: "",
+        page: page,
+        limit: limit
+
+    })
+    const { mutateAsync: deleteProduct } = DeleteTodo()
+    const dispatch = useDispatch()
+    const handleDelete = async (product_id: string) => {
+        const isConfirmed = window.confirm("Are you sure you want to delete this product?");
+        if (!isConfirmed) return
+        try {
+            await deleteProduct({ id: product_id })
+            refetch()
+
+        }
+        catch (error) {
+            throw error
+        }
+    }
+
+    return (
+        <>
+            <Paper elevation={4} sx={{
+                width: "100%",
+                height: "90vh",
+                overflow: "auto",
+                mt: 10,
+                p: 2,
+                justifyContent: "space-between",
+                flexDirection: "column",
+                display: "flex"
+
+            }}>
+                <div>
+                    <Typography sx={{
+                        fontWeight: "bold",
+                        fontSize: "20px",
+                        fontFamily: "monospace",
+                        textAlign: "center",
+                        width: "100%",
+                        bgcolor: colors.grey[100],
+                        p: 2,
+
+
+                    }}>
+                        All Products
+                    </Typography>
+                    <Box sx={{
+                        overflowY: "auto",
+                        width: "100%",
+                        maxHeight: "70vh",
+                        backgroundColor: "white",
+                        "&::-webkit-scrollbar": {
+                            width: "4px",
+                            height: "8px",
+                        },
+                        "&::-webkit-scrollbar-track": {
+                            backgroundColor: "#f1f1f1",
+                        },
+                        "&::-webkit-scrollbar-thumb": {
+                            backgroundColor: "#888",
+                        },
+                        mt: 3
+
+                    }}>
+                        {isLoading ? (
+                            <LinearProgress />
+                        ) : (
+                            <table style={{
+                                width: "100%",
+                                borderCollapse: "collapse",
+                                border: "1px solid #ddd",
+                                tableLayout: "fixed",
+                                wordWrap: "break-word",
+                                fontSize: "12px",
+                                fontFamily: "monospace",
+                            }}>
+                                <tr style={{ backgroundColor: "#f2f2f2", }}>
+                                    <th align='left' style={{ width: "50px", padding: "10px", fontFamily: "monospace", }}>Image</th>
+                                    <th align='left' style={{ width: "100px", padding: "10px", fontFamily: "monospace", }}>Name</th>
+                                    <th align='left' style={{ width: "50px", padding: "10px", fontFamily: "monospace", }} > Qty</th>
+                                    <th align='left' style={{ width: "50px", padding: "10px", fontFamily: "monospace", }} > Brand</th>
+                                    <th align='center' style={{ width: "50px", padding: "10px", fontFamily: "monospace", }}>Size</th>
+                                    <th align='left' style={{ width: "50px", padding: "10px", fontFamily: "monospace", }}>Price</th>
+                                    <th align='left' style={{ width: "100px", padding: "10px", fontFamily: "monospace", }}>Description</th>
+                                    <th align='center' style={{ width: "200px", padding: "10px", fontFamily: "monospace", }}>More Details</th>
+                                    <th align='right' style={{ width: "50px", padding: "10px", fontFamily: "monospace", }}>Weight</th>
+                                    <th align="right" style={{ width: "50px", padding: "10px", fontFamily: "monospace", }}>Action</th>
+                                </tr>
+                                {products?.products?.map((product, index) => (
+                                    <tr key={index} style={{
+                                        borderBottom: "1px solid #ddd",
+                                    }}>
+                                        <td align="left" style={{ padding: "1px" }}>
+                                            <img src={`${imageUrl}${product.image}`} alt={product.product_name} style={{ width: "50px" }} />
+                                        </td>
+                                        <td style={{
+                                            fontFamily: "monospace",
+                                            fontWeight: "bold",
+                                            width: "200px",
+                                            padding: "10px"
+                                        }}>{product.product_name}</td>
+                                        <td style={{
+                                            fontFamily: "monospace",
+                                            width: "50px",
+                                            padding: "10px"
+                                        }}>{product.quantity}</td>
+                                        <td style={{
+                                            fontFamily: "monospace",
+                                            width: "50px",
+                                            padding: "10px"
+                                        }}>{product.brand}</td>
+                                        <td style={{
+                                            fontFamily: "monospace",
+                                            width: "50px",
+                                        }}
+                                            align="center"
+                                        >{product.size}</td>
+                                        <td style={{
+                                            fontFamily: "monospace",
+                                        }}>{product.price}</td>
+                                        <td style={{
+                                            fontFamily: "monospace",
+                                            padding: "10px"
+                                        }}>{product.description}</td>
+                                        <td style={{
+                                            fontFamily: "monospace",
+                                            color: "grey"
+                                        }} align='center'>{product.more_details}</td>
+                                        <td style={{
+                                            fontFamily: "monospace",
+                                        }} align='right'>{product.weight}</td>
+                                        <td style={{
+                                            fontFamily: "monospace",
+                                        }} align="right">
+                                            <IconButton onClick={() => { dispatch(setEditProductId(product?._id || '')) }}>
+                                                <Edit />
+                                            </IconButton>
+                                            <IconButton onClick={() => { handleDelete(product?._id || '') }}>
+                                                <Delete />
+                                            </IconButton>
+                                        </td>
+                                    </tr>
+                                ))}
+
+                            </table>
+                        )}
+
+
+                    </Box>
+                </div>
+
+            </Paper >
+            <CustomPagination
+                page={page}
+                limit={limit}
+                setPage={setPage}
+                setLimit={setLimit}
+                total={Math.ceil((products?.totalProduct ?? 0) / limit)}
+            />
+        </>
+    )
+}
+
+export const CustomPagination = ({ page, limit, setPage, setLimit, total, }: {
+    page: number,
+    limit: number,
+    setPage: React.Dispatch<React.SetStateAction<number>>,
+    setLimit: React.Dispatch<React.SetStateAction<number>>,
+    total: number;
+}) => {
+
+    const handlePageChange = (_: any, newPage: number) => {
+        setPage(newPage);
+    };
+
+    const handleLimitChange = (event: any) => {
+        setLimit(parseInt(event.target.value));
+    };
+
+    return (
+        <Stack direction="row" justifyContent="center" alignItems="center" sx={{
+            bottom: 0,
+            display: "flex",
+            justifyContent: "center",
+            textAlign: "center",
+            width: "100%",
+            position: "fixed",
+            backgroundColor: "white",
+            padding: "1px",
+            fontFamily: "monospace",
+            fontSize: "14px",
+        }}>
+
+            <Select label="Items per page"
+                variant="standard" sx={{
+                    mr: 4
+                }}
+                value={limit} onChange={handleLimitChange}>
+                <MenuItem value={5}>5</MenuItem>
+                <MenuItem value={10}>10</MenuItem>
+                <MenuItem value={20}>20</MenuItem>
+                <MenuItem value={50}>50</MenuItem>
+            </Select>
+            {/* </FormControl> */}
+            <Pagination
+                count={total}
+                page={page} onChange={handlePageChange}
+                color='primary'
+            />
+        </Stack >
+    )
+}  

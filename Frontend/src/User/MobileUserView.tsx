@@ -3,16 +3,19 @@
 import React, { useState } from 'react'
 import { getUsers } from '../AllGetApi'
 import { Box, Card, CardContent, Chip, colors, InputAdornment, Stack, Tab, Tabs, TextField, Typography } from '@mui/material'
-import { Delete, Edit, Search } from '@mui/icons-material'
+import { Delete, Edit, Forward, Search } from '@mui/icons-material'
 import { useDispatch } from 'react-redux'
 import { setUserId } from '../Store/EditUserSlice'
 import { DeleteUser } from '../AllPostApi'
+import { CustomPagination } from '../ShopBats/AddBatsForm'
 
 const MobileUserView = () => {
 
     const [search, setSearch] = useState("")
     const [filter, setFilter] = useState("All")
     const [value, setValue] = useState(0);
+    const [page, setPage] = useState(1)
+    const [limit, setLimit] = useState(10)
     const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
         setFilter(newValue === 0 ? "All" : newValue === 1 ? "Customer" : "Admin")
@@ -20,7 +23,9 @@ const MobileUserView = () => {
 
     const { data: userList } = getUsers({
         search: search,
-        filter: filter
+        filter: filter,
+        page,
+        limit
     })
     const { mutateAsync: deleteUser } = DeleteUser()
     const dispatch = useDispatch()
@@ -55,8 +60,12 @@ const MobileUserView = () => {
                 textAlign: "center",
                 alignItems: "flex-start",
                 fontFamily: "monospace, cursive",
+                justifyContent: "space-between",
             }}>
                 Users:-
+                <span>
+                    <Forward sx={{ fontSize: "1.2rem" }} onClick={() => window.history.back()} />
+                </span>
             </Typography>
             <Tabs
                 orientation="horizontal"
@@ -239,6 +248,20 @@ const MobileUserView = () => {
                 })}
 
             </Box>
+            <Stack sx={{
+                width: "100%",
+                justifyContent: "center",
+                alignItems: "center",
+                textAlign: "center"
+            }}>
+                <CustomPagination
+                    page={page}
+                    limit={limit}
+                    setPage={setPage}
+                    total={Math.ceil((userList?.totalUser ?? 0) / limit)}
+                    setLimit={setLimit}
+                />
+            </Stack>
 
         </Box>
     )

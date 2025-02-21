@@ -145,3 +145,22 @@ export const updateProductPostApi = () => {
     })
 }
 
+
+export const UploadRepairDetails = () => {
+    const queryClient = useQueryClient()
+    const UploadREpairDetails = async ({ data }: any) => {
+        try {
+            const response = await axios.post(`${baseUrl}/upload_repair`, data)
+            return response
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    return useMutation({
+        mutationFn: UploadREpairDetails,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["repair"] })
+        }
+    })
+}

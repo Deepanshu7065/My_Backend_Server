@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.get("/users", async (req, res) => {
     try {
-        const { search, filter } = req.query;
+        const { search, filter, page = 1, limit } = req.query;
         let query = {};
 
         if (search) {
@@ -32,10 +32,17 @@ router.get("/users", async (req, res) => {
             query.userType = filter;
         }
         const totalUser = await UserModal.countDocuments(query);
-        const users = await UserModal.find(query);
+
+        let usersQuery = UserModal.find(query)
+        if (limit) {
+            const parsedLimit = parseInt(limit);
+            const parsePage = parseInt(page);
+            usersQuery = usersQuery.skip((parsePage - 1) * parsedLimit).limit(parsedLimit);
+        }
+        const users = await usersQuery;
         return res.json({
             totalUser,
-            users
+            users,
         });
     } catch (error) {
         res.status(500).json({ error: error.message });

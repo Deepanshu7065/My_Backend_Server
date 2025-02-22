@@ -26,6 +26,10 @@ export const pages = [
         path: "/users",
     },
     {
+        title: "Orders",
+        path: "/orders",
+    },
+    {
         title: "RepairOrders",
         path: "/repair_orders",
     }

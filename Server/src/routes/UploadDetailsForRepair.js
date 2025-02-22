@@ -45,6 +45,13 @@ router.post("/upload_repair", upload.array("images", 5), async (req, res) => {
             return res.status(400).json({ error: "Image is required" });
         }
         const imagePath = req.files.map((file) => `/uploads/${file.filename}`);
+        const currentMonth = new Date().toLocaleString('en-US', { month: 'long' });
+        const monthLetter = currentMonth.charAt(0).toUpperCase()
+        const orderCount = await RepairDetailsModal.countDocuments({
+            orderId: { $regex: new RegExp(`^${monthLetter}`) }
+        })
+        const orderId = `${monthLetter}${orderCount}`;
+
         const newRepair = new RepairDetailsModal({
             product_name,
             details,
@@ -57,14 +64,17 @@ router.post("/upload_repair", upload.array("images", 5), async (req, res) => {
             city,
             pincode,
             images: imagePath,
+            orderId
         });
+
+
 
         await newRepair.save();
         const savedRepair = await RepairDetailsModal.findById(newRepair._id).populate("createdBy", "userName email");
 
-        
-            res.status(201).json({ message: "Repair details uploaded successfully", repair: savedRepair });
-        
+
+        res.status(201).json({ message: "Repair details uploaded successfully", repair: savedRepair });
+
 
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -73,8 +83,70 @@ router.post("/upload_repair", upload.array("images", 5), async (req, res) => {
 
 router.get("/upload_repair", async (req, res) => {
     try {
-        const repair = await RepairDetailsModal.find()
+        const repair = await RepairDetailsModal.find().populate("createdBy", "userName email");
         res.json(repair);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+router.get("/upload_repair/:id", async (req, res) => {
+    try {
+        const repair = await RepairDetailsModal.findById(req.params.id).populate("createdBy", "userName email");
+        res.json(repair);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+})
+
+router.get("/upload_repair_user", async (req, res) => {
+    try {
+        const { createdBy, search, status } = req.query;
+
+        if (!createdBy) {
+            return res.status(400).json({ error: "createdBy ID is required" });
+        }
+
+        let filter = { createdBy, };
+
+        if (search) {
+            filter.$or = [
+                { product_name: { $regex: search, $options: "i" } },
+                { details: { $regex: search, $options: "i" } },
+                { orderId: { $regex: search, $options: "i" } }
+            ];
+        }
+
+        if (status) {
+            filter.status = status;
+        }
+
+        const repair = await RepairDetailsModal.find(filter)
+            .populate("createdBy", "userName email")
+            .select("product_name amount details phone address fullAddress landmark state city pincode images status orderId createdBy createdAt updatedAt");
+
+        res.json(repair);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+router.patch("/upload_repair_status/:id", async (req, res) => {
+    try {
+        const { status, amount } = req.body;
+
+
+        const repair = await RepairDetailsModal.findByIdAndUpdate(
+            req.params.id,
+            { status, amount },
+            { new: true }
+        );
+
+        if (!repair) {
+            return res.status(404).json({ error: "Repair order not found" });
+        }
+
+        res.json({ message: "Repair status updated successfully", repair });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

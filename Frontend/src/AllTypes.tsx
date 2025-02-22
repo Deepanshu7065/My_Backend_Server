@@ -67,3 +67,33 @@ export interface UserType {
     updatedAt?: string
     __v?: number
 }
+
+export interface AllOrderTypes {
+    orders: OrderTypes[]
+    totalOrder: number
+}
+
+export interface OrderTypes {
+    _id?: string
+    product_name?: string
+    details?: string
+    createdBy?: {
+        _id?: string
+        userName?: string
+        email?: string
+    }
+    phone?: number
+    address?: string
+    fullAddress?: string
+    landmark?: string
+    state?: string
+    city?: string
+    pincode?: number
+    images: string[]
+    status?: string
+    orderId?: string
+    createdAt?: string
+    updatedAt?: string
+    __v?: number
+    amount?: number
+}

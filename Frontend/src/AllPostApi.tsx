@@ -164,3 +164,22 @@ export const UploadRepairDetails = () => {
         }
     })
 }
+
+export const UploadRepairStatus = () => {
+    const queryClient = useQueryClient()
+    const UploadREpairStatus = async ({ id, data }: any) => {
+        try {
+            const response = await axios.patch(`${baseUrl}/upload_repair_status/${id}`, data)
+            return response
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    return useMutation({
+        mutationFn: UploadREpairStatus,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["repair"] })
+        }
+    })
+}

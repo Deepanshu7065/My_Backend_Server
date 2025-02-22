@@ -1,7 +1,7 @@
-import { useQuery } from "@tanstack/react-query"
+import { queryOptions, useQuery } from "@tanstack/react-query"
 import axios from "axios"
 import { baseUrl } from "./ApiEndPoint"
-import { AllProductsTypes, AllUserTypes, ProductTypes } from "./AllTypes"
+import { AllOrderTypes, AllProductsTypes, AllUserTypes, OrderTypes, ProductTypes } from "./AllTypes"
 
 export const getUsers = ({
     search,
@@ -112,7 +112,7 @@ export const GetRepairAllApi = () => {
     const getRepair = async () => {
         try {
             const response = await axios.get(`${baseUrl}/upload_repair`)
-            return response.data
+            return response.data as AllOrderTypes
         } catch (error) {
             console.log(error)
 
@@ -123,4 +123,54 @@ export const GetRepairAllApi = () => {
         queryFn: getRepair,
 
     })
+}
+
+export const GetRepairAllUserById = ({ id }: { id: string }) => {
+    const getRepair = async () => {
+        try {
+            const response = await axios.get(`${baseUrl}/upload_repair/${id}`)
+            return response.data as OrderTypes
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    return useQuery({
+        queryKey: ["repair", id],
+        queryFn: getRepair,
+        enabled: !!id
+    })
+}
+
+
+export const GetRepairById = ({
+    id,
+    status,
+    search
+}:
+    {
+        id: string,
+        status?: string,
+        search?: string
+    }) => {
+    const getRepair = async () => {
+        try {
+            const response = await axios.get(`${baseUrl}/upload_repair_user`, {
+                params: {
+                    createdBy: id,
+                    status,
+                    search
+                }
+            })
+            return response.data
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    return useQuery({
+        queryKey: ["repair", id, status, search],
+        queryFn: getRepair,
+        enabled: !!id
+    });
 }

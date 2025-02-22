@@ -31,7 +31,7 @@ function AuthVerifier() {
                         const user = JSON.parse(localStorage.getItem("user") as string);
                         dispatch(setCustomerUser(user))
                     }
-                } 
+                }
             } catch (error) {
                 console.log(error);
             }

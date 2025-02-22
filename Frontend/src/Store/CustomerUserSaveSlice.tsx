@@ -11,15 +11,17 @@ interface CustomerUserState {
     token: string
 }
 
+const token = localStorage.getItem("token");
+const user = JSON.parse(localStorage.getItem("user") as string);
 const initialState: CustomerUserState = {
     user: {
-        _id: "",
-        userName: "",
-        email: "",
-        phone: 0,
-        userType: ""
+        _id: user ? user._id : "",
+        userName: user ? user.userName : "",
+        email: user ? user.email : "",
+        phone: user ? user.phone : 0,
+        userType: user ? user.userType : ""
     },
-    token: ""
+    token: token ? token : ""
 }
 
 const CustomerUserSlice = createSlice({
@@ -29,8 +31,20 @@ const CustomerUserSlice = createSlice({
         setCustomerUser: (state, action) => {
             state.user = action.payload
         },
+        logoutCustomerUser: (state) => {
+            state.user = {
+                _id: "",
+                userName: "",
+                email: "",
+                phone: 0,
+                userType: ""
+            }
+            state.token = "",
+                localStorage.removeItem("token")
+            localStorage.removeItem("user")
+        }
     }
 })
 
-export const { setCustomerUser } = CustomerUserSlice.actions
+export const { setCustomerUser, logoutCustomerUser } = CustomerUserSlice.actions
 export default CustomerUserSlice.reducer

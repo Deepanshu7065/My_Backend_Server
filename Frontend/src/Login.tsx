@@ -29,8 +29,7 @@ const Login = ({ setPage }: any) => {
             if (res?.status === 200) {
                 localStorage.setItem("token", res?.data?.accessToken);
                 localStorage.setItem("user", JSON.stringify(res?.data?.user));
-                const user = JSON.parse(localStorage.getItem("user") as string);
-                dispatch(setCustomerUser(user))
+                dispatch(setCustomerUser(res?.data?.user))
                 navigate("/")
             }
 

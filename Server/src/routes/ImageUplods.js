@@ -59,7 +59,7 @@ router.post("/items/add", upload.single("image"), async (req, res) => {
         });
 
         await todo.save();
-        const users = await TodoModal.findById(todo._id).populate("createdBy", "username email");
+        const users = await TodoModal.findById(todo._id).populate("createdBy", "userName email");
 
         res.status(201).json(users);
     } catch (error) {
@@ -74,7 +74,7 @@ router.patch("/items/update/:id", upload.single("image"), async (req, res) => {
         if (!itemUpdate) {
             return res.status(404).json({ error: "Item not found" });
         }
-        if(req.file && itemUpdate.image){
+        if (req.file && itemUpdate.image) {
             const imagePath = path.join(uploadDir, path.basename(itemUpdate.image));
             if (fs.existsSync(imagePath)) {
                 fs.unlinkSync(imagePath);

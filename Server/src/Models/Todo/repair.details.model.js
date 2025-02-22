@@ -44,7 +44,18 @@ const RepairDetails = new mongoose.Schema({
     },
     images: [{
         type: String
-    }]
+    }],
+    status: {
+        type: String,
+        default: "pending"
+    },
+    orderId: {
+        type: String
+
+    },
+    amount: {
+        type: Number
+    }
 },
     {
         timestamps: true

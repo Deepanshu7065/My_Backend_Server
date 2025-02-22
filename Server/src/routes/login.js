@@ -34,7 +34,7 @@ router.post("/login", async (req, res) => {
         });
 
 
-        return res.json({ accessToken, user: { userName: isUser.userName, email: isUser.email, phone: isUser.phone, id: isUser._id, userType: isUser.userType } });
+        return res.json({ accessToken, user: { userName: isUser.userName, email: isUser.email, phone: isUser.phone, _id: isUser._id, userType: isUser.userType } });
 
     } catch (error) {
         console.error("🚨 Login Error:", error);

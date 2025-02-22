@@ -18,7 +18,7 @@ import { ShoppingCart } from '@mui/icons-material';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from './Store';
 import { Button } from '@mui/material';
-import { setCustomerUser } from './Store/CustomerUserSaveSlice';
+import { logoutCustomerUser, setCustomerUser } from './Store/CustomerUserSaveSlice';
 
 
 const Navbar = () => {
@@ -54,17 +54,10 @@ const Navbar = () => {
         !(page.title === "Users" && (!user?.userName || user?.userType === "Customer")) &&
         !(page.title === "AddBat" && (!user?.userName || user?.userType === "Customer"))
     );
-    
+
 
     const handleLogout = () => {
-        localStorage.removeItem("token")
-        localStorage.removeItem("user")
-        dispatch(setCustomerUser({
-            userName: "",
-            email: "",
-            phone: 0,
-            userType: ""
-        }))
+        dispatch(logoutCustomerUser())
         setAnchorElUser(null)
     }
 

@@ -71,7 +71,7 @@ const RepairUploadBat = () => {
                 savedData.append('images', images[i]);
             }
             savedData.append('product_name', formData.details);
-            savedData.append('created_by', formData.createdBy);
+            savedData.append('createdBy', formData.createdBy);
             savedData.append('phone', formData.phone);
             savedData.append('details', formData.details);
             savedData.append('address', formData.address);

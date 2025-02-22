@@ -22,6 +22,7 @@ import AddBatsForm, { TableRender } from "./ShopBats/AddBatsForm";
 import RenderMobileEditBats from "./ShopBats/RenderMobileEdit";
 import RepairUploadBat from "./Repair/RepairUploadBat";
 import RepairAllOrders from "./Repair/RepairAllOrders";
+import OrderList from "./YourOrders/OrderList";
 
 
 function App() {
@@ -62,6 +63,7 @@ function App() {
               <Route path="/cart" element={<ViewCart />} />
               <Route path="/repair" element={<RepairUploadBat />} />
               <Route path="/repair_orders" element={<RepairAllOrders />} />
+              <Route path="/orders" element={<OrderList />} />
               {user?.userType === "Admin" && (<>
                 <Route path="/add_bat" element={<AddBatsForm />} />
                 <Route path="/view_edit_bat" element={<RenderMobileEditBats />} />

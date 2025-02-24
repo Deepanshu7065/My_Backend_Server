@@ -9,7 +9,6 @@ import { UploadRepairStatus } from '../AllPostApi'
 const EditModalRepairByAdmin = () => {
     const dispatch = useDispatch()
     const { order_id } = useSelector((state: RootState) => state.ChangeStatusOrder)
-    const { data } = GetRepairAllUserById({ id: order_id })
     const { mutateAsync } = UploadRepairStatus()
 
     // State for updating status and rate
@@ -72,6 +71,7 @@ const EditModalRepairByAdmin = () => {
                 >
                     <MenuItem value="" disabled>Select Status</MenuItem>
                     <MenuItem value="pending">Pending</MenuItem>
+                    <MenuItem value="pickUp">Pick Up</MenuItem>
                     <MenuItem value="in_progress">In Progress</MenuItem>
                     <MenuItem value="completed">Completed</MenuItem>
                 </Select>

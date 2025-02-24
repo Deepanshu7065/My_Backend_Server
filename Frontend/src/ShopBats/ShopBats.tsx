@@ -8,6 +8,7 @@ import { ProductTypes } from '../AllTypes'
 import { RootState } from '../Store'
 import { useState } from 'react'
 import { CustomPagination } from './AddBatsForm'
+import { AddToCart } from '../AllPostApi'
 
 const ShopBats = () => {
     const navigate = useNavigate()
@@ -22,6 +23,18 @@ const ShopBats = () => {
     })
     const dispatch = useDispatch()
     const products = useSelector((state: RootState) => state.ProductId.products)
+    const [selectedProduct, setSelectedProduct] = useState<ProductTypes | null>(null);
+
+    const { mutateAsync } = AddToCart()
+
+    const handleSubmit = async () => {
+        try {
+            await mutateAsync({ data: selectedProduct })
+        }
+        catch (error) {
+            console.log(error)
+        }
+    };
 
     return (
         <Box sx={{

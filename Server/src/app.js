@@ -11,6 +11,7 @@ import LoginRoutes from "./routes/login.js"
 import VerifyRoutes from "./routes/VerifyToken.js"
 import userGetRoutes from "./routes/UserGetAndUpdate.js"
 import uploadsRepairs from "./routes/UploadDetailsForRepair.js"
+import AddToCart from "./routes/AddCartApi.js"
 
 const app = express();
 app.use(morgan("dev"));
@@ -23,6 +24,7 @@ app.use("/api/v1", VerifyRoutes);
 app.use("/api/v1", imageGetRoutes)
 app.use("/api/v1", productsRoutes);
 app.use("/api/v1", UserRoutes);
+app.use("/api/v1", AddToCart)
 
 app.use("/api/v1", authenticate, userGetRoutes)
 app.use("/api/v1", authenticate, imageRoutes);

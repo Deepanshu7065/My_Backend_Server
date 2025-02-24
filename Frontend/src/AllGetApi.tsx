@@ -112,7 +112,7 @@ export const GetRepairAllApi = () => {
     const getRepair = async () => {
         try {
             const response = await axios.get(`${baseUrl}/upload_repair`)
-            return response.data as AllOrderTypes
+            return response.data as OrderTypes[]
         } catch (error) {
             console.log(error)
 

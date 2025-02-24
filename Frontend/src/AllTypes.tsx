@@ -73,6 +73,7 @@ export interface AllOrderTypes {
     totalOrder: number
 }
 
+
 export interface OrderTypes {
     _id?: string
     product_name?: string
@@ -96,4 +97,5 @@ export interface OrderTypes {
     updatedAt?: string
     __v?: number
     amount?: number
+    reason?:string
 }

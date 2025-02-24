@@ -23,6 +23,10 @@ import RenderMobileEditBats from "./ShopBats/RenderMobileEdit";
 import RepairUploadBat from "./Repair/RepairUploadBat";
 import RepairAllOrders from "./Repair/RepairAllOrders";
 import OrderList from "./YourOrders/OrderList";
+import ViewOrderDetails from "./YourOrders/ViewOrderDetails";
+import ViewOrderDetailsMobile from "./YourOrders/ViewOrderDetailsMobile";
+import YourRepairsOrders from "./YourOrders/YourRepairsOrders";
+import YourOrders from "./YourOrders/YourOrders";
 
 
 function App() {
@@ -63,7 +67,11 @@ function App() {
               <Route path="/cart" element={<ViewCart />} />
               <Route path="/repair" element={<RepairUploadBat />} />
               <Route path="/repair_orders" element={<RepairAllOrders />} />
-              <Route path="/orders" element={<OrderList />} />
+              <Route path="/orders" element={<OrderList />} >
+                <Route path="/orders" element={<YourRepairsOrders />} />
+                <Route path="/orders/your_orders" element={<YourOrders />} />
+              </Route>
+              <Route path="/view_status" element={<ViewOrderDetailsMobile />} />
               {user?.userType === "Admin" && (<>
                 <Route path="/add_bat" element={<AddBatsForm />} />
                 <Route path="/view_edit_bat" element={<RenderMobileEditBats />} />
@@ -79,9 +87,7 @@ function App() {
         <AllModalList />
       </QueryClientProvider >
     </ThemeProvider>
-
-
-  );
+  )
 }
 
 export default App;

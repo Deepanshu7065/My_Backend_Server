@@ -123,7 +123,7 @@ router.get("/upload_repair_user", async (req, res) => {
 
         const repair = await RepairDetailsModal.find(filter)
             .populate("createdBy", "userName email")
-            .select("product_name amount details phone address fullAddress landmark state city pincode images status orderId createdBy createdAt updatedAt");
+            .select("product_name amount details phone address fullAddress reason landmark state city pincode images status orderId createdBy createdAt updatedAt");
 
         res.json(repair);
     } catch (error) {
@@ -133,12 +133,12 @@ router.get("/upload_repair_user", async (req, res) => {
 
 router.patch("/upload_repair_status/:id", async (req, res) => {
     try {
-        const { status, amount } = req.body;
+        const { status, amount, reason } = req.body;
 
 
         const repair = await RepairDetailsModal.findByIdAndUpdate(
             req.params.id,
-            { status, amount },
+            { status, amount, reason },
             { new: true }
         );
 
@@ -151,6 +151,18 @@ router.patch("/upload_repair_status/:id", async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
+
+router.delete("/upload_repair/:id", async (req, res) => {
+    try {
+        const repair = await RepairDetailsModal.findByIdAndDelete(req.params.id);
+        if (!repair) {
+            return res.status(404).json({ error: "Repair order not found" });
+        }
+        res.json({ message: "Repair order deleted successfully", repair });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+})
 
 
 export default router

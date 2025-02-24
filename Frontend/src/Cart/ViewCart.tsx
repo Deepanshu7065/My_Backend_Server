@@ -1,4 +1,4 @@
-import { Box, Button, Card, CardContent, colors, Stack, Typography, useMediaQuery } from '@mui/material'
+import { Box, Button, Card, CardContent, colors, Grid, Stack, Typography, useMediaQuery } from '@mui/material'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../Store'
 import { imageUrl } from '../ApiEndPoint'
@@ -69,7 +69,7 @@ const ViewCart = () => {
                             width: "80%",
                             fontFamily: "monospace, cursive",
                             alignItems: "flex-start",
-                            mt: 12
+                            mt: { xs: 10, md: 12 }
                         }}>
                             Your cart
                         </Typography>
@@ -206,139 +206,115 @@ const ViewCart = () => {
                         ) : (
                             <Stack sx={{
                                 width: "100%",
-                                minHeight: "100vh", // Ensures the height of the entire view
+                                minHeight: "100vh",
                                 display: "flex",
                                 flexDirection: "column",
-                                justifyContent: "space-between"
+                                justifyContent: "space-between",
+                                px: { xs: 1, sm: 4, md: 6 }
                             }}>
-                                <Stack direction="column" spacing={2} width="100%" mt={3} pb={8}>
+
+
+                                <Grid container spacing={2} pb={8}>
                                     {products?.map((item) => {
-                                        const totalPrice = Number(item.quantity) * Number(item.price ?? 0)
+                                        const totalPrice = Number(item.quantity) * Number(item.price ?? 0);
                                         return (
-                                            <Card key={item._id}
-                                                sx={{
-                                                    width: "100%",
+                                            <Grid item xs={6} sm={6} md={4} key={item._id}>
+                                                <Card sx={{
                                                     display: "flex",
-                                                    justifyContent: "space-between",
-                                                    alignItems: "center",
                                                     flexDirection: "column",
-                                                    p: 0,
                                                     bgcolor: "white",
-                                                    height: "auto",
                                                     boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
                                                     borderRadius: "10px",
-
+                                                    height: "100%"
                                                 }}>
-                                                <Stack sx={{
-                                                    position: "relative",
-                                                    width: "100%",
-                                                }}>
-                                                    <img
-                                                        src={`${imageUrl}${item.image}`}
-                                                        alt={item.product_name}
-                                                        style={{
-                                                            width: "100%",
-                                                            height: "200px",
-                                                            objectFit: "cover"
-                                                        }} />
-                                                    <Stack sx={{
-                                                        width: "100%",
-                                                        alignItems: "center",
-                                                        justifyContent: "space-between",
-                                                    }}
-                                                        p={2}
-                                                        direction="row"
-
-                                                    >
-                                                        <Typography sx={{
-                                                            display: "flex",
-                                                            fontFamily: "monospace, cursive",
-                                                            alignItems: "flex-start",
-                                                            fontWeight: "bold",
-                                                            flexDirection: "column",
-                                                        }}
-                                                        >
-                                                            <span style={{ fontWeight: "bold", fontFamily: "monospace" }}>
-                                                                {item.product_name}
-                                                            </span>
-                                                            <span style={{ fontFamily: "monospace", color: "grey", fontWeight: 200, fontSize: "0.8rem" }}>
-                                                                {item.description}
-                                                            </span>
-                                                        </Typography>
-                                                        <Typography sx={{
-                                                            fontWeight: "bold",
-                                                            fontFamily: "monospace",
-
-                                                        }}>
-                                                            ${item.price}
-                                                        </Typography>
-
-                                                    </Stack>
-                                                    <Stack p={2} direction="row" justifyContent="space-between" alignItems={"center"}>
-                                                        <Stack direction="row" spacing={2} alignItems={"center"}>
-                                                            <button style={{
-                                                                display: "flex",
-                                                                width: "30px",
-                                                                height: "30px",
-                                                                padding: 5,
-                                                                backgroundColor: "white",
-                                                                border: "1px solid rgba(0,0,0,0.1)",
-                                                                color: "rgba(0,0,0,0.5)",
-                                                                fontSize: "1.5rem",
-                                                                borderRadius: "5px",
-                                                                cursor: "pointer",
-                                                                alignItems: "center",
-                                                                textAlign: "center",
-                                                                justifyContent: "center"
+                                                    <Stack sx={{ position: "relative", width: "100%" }}>
+                                                        <img
+                                                            src={`${imageUrl}${item.image}`}
+                                                            alt={item.product_name}
+                                                            style={{
+                                                                width: "100%",
+                                                                height: "100px",
+                                                                objectFit: "cover",
+                                                                borderTopLeftRadius: "10px",
+                                                                borderTopRightRadius: "10px"
                                                             }}
-                                                                onClick={() => dispatch(setIncreaseQuantity(item._id))}
-                                                            >
-                                                                +
-                                                            </button>
-                                                            <span style={{ fontWeight: "bold", fontFamily: "Dancing Script" }}>
-                                                                {item.quantity}
-                                                            </span>
-                                                            <button style={{
-                                                                display: "flex",
-                                                                width: "30px",
-                                                                height: "30px",
-                                                                padding: 5,
-                                                                backgroundColor: "white",
-                                                                border: "1px solid rgba(0,0,0,0.1)",
-                                                                color: "rgba(0,0,0,0.5)",
-                                                                fontSize: "1.5rem",
-                                                                borderRadius: "5px",
-                                                                cursor: "pointer",
-                                                                alignItems: "center",
-                                                                textAlign: "center",
-                                                                justifyContent: "center"
-                                                            }}
-                                                                onClick={() => dispatch(setDecreaseQuantity(item._id))}
-                                                            >
-                                                                -
-                                                            </button>
-                                                        </Stack>
-                                                        <Typography sx={{
-                                                            fontWeight: "bold",
-                                                            fontFamily: "monospace",
-                                                            // color is green
-                                                            color: "#4CAF50"
-                                                        }}>
-                                                            ${totalPrice}
-                                                        </Typography>
-                                                        <Delete sx={{
-                                                            cursor: "pointer",
-                                                            color: "rgb(0,0,0,0.8)",
-                                                            fontSize: "1.5rem",
-                                                        }}
-                                                            onClick={() => dispatch(setRemoveProduct(item._id))}
                                                         />
+                                                        <Stack sx={{ p: 2 }}>
+                                                            <Typography sx={{
+                                                                fontFamily: "monospace",
+                                                                fontWeight: "bold",
+                                                                fontSize: "0.7rem"
+                                                            }}>
+                                                                {item.product_name}
+                                                            </Typography>
+                                                            <Typography sx={{
+                                                                fontWeight: "bold",
+                                                                fontFamily: "monospace",
+                                                                color: "#4CAF50"
+                                                            }}>
+                                                                ${totalPrice}
+                                                            </Typography>
+                                                        </Stack>
+
+                                                        {/* Price & Quantity Controls */}
+                                                        <Stack p={2} direction="row" justifyContent="space-between" alignItems="center">
+                                                            <Stack direction="row" spacing={2} alignItems="center">
+                                                                <button style={{
+                                                                    display: "flex",
+                                                                    width: "30px",
+                                                                    height: "30px",
+                                                                    padding: 5,
+                                                                    backgroundColor: "white",
+                                                                    border: "1px solid rgba(0,0,0,0.1)",
+                                                                    color: "rgba(0,0,0,0.5)",
+                                                                    fontSize: "1.5rem",
+                                                                    borderRadius: "5px",
+                                                                    cursor: "pointer",
+                                                                    alignItems: "center",
+                                                                    textAlign: "center",
+                                                                    justifyContent: "center"
+                                                                }}
+
+                                                                    onClick={() => dispatch(setIncreaseQuantity(item._id))}
+                                                                > + </button>
+                                                                <span style={{ fontWeight: "bold", fontFamily: "Dancing Script" }}>
+                                                                    {item.quantity}
+                                                                </span>
+                                                                <button style={{
+                                                                    display: "flex",
+                                                                    width: "30px",
+                                                                    height: "30px",
+                                                                    padding: 5,
+                                                                    backgroundColor: "white",
+                                                                    border: "1px solid rgba(0,0,0,0.1)",
+                                                                    color: "rgba(0,0,0,0.5)",
+                                                                    fontSize: "1.5rem",
+                                                                    borderRadius: "5px",
+                                                                    cursor: "pointer",
+                                                                    alignItems: "center",
+                                                                    textAlign: "center",
+                                                                    justifyContent: "center"
+                                                                }}
+
+                                                                    onClick={() => dispatch(setDecreaseQuantity(item._id))}
+                                                                > - </button>
+                                                            </Stack>
+
+                                                            <Delete sx={{
+                                                                cursor: "pointer",
+                                                                color: "rgb(0,0,0,0.8)",
+                                                                fontSize: "1.5rem",
+
+                                                            }}
+                                                                onClick={() => dispatch(setRemoveProduct(item._id))}
+                                                            />
+                                                        </Stack>
                                                     </Stack>
-                                                </Stack>
-                                            </Card>
+                                                </Card>
+                                            </Grid>
                                         )
                                     })}
-                                </Stack>
+                                </Grid>
                                 <Stack sx={{
                                     width: "100%",
                                     position: "fixed",
@@ -428,8 +404,6 @@ const ViewCart = () => {
                     </Box>
                 )
                 }
-
-
             </Box>
         </Box >
     )

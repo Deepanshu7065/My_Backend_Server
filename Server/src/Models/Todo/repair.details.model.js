@@ -55,6 +55,9 @@ const RepairDetails = new mongoose.Schema({
     },
     amount: {
         type: Number
+    },
+    reason:{
+        type: String
     }
 },
     {

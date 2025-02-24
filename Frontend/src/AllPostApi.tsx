@@ -183,3 +183,41 @@ export const UploadRepairStatus = () => {
         }
     })
 }
+
+export const DeleteRepair = () => {
+    const queryClient = useQueryClient()
+    const DeleteRepair = async ({ id }: any) => {
+        try {
+            const response = await axios.delete(`${baseUrl}/upload_repair/${id}`)
+            return response
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    return useMutation({
+        mutationFn: DeleteRepair,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["repair"] })
+        }
+    })
+}
+
+
+export const AddToCart = () => {
+    const queryClient = useQueryClient()
+    const AddToCart = async ({ data }: any) => {
+        try {
+            const response = await axios.post(`${baseUrl}/cart/add`, data)
+            return response
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    return useMutation({
+        mutationFn: AddToCart,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["cart"] })
+        }
+    })
+}

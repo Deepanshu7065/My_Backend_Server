@@ -1,13 +1,17 @@
 
 import { GetRepairAllApi } from '../AllGetApi'
-import { Box, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material'
+import { Box, Button, Dialog, DialogActions, DialogContent, MenuItem, Select, Table, TableBody, TableCell, TableHead, TableRow, TextField } from '@mui/material'
 import { imageUrl } from '../ApiEndPoint'
 import { useDispatch } from 'react-redux'
 import { ChangeStatusOrder } from '../Store/ChangeStatusByOrderSlice'
+import { useState } from 'react'
+import { UploadRepairStatus } from '../AllPostApi'
 
 const RepairAllOrders = () => {
     const { data } = GetRepairAllApi()
+
     const dispatch = useDispatch()
+
 
     return (
         <Box sx={{
@@ -31,7 +35,7 @@ const RepairAllOrders = () => {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {data?.map((item: any) => (
+                    {data?.map((item) => (
                         <TableRow key={item._id}>
                             <TableCell>{item.orderId}</TableCell>
                             <TableCell>{item.createdBy?.userName}</TableCell>
@@ -39,16 +43,16 @@ const RepairAllOrders = () => {
                             <TableCell>{item.phone}</TableCell>
                             <TableCell>{item.address}</TableCell>
                             <TableCell>{item.product_name}</TableCell>
-                            <TableCell>{item.price}</TableCell>
-                            <TableCell>{item.quantity}</TableCell>
-                            <TableCell>{item.total}</TableCell>
-                            <TableCell>{item.status}</TableCell>
+                            <TableCell>{item?.address}</TableCell>
+                            <TableCell>{item?.amount}</TableCell>
+                            <TableCell>{item?.orderId}</TableCell>
+                            <TableCell>{item?.status}</TableCell>
                             <TableCell>
                                 <img src={imageUrl + item.images} alt="Product" style={{ width: "100px", height: "100px" }} />
                             </TableCell>
                             <TableCell>
                                 <button onClick={() => dispatch(ChangeStatusOrder(item._id))}>open</button>
-                                <button>Reject</button>
+                                <RejectStatus order_id={item._id || ""} />
                             </TableCell>
                         </TableRow>
                     ))}
@@ -60,3 +64,60 @@ const RepairAllOrders = () => {
 }
 
 export default RepairAllOrders
+
+
+const RejectStatus = ({ order_id }: { order_id: string }) => {
+    const { mutateAsync } = UploadRepairStatus()
+    const [open, setOpen] = useState(false);
+    const [updateStatus, setUpdateStatus] = useState({
+        status: "",
+        reason: ""
+    })
+
+    const handleSubmit = async () => {
+        try {
+            await mutateAsync({ id: order_id, data: updateStatus });
+            setOpen(false)
+        } catch (error) {
+            console.error("Update failed:", error);
+        }
+    };
+
+    return (
+        <>
+            <button onClick={() => setOpen(true)}>
+                Reject
+            </button>
+            <Dialog open={open} onClose={() => setOpen(false)} sx={{
+                "& .MuiDialog-paper": {
+                    width: "50%",
+                    height: "50%"
+                }
+            }}>
+                <DialogContent>
+                    <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                        <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            label="Status"
+                            value={updateStatus.status}
+                            onChange={(e) => setUpdateStatus({ ...updateStatus, status: e.target.value })}
+                        >
+                            <MenuItem value={"reject"}>Reject</MenuItem>
+                        </Select>
+                        <TextField
+                            label="Reason"
+                            multiline
+                            rows={4}
+                            value={updateStatus.reason}
+                            onChange={(e) => setUpdateStatus({ ...updateStatus, reason: e.target.value })} />
+                    </Box>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleSubmit}>Submit</Button>
+                </DialogActions>
+            </Dialog >
+        </>
+
+    )
+}

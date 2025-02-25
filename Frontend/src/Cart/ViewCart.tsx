@@ -2,15 +2,21 @@ import { Box, Button, Card, CardContent, colors, Grid, Stack, Typography, useMed
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../Store'
 import { imageUrl } from '../ApiEndPoint'
-import { setDecreaseQuantity, setIncreaseQuantity, setRemoveProduct } from '../Store/ProductDetailsSlice'
+import { setDecreaseQuantity, setIncreaseQuantity, setProductDetails, setRemoveProduct } from '../Store/ProductDetailsSlice'
 import { Delete, Forward } from '@mui/icons-material'
 import { Link, useNavigate } from 'react-router-dom'
+import { GetCartApi } from '../AllGetApi'
+import { useEffect } from 'react'
+import { DeleteCart, UpdateCartApi, } from '../AllPostApi'
 
 const ViewCart = () => {
     const products = useSelector((state: RootState) => state.ProductId.products)
     const dispatch = useDispatch()
     const { user } = useSelector((state: RootState) => state.CustomerUser)
     const navigate = useNavigate()
+    const { data, refetch } = GetCartApi()
+    const { mutateAsync: increament } = UpdateCartApi()
+    const { mutateAsync: deleteCart } = DeleteCart()
 
     const handleProceed = () => {
         if (user?.userName === "") {
@@ -19,6 +25,38 @@ const ViewCart = () => {
 
         } else {
             navigate("/checkout")
+        }
+    }
+
+    const handleIncreament = async (id: string) => {
+        try {
+            const price = products.find((p: any) => p._id === id)?.price
+            await increament({ id, data: { quantity: + 1, price: price } })
+            refetch()
+
+        } catch (error) {
+            console.log(error)
+        }
+
+    }
+
+    const handleDecrement = async (id: string) => {
+        try {
+            const price = products.find((p: any) => p._id === id)?.price
+            await increament({ id, data: { quantity: -1, price: price } })
+            refetch()
+
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const handleDelete = async (id: string) => {
+        try {
+            await deleteCart({ id })
+            refetch()
+        } catch (error) {
+            console.log(error)
         }
     }
 
@@ -44,6 +82,11 @@ const ViewCart = () => {
     // ]
 
     const mobile = useMediaQuery("(max-width:600px)")
+
+
+    useEffect(() => {
+        dispatch(setProductDetails(data as any))
+    }, [data])
 
     return (
         <Box sx={{
@@ -85,24 +128,24 @@ const ViewCart = () => {
                                             <th style={{ width: "20%" }}>Remove</th>
                                         </tr>
                                         <tbody>
-                                            {products.map((item) => {
-                                                const totalPrice = Number(item.quantity) * Number(item.price ?? 0)
+                                            {products?.map((item) => {
+                                                const totalPrice = Number(item?.quantity) * Number(item?.price ?? 0)
                                                 return (
-                                                    <tr key={item._id}>
+                                                    <tr key={item.product_id?._id}>
                                                         <td style={{
                                                             fontFamily: "monospace, cursive"
                                                         }}>
                                                             <Stack direction="row" alignContent={"center"} alignItems={"center"} spacing={1}>
-                                                                <img src={`${imageUrl}${item.image}`} alt={item.product_name} style={{ width: "50px", height: "50px" }} />
+                                                                <img src={`${imageUrl}${item?.product_id?.image}`} alt={item?.product_id?.product_name} style={{ width: "50px", height: "50px" }} />
                                                                 <div style={{
                                                                     display: "flex",
                                                                     flexDirection: "column"
                                                                 }}>
                                                                     <span style={{ fontWeight: "bold" }}>
-                                                                        {item.product_name}
+                                                                        {item?.product_id?.product_name}
                                                                     </span>
                                                                     <span style={{ color: "grey", fontWeight: 200 }}>
-                                                                        {item.description}
+                                                                        {item?.product_id?.description}
                                                                     </span>
                                                                 </div>
                                                             </Stack>
@@ -124,7 +167,7 @@ const ViewCart = () => {
                                                                     textAlign: "center",
                                                                     justifyContent: "center"
                                                                 }}
-                                                                    onClick={() => dispatch(setIncreaseQuantity(item._id))}
+                                                                    onClick={() => handleIncreament(item?._id as string)}
                                                                 >
                                                                     +
                                                                 </button>
@@ -146,7 +189,7 @@ const ViewCart = () => {
                                                                     textAlign: "center",
                                                                     justifyContent: "center"
                                                                 }}
-                                                                    onClick={() => dispatch(setDecreaseQuantity(item._id))}
+                                                                    onClick={() => handleDecrement(item?._id as string)}
                                                                 >
                                                                     -
                                                                 </button>
@@ -158,7 +201,7 @@ const ViewCart = () => {
                                                             cursor: "pointer",
                                                             color: "rgb(0,0,0,0.8)"
                                                         }}
-                                                            onClick={() => dispatch(setRemoveProduct(item._id))}
+                                                            onClick={() => handleDelete(item?._id as string)}
                                                         /></td>
                                                     </tr>
                                                 )
@@ -218,7 +261,7 @@ const ViewCart = () => {
                                     {products?.map((item) => {
                                         const totalPrice = Number(item.quantity) * Number(item.price ?? 0);
                                         return (
-                                            <Grid item xs={6} sm={6} md={4} key={item._id}>
+                                            <Grid item xs={6} sm={6} md={4} key={item?.product_id?._id}>
                                                 <Card sx={{
                                                     display: "flex",
                                                     flexDirection: "column",
@@ -229,8 +272,8 @@ const ViewCart = () => {
                                                 }}>
                                                     <Stack sx={{ position: "relative", width: "100%" }}>
                                                         <img
-                                                            src={`${imageUrl}${item.image}`}
-                                                            alt={item.product_name}
+                                                            src={`${imageUrl}${item?.product_id?.image}`}
+                                                            alt={item?.product_id?.product_name}
                                                             style={{
                                                                 width: "100%",
                                                                 height: "100px",
@@ -245,7 +288,7 @@ const ViewCart = () => {
                                                                 fontWeight: "bold",
                                                                 fontSize: "0.7rem"
                                                             }}>
-                                                                {item.product_name}
+                                                                {item?.product_id?.product_name}
                                                             </Typography>
                                                             <Typography sx={{
                                                                 fontWeight: "bold",
@@ -275,7 +318,7 @@ const ViewCart = () => {
                                                                     justifyContent: "center"
                                                                 }}
 
-                                                                    onClick={() => dispatch(setIncreaseQuantity(item._id))}
+                                                                    onClick={() => handleIncreament(item?._id)}
                                                                 > + </button>
                                                                 <span style={{ fontWeight: "bold", fontFamily: "Dancing Script" }}>
                                                                     {item.quantity}
@@ -296,7 +339,7 @@ const ViewCart = () => {
                                                                     justifyContent: "center"
                                                                 }}
 
-                                                                    onClick={() => dispatch(setDecreaseQuantity(item._id))}
+                                                                    onClick={() => handleDecrement(item?._id)}
                                                                 > - </button>
                                                             </Stack>
 
@@ -306,7 +349,7 @@ const ViewCart = () => {
                                                                 fontSize: "1.5rem",
 
                                                             }}
-                                                                onClick={() => dispatch(setRemoveProduct(item._id))}
+                                                                onClick={() => handleDelete(item?._id)}
                                                             />
                                                         </Stack>
                                                     </Stack>
@@ -339,8 +382,6 @@ const ViewCart = () => {
                                         </span>
                                     </div>
                                     <Button sx={{
-
-                                        // backgroundColor: colors.grey[800],
                                         borderRadius: "15px",
                                         color: "white",
                                         fontFamily: "monospace"

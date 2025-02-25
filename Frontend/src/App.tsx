@@ -27,6 +27,7 @@ import ViewOrderDetails from "./YourOrders/ViewOrderDetails";
 import ViewOrderDetailsMobile from "./YourOrders/ViewOrderDetailsMobile";
 import YourRepairsOrders from "./YourOrders/YourRepairsOrders";
 import YourOrders from "./YourOrders/YourOrders";
+import PaymentCheckOut from "./CheckOutPayment/PaymentCheckOut";
 
 
 function App() {
@@ -80,6 +81,7 @@ function App() {
                 <Route path="/users_view" element={<MobileUserView />} />
                 <Route path="all_view_edit_bat" element={<TableRender />} />
               </>)}
+              <Route path="/checkout" element={token ? <PaymentCheckOut /> : <Navigate to="/login" />} />
             </Route>
             <Route path="/login" element={!token ? <AuthContainer /> : <Navigate to="/" />} />
           </Routes>

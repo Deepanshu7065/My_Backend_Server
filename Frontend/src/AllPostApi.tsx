@@ -221,3 +221,58 @@ export const AddToCart = () => {
         }
     })
 }
+
+export const UpdateCartApi = () => {
+    const queryClient = useQueryClient()
+    const updateCartApi = async ({ id, data }: any) => {
+        try {
+            const response = await axios.patch(`${baseUrl}/cart/update/${id}`, data)
+            return response
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    return useMutation({
+        mutationFn: updateCartApi,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["cart"] })
+        },
+
+    })
+}
+
+export const DeleteCart = () => {
+    const queryClient = useQueryClient()
+    const DeleteCart = async ({ id }: any) => {
+        try {
+            const response = await axios.delete(`${baseUrl}/cart/delete/${id}`)
+            return response
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    return useMutation({
+        mutationFn: DeleteCart,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["cart"] })
+        }
+    })
+}
+
+export const OrderCreateApi = () => {
+    const queryClient = useQueryClient()
+    const orderCreateApi = async ({ data }: any) => {
+        try {
+            const response = await axios.post(`${baseUrl}/order/create`, data)
+            return response
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    return useMutation({
+        mutationFn: orderCreateApi,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["order"] })
+        }
+    })
+}

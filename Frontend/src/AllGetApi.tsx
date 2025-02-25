@@ -174,3 +174,40 @@ export const GetRepairById = ({
         enabled: !!id
     });
 }
+
+
+export const GetCartApi = () => {
+    const getCart = async () => {
+        try {
+            const response = await axios.get(`${baseUrl}/cart`)
+            return response.data
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    return useQuery({
+        queryKey: ["cart"],
+        queryFn: getCart
+    })
+}
+
+
+export const GetMyOrderApi = ({ user_id }: { user_id: string }) => {
+    const getMyOrder = async () => {
+        try {
+            const response = await axios.get(`${baseUrl}/order/`, {
+                params: {
+                    user_id: user_id
+                }
+            })
+            return response.data
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    return useQuery({
+        queryKey: ["order", user_id],
+        queryFn: getMyOrder,
+        enabled: !!user_id
+    })
+}

@@ -1,12 +1,12 @@
 import { Box, Card, CardContent, colors, Stack, TextField, Typography } from '@mui/material'
-import { GetProductApi } from '../AllGetApi'
+import { GetCartApi, GetProductApi } from '../AllGetApi'
 import { imageUrl } from '../ApiEndPoint'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { setIncreaseQuantity, setProductDetails } from '../Store/ProductDetailsSlice'
 import { ProductTypes } from '../AllTypes'
 import { RootState } from '../Store'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { CustomPagination } from './AddBatsForm'
 import { AddToCart } from '../AllPostApi'
 
@@ -15,6 +15,7 @@ const ShopBats = () => {
     const [search, setSearch] = useState("")
     const [page, setPage] = useState(1)
     const [limit, setLimit] = useState(10)
+    const { data, refetch } = GetCartApi()
 
     const { data: card } = GetProductApi({
         search: search,
@@ -23,18 +24,49 @@ const ShopBats = () => {
     })
     const dispatch = useDispatch()
     const products = useSelector((state: RootState) => state.ProductId.products)
-    const [selectedProduct, setSelectedProduct] = useState<ProductTypes | null>(null);
+
+    const [selectedProducts, setSelectedProduct] = useState<{ product_id: string; quantity: number; price: number }[]>([]);
 
     const { mutateAsync } = AddToCart()
-
-    const handleSubmit = async () => {
+    const handleSubmit = async (selectedProducts: { product_id: string; quantity: number; price: number }) => {
         try {
-            await mutateAsync({ data: selectedProduct })
+            await mutateAsync({
+                data: selectedProducts
+            })
+            refetch()
         }
         catch (error) {
             console.log(error)
         }
     };
+
+    const handleAddToCart = (product: ProductTypes) => {
+        let temp = selectedProducts
+        const existingProduct = temp.find(p => p.product_id === product._id);
+        if (existingProduct) {
+            existingProduct.quantity += 1;
+
+        } else {
+            let newProduct = { product_id: product._id, quantity: 1, price: product.price }
+            temp.push(newProduct as any)
+        }
+        setSelectedProduct(temp)
+        dispatch(setProductDetails(data));
+        dispatch(setIncreaseQuantity(product._id as string));
+        refetch()
+        handleSubmit({
+            product_id: product?._id || "",
+            quantity: 1,
+            price: product?.price || 0
+        })
+    };
+
+    useEffect(() => {
+        if (data) {
+            dispatch(setProductDetails(data as any));
+        }
+    }, [data]);
+
 
     return (
         <Box sx={{
@@ -95,7 +127,7 @@ const ShopBats = () => {
                         pb: 2,
                     }}>
                         {card?.products?.map((items: ProductTypes, idx: number) => {
-                            const productQuantity = products?.map(p => p._id === items._id ? p.quantity : 0).reduce((a, b) => a + b, 0);
+                            const productQuantity = products.find((product) => product.product_id?._id === items._id)?.quantity || 0;
                             return (
                                 <Card sx={{
                                     minWidth: { xs: "100%", sm: "30%", md: "30%" },
@@ -202,8 +234,8 @@ const ShopBats = () => {
                                                     gap: 10,
                                                 }}
                                                 onClick={() => {
-                                                    dispatch(setProductDetails(items as any));
-                                                    dispatch(setIncreaseQuantity(items._id as string));
+                                                    handleAddToCart(items)
+                                                    // handleSubmit()
                                                 }}
                                             >
                                                 Add To Cart ({productQuantity})

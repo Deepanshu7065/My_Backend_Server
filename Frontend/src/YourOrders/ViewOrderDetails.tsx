@@ -36,7 +36,7 @@ const ViewOrderDetails = ({ orderId }: { orderId: string }) => {
         <Box sx={{
             width: { xs: "100%", md: "100%" },
             height: "50vh",
-            mt: 10,
+            mt: 3,
             display: { md: "flex" },
             flexDirection: "column",
             alignItems: "center",

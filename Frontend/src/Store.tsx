@@ -4,6 +4,7 @@ import CustomerUserSlice from "./Store/CustomerUserSaveSlice";
 import EditUserSlice from "./Store/EditUserSlice";
 import EditProductSlice from "./Store/EditProductSlice";
 import ChangeStatusOrderSlice from "./Store/ChangeStatusByOrderSlice";
+import ChangeShopsStatusOrderSlice from "./Store/ChangeShopsOrderStatusSlice";
 
 
 
@@ -15,7 +16,8 @@ export const store = configureStore({
         EditUser: EditUserSlice,
         EditProduct: EditProductSlice,
         ChangeStatusOrder: ChangeStatusOrderSlice,
-        
+        ChangeShopsStatusOrder: ChangeShopsStatusOrderSlice
+
     }
 })
 

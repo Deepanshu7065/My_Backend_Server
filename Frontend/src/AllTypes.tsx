@@ -71,6 +71,7 @@ export interface UserType {
 export interface AllOrderTypes {
     orders: OrderTypes[]
     totalOrder: number
+    message?: string
 }
 
 
@@ -97,5 +98,42 @@ export interface OrderTypes {
     updatedAt?: string
     __v?: number
     amount?: number
-    reason?:string
+    reason?: string
+}
+
+
+export interface AddCartTypes {
+    _id?: string
+    product_id?: ProductTypes
+    price?: number
+    quantity?: number
+    createdAt?: string
+    updatedAt?: string
+    __v?: number
+}
+
+export interface AllMyOrderCartTypes {
+    message: string
+    order: SingleOrderTypes
+}
+
+export interface SingleOrderTypes {
+    _id?: string
+    product_id?: ProductTypes[]
+    quantity?: number
+    total?: number
+    user?: UserType
+    status?: string
+    orderId?: string
+    phone?: number
+    address?: string
+    fullAddress?: string
+    landmark?: string
+    state?: string
+    city?: string
+    pincode?: number
+    customer_name?: string
+    createdAt?: string
+    updatedAt?: string
+    __v?: number
 }

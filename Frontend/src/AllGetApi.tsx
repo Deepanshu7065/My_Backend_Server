@@ -1,7 +1,7 @@
 import { queryOptions, useQuery } from "@tanstack/react-query"
 import axios from "axios"
 import { baseUrl } from "./ApiEndPoint"
-import { AllOrderTypes, AllProductsTypes, AllUserTypes, OrderTypes, ProductTypes } from "./AllTypes"
+import { AddCartTypes, AllMyOrderCartTypes, AllOrderTypes, AllProductsTypes, AllUserTypes, OrderTypes, ProductTypes } from "./AllTypes"
 
 export const getUsers = ({
     search,
@@ -180,7 +180,7 @@ export const GetCartApi = () => {
     const getCart = async () => {
         try {
             const response = await axios.get(`${baseUrl}/cart`)
-            return response.data
+            return response.data as AddCartTypes[]
         } catch (error) {
             console.log(error)
         }
@@ -200,7 +200,7 @@ export const GetMyOrderApi = ({ user_id }: { user_id: string }) => {
                     user_id: user_id
                 }
             })
-            return response.data
+            return response.data as AllOrderTypes
         } catch (error) {
             console.log(error)
         }
@@ -209,5 +209,36 @@ export const GetMyOrderApi = ({ user_id }: { user_id: string }) => {
         queryKey: ["order", user_id],
         queryFn: getMyOrder,
         enabled: !!user_id
+    })
+}
+
+export const GetALlShopOrderApi = () => {
+    const getMyOrder = async () => {
+        try {
+            const response = await axios.get(`${baseUrl}/order/all`)
+            return response.data
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    return useQuery({
+        queryKey: ["order"],
+        queryFn: getMyOrder,
+    })
+}
+
+export const GetSingleMyOrderApi = ({ id }: { id: string }) => {
+    const getMyOrder = async () => {
+        try {
+            const response = await axios.get(`${baseUrl}/order/${id}`)
+            return response.data as AllMyOrderCartTypes
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    return useQuery({
+        queryKey: ["order", id],
+        queryFn: getMyOrder,
+        enabled: !!id
     })
 }

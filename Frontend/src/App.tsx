@@ -28,6 +28,7 @@ import ViewOrderDetailsMobile from "./YourOrders/ViewOrderDetailsMobile";
 import YourRepairsOrders from "./YourOrders/YourRepairsOrders";
 import YourOrders from "./YourOrders/YourOrders";
 import PaymentCheckOut from "./CheckOutPayment/PaymentCheckOut";
+import AllShopOrder from "./ShopsOrder.tsx/AllShopOrder";
 
 
 function App() {
@@ -68,6 +69,7 @@ function App() {
               <Route path="/cart" element={<ViewCart />} />
               <Route path="/repair" element={<RepairUploadBat />} />
               <Route path="/repair_orders" element={<RepairAllOrders />} />
+              <Route path="/shop_orders" element={<AllShopOrder />} />
               <Route path="/orders" element={<OrderList />} >
                 <Route path="/orders" element={<YourRepairsOrders />} />
                 <Route path="/orders/your_orders" element={<YourOrders />} />

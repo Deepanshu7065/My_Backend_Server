@@ -50,7 +50,7 @@ router.post("/upload_repair", upload.array("images", 5), async (req, res) => {
         const orderCount = await RepairDetailsModal.countDocuments({
             orderId: { $regex: new RegExp(`^${monthLetter}`) }
         })
-        const orderId = `${monthLetter}${orderCount}`;
+        const orderId = `REPAIR${monthLetter}${orderCount}`;
 
         const newRepair = new RepairDetailsModal({
             product_name,

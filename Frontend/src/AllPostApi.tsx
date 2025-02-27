@@ -276,3 +276,22 @@ export const OrderCreateApi = () => {
         }
     })
 }
+
+export const ChangeShopsOrderStatus = () => {
+    const queryClient = useQueryClient()
+    const ChangeShopsOrderStatus = async ({ id, data }: any) => {
+        try {
+            const response = await axios.patch(`${baseUrl}/order/update_status/${id}`, data)
+            return response
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    return useMutation({
+        mutationFn: ChangeShopsOrderStatus,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["order"] })
+        }
+    })
+}

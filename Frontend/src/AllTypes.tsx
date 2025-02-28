@@ -136,4 +136,5 @@ export interface SingleOrderTypes {
     createdAt?: string
     updatedAt?: string
     __v?: number
+    reason?: string
 }

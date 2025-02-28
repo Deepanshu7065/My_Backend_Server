@@ -9,18 +9,12 @@ const ViewOrderDetailsMobile = () => {
     const location = useLocation()
     const queryParams = new URLSearchParams(location.search);
     const orderId = queryParams.get("orderId");
-    console.log(orderId)
 
     const { data, isLoading, error, refetch } = GetRepairAllUserById({ id: orderId || "" });
 
     useEffect(() => {
-        console.log("Refetching API...");
         refetch();
     }, [orderId, refetch]);
-
-    useEffect(() => {
-        console.log("API Response Data:", data);
-    }, [data]);
 
     if (isLoading) {
         return <CircularProgress />;

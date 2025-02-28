@@ -175,7 +175,7 @@ const YourOrders = () => {
                                                         fontFamily: "monospace",
                                                         textDecoration: "underline"
                                                     }}
-                                                        onClick={() => navigate("/view_status?orderId=" + item._id)}
+                                                        onClick={() => navigate("/view_my_order?orderId=" + item._id)}
                                                     >
                                                         View
                                                     </button>

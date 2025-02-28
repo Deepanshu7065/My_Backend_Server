@@ -23,12 +23,13 @@ import RenderMobileEditBats from "./ShopBats/RenderMobileEdit";
 import RepairUploadBat from "./Repair/RepairUploadBat";
 import RepairAllOrders from "./Repair/RepairAllOrders";
 import OrderList from "./YourOrders/OrderList";
-import ViewOrderDetails from "./YourOrders/ViewOrderDetails";
 import ViewOrderDetailsMobile from "./YourOrders/ViewOrderDetailsMobile";
 import YourRepairsOrders from "./YourOrders/YourRepairsOrders";
 import YourOrders from "./YourOrders/YourOrders";
 import PaymentCheckOut from "./CheckOutPayment/PaymentCheckOut";
 import AllShopOrder from "./ShopsOrder.tsx/AllShopOrder";
+import ViewMyOrderDetailsMobile from "./YourOrders/ViewMyOrderDetailsMobile";
+import Checkout from "./CheckOutPayment/AddPaymentCheckOut";
 
 
 function App() {
@@ -74,7 +75,9 @@ function App() {
                 <Route path="/orders" element={<YourRepairsOrders />} />
                 <Route path="/orders/your_orders" element={<YourOrders />} />
               </Route>
+              <Route path="/checkouts" element={<Checkout />} />
               <Route path="/view_status" element={<ViewOrderDetailsMobile />} />
+              <Route path="/view_my_order" element={<ViewMyOrderDetailsMobile />} />
               {user?.userType === "Admin" && (<>
                 <Route path="/add_bat" element={<AddBatsForm />} />
                 <Route path="/view_edit_bat" element={<RenderMobileEditBats />} />

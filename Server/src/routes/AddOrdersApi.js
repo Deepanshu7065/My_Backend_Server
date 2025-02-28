@@ -2,8 +2,67 @@
 import express from "express";
 import { OrderModal } from "../Models/Todo/GetOrder.model.js";
 import mongoose from "mongoose";
+import { AddressUserModal } from "../Models/Todo/AddressAddModel.js";
 
 const router = express.Router();
+
+router.post("/order/add-address", async (req, res) => {
+    try {
+        let {
+            customer_name,
+            last_name,
+            phone,
+            address,
+            fullAddress,
+            pincode,
+            landmark,
+            city,
+            state,
+            country
+        } = req.body;
+        if (
+            !customer_name ||
+            !last_name ||
+            !phone ||
+            !address ||
+            !fullAddress ||
+            !pincode ||
+            !landmark ||
+            !city ||
+            !state ||
+            !country) {
+            return res.status(400).json({ error: "All fields are required" });
+        }
+        const newAddress = new AddressUserModal({
+            customer_name,
+            last_name,
+            phone,
+            address,
+            fullAddress,
+            pincode,
+            landmark,
+            city,
+            state,
+            country
+        })
+        await newAddress.save();
+        const saveAddress = await AddressUserModal.findById(newAddress._id).populate("user", "userName email");
+
+        return res.status(200).json({ message: "Address added successfully", address: saveAddress });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+})
+
+router.get("/order/address/:user_id", async (req, res) => {
+    try {
+        const { user_id } = req.query;
+        const address = await AddressUserModal.findById(user_id).populate("user", "userName email");
+        return res.status(200).json({ message: "Address fetched successfully", address });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+})
 
 router.post("/order/create", async (req, res) => {
     try {
@@ -13,13 +72,15 @@ router.post("/order/create", async (req, res) => {
             total,
             quantity,
             customer_name,
+            last_name,
             phone,
             address,
             fullAddress,
             pincode,
             landmark,
             city,
-            state
+            state,
+            country
         } = req.body;
 
         if (!product_id || !user || !total || !quantity) {
@@ -60,7 +121,9 @@ router.post("/order/create", async (req, res) => {
             landmark,
             city,
             state,
-            status: "Pending"
+            status: "Pending",
+            last_name,
+            country
         });
 
         await orderDetails.save();

@@ -51,7 +51,7 @@ const ShopBats = () => {
             temp.push(newProduct as any)
         }
         setSelectedProduct(temp)
-        dispatch(setProductDetails(data));
+        dispatch(setProductDetails(data as any));
         dispatch(setIncreaseQuantity(product._id as string));
         refetch()
         handleSubmit({

@@ -242,3 +242,18 @@ export const GetSingleMyOrderApi = ({ id }: { id: string }) => {
         enabled: !!id
     })
 }
+
+export const GetSaveAddressApi = ({ user_id }: { user_id: string }) => {
+    const getMyOrder = async () => {
+        try {
+            const response = await axios.get(`${baseUrl}/order/address/${user_id}`)
+            return response.data
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    return useQuery({
+        queryKey: ["address"],
+        queryFn: getMyOrder,
+    })
+}

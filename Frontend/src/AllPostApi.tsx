@@ -295,3 +295,23 @@ export const ChangeShopsOrderStatus = () => {
         }
     })
 }
+
+export const AddAddressApi = () => {
+    const queryClient = useQueryClient()
+    const addAddressApi = async ({ data }: any) => {
+        try {
+            const response = await axios.post(`${baseUrl}/order/add-address`, data)
+            console.log(data)
+            return response
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    return useMutation({
+        mutationFn: addAddressApi,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["address"] })
+        }
+    })
+}
+

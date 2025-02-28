@@ -1,30 +1,18 @@
-
-
 import mongoose from "mongoose";
 
-const AddOrder = new mongoose.Schema({
-    product_id: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Todo",
-    }],
-    quantity: {
-        type: Number,
-        required: true
-    },
-    total: {
-        type: Number,
+
+const AddressAddModal = new mongoose.Schema({
+    customer_name: {
+        type: String,
         required: true
     },
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
     },
-    status: {
+    last_name: {
         type: String,
-        default: "Pending"
-    },
-    orderId: {
-        type: String
+        required: true
     },
     phone: {
         type: Number,
@@ -38,11 +26,11 @@ const AddOrder = new mongoose.Schema({
         type: String,
         required: true
     },
-    landmark: {
-        type: String,
+    pincode: {
+        type: Number,
         required: true
     },
-    state: {
+    landmark: {
         type: String,
         required: true
     },
@@ -50,19 +38,7 @@ const AddOrder = new mongoose.Schema({
         type: String,
         required: true
     },
-    pincode: {
-        type: Number,
-        required: true
-    },
-    customer_name: {
-        type: String,
-        required: true
-    },
-    last_name: {
-        type: String,
-        required: true
-    },
-    reason: {
+    state: {
         type: String,
         required: true
     },
@@ -70,8 +46,6 @@ const AddOrder = new mongoose.Schema({
         type: String,
         required: true
     },
-},
-    { timestamps: true }
-)
+})
 
-export const OrderModal = mongoose.model("Order", AddOrder);
+export const AddressUserModal = mongoose.model("Address", AddressAddModal);

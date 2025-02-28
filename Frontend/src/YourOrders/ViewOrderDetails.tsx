@@ -1,4 +1,4 @@
-import { Box, CircularProgress, Stack, Typography, Stepper, Step, StepLabel } from '@mui/material';
+import { Box, CircularProgress, Stack, Typography, Stepper, Step, StepLabel, colors } from '@mui/material';
 import { GetRepairAllUserById } from '../AllGetApi';
 import { imageUrl } from '../ApiEndPoint';
 
@@ -87,26 +87,44 @@ const ViewOrderDetails = ({ orderId }: { orderId: string }) => {
                         fontFamily: "'monospace', cursive",
                     }}
                 >{data?.product_name}</Typography>
-                <Stack sx={{ width: "90%", mt: 2, alignItems: "flex-start" }}>
+                <Stack direction={"row"}
+                    sx={{
+                        width: "90%",
+                        alignItems: "center",
+                        justifyContent: "space-between"
+                    }} spacing={2}>
                     <Typography sx={{
-                        fontSize: 12,
+                        fontSize: 14,
                         fontFamily: "'monospace', cursive",
+                        color: colors.grey[700]
                     }}
                     ><strong>Order ID:</strong> {data?.orderId}</Typography>
                     <Typography sx={{
-                        fontSize: 12,
+                        fontSize: 14,
                         fontFamily: "'monospace', cursive",
-                    }}><strong>Amount:</strong> ${data?.amount}</Typography>
+                    }}>
+                        <strong>Amount:</strong>
+                        <span style={{
+                            color: colors.green[700],
+                            fontFamily: "'monospace', cursive",
+                            letterSpacing: 1,
+                            marginLeft: 14,
+                            fontSize: 16
+                        }}>
+                            &#8377;{data?.amount}   
+                        </span>
+                    </Typography>
                 </Stack>
                 <Box sx={{
                     width: "90%",
                     display: "flex",
                     alignItems: "flex-start",
-                    mt: 1,
+                    mt: 3,
                     justifyContent: "center",
                     // bgcolor: "white",
                     // boxShadow: 3,
                     flexDirection: "column",
+
                 }}>
                     <Stack
                         spacing={5}
@@ -117,28 +135,115 @@ const ViewOrderDetails = ({ orderId }: { orderId: string }) => {
                         }}>
                         <Typography
                             sx={{
-                                fontSize: 12
+                                fontSize: 12,
+                                fontFamily: "'monospace', cursive",
+
                             }}
                         >
-                            <strong>Phone:</strong> {data?.phone}</Typography>
-                    </Stack>
-                    <Typography fontSize={12}>
-                        <strong>Address:</strong> {data?.address}
-                    </Typography>
-                    <Stack spacing={5} direction="row" sx={{ width: "100%", justifyContent: "space-between" }}>
-                        <Typography fontSize={12}>
-                            <strong>Full Address:</strong> {data?.fullAddress}
+                            <strong>Phone:</strong>
+                            <span style={{
+                                color: colors.grey[700],
+                                fontFamily: "'monospace', cursive",
+                                letterSpacing: 1,
+                                marginLeft: 14
+                            }}>
+                                {data?.phone}
+                            </span>
                         </Typography>
                     </Stack>
-                    <Typography fontSize={12}>
-                        <strong>Landmark:</strong> {data?.landmark}
+                    <Typography
+                        fontSize={12} mt={1}
+                        sx={{
+                            fontFamily: "'monospace', cursive",
+                        }}
+                    >
+                        <strong>Address:</strong>
+                        <span style={{
+                            color: colors.grey[700],
+                            fontFamily: "'monospace', cursive",
+                            letterSpacing: 1,
+                            marginLeft: 12
+                        }}>
+                            {data?.address}
+                        </span>
                     </Typography>
-                    <Stack >
-                        <Typography variant="body1"><strong>State:</strong> {data?.state}</Typography>
-                        <Typography variant="body1"><strong>City:</strong> {data?.city}</Typography>
+                    <Stack
+                        spacing={5}
+                        direction="row"
+                        sx={{
+                            width: "100%",
+                            justifyContent: "space-between",
+                            mt: 1
+                        }}>
+                        <Typography fontSize={12} sx={{
+                            fontFamily: "'monospace', cursive",
+                        }}>
+                            <strong>Full Address:</strong>
+                            <span style={{
+                                color: colors.grey[700],
+                                fontFamily: "'monospace', cursive",
+                                letterSpacing: 1,
+                                marginLeft: 14
+                            }}>
+                                {data?.fullAddress}
+                            </span>
+                        </Typography>
+                    </Stack>
+                    <Typography fontSize={12} mt={1} sx={{
+                        fontFamily: "'monospace', cursive",
+                    }}>
+                        <strong>Landmark:</strong>
+                        <span style={{
+                            color: colors.grey[700],
+                            fontFamily: "'monospace', cursive",
+                            letterSpacing: 1,
+                            marginLeft: 12
+                        }}>
+                            {data?.landmark}
+                        </span>
+                    </Typography>
+                    <Stack mt={2} direction={"row"} justifyContent={"space-between"} width={"100%"}>
+                        <Typography variant="body1" sx={{
+                            fontSize: 14,
+                            fontFamily: "'monospace', cursive",
+                        }}><strong>State:</strong>
+                            <span style={{
+                                color: colors.grey[700],
+                                fontFamily: "'monospace', cursive",
+                                letterSpacing: 1,
+                                marginLeft: 12
+                            }}>
+                                {data?.state}
+                            </span>
+                        </Typography>
+                        <Typography variant="body1" sx={{
+                            fontSize: 14,
+                            fontFamily: "'monospace', cursive",
+                        }}><strong>City:</strong>
+                            <span style={{
+                                color: colors.grey[700],
+                                fontFamily: "'monospace', cursive",
+                                letterSpacing: 1,
+                                marginLeft: 12
+                            }}>
+                                {data?.city}
+                            </span>
+                        </Typography>
                         <Typography
                             fontSize={12}
-                        ><strong>Pincode:</strong> {data?.pincode}</Typography>
+                            sx={{
+                                fontFamily: "'monospace', cursive",
+                            }}
+                        ><strong>Pincode:</strong>
+                            <span style={{
+                                color: colors.grey[700],
+                                fontFamily: "'monospace', cursive",
+                                letterSpacing: 1,
+                                marginLeft: 12
+                            }}>
+                                {data?.pincode}
+                            </span>
+                        </Typography>
                     </Stack>
                 </Box>
                 <Stepper

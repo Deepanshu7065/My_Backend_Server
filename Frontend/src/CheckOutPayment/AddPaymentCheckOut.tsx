@@ -19,6 +19,7 @@ import CheckAdRenderProduct from './CheckAdRenderProduct';
 import PaymentCheckOut from './PaymentCheckOut';
 import AddAddress from './AddAddress';
 import { useSelector } from 'react-redux';
+import PaymentDetails from './PaymentDetails';
 // import AddressForm from './components/AddressForm';
 // import Info from './components/Info';
 // import InfoMobile from './components/InfoMobile';
@@ -33,7 +34,7 @@ function getStepContent(step: number) {
         case 0:
             return (<AddAddress  />)
         case 1:
-            return "payment"
+            return (<PaymentDetails />)
         case 2:
             return "review"
         default:

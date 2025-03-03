@@ -9,6 +9,74 @@ const router = express.Router();
 router.post("/order/add-address", async (req, res) => {
     try {
         let {
+            user,
+            customer_name,
+            last_name,
+            phone,
+            address,
+            fullAddress,
+            pincode,
+            landmark,
+            city,
+            state,
+            country
+        } = req.body;
+        if (
+            !user ||
+            !customer_name ||
+            !last_name ||
+            !phone ||
+            !address ||
+            !fullAddress ||
+            !pincode ||
+            !landmark ||
+            !city ||
+            !state ||
+            !country) {
+            return res.status(400).json({ error: "All fields are required" });
+        }
+        const existingAddress = await AddressUserModal.findOne({
+            user,
+            customer_name,
+            last_name,
+            phone,
+            address,
+            fullAddress,
+            pincode,
+            landmark,
+            city,
+            state,
+            country
+        });
+
+        if (existingAddress) {
+            return res.status(400).json({ error: "Duplicate address entry not allowed" });
+        }
+        const newAddress = new AddressUserModal({
+            customer_name,
+            last_name,
+            phone,
+            address,
+            fullAddress,
+            pincode,
+            landmark,
+            city,
+            state,
+            country,
+            user
+        })
+        await newAddress.save();
+        const saveAddress = await AddressUserModal.findById(newAddress._id).populate("user", "userName email");
+
+        return res.status(200).json({ message: "Address added successfully", address: saveAddress });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+})
+
+router.patch("/order/update-address/:id", async (req, res) => {
+    try {
+        let {
             customer_name,
             last_name,
             phone,
@@ -33,7 +101,7 @@ router.post("/order/add-address", async (req, res) => {
             !country) {
             return res.status(400).json({ error: "All fields are required" });
         }
-        const newAddress = new AddressUserModal({
+        const updateAddress = await AddressUserModal.findByIdAndUpdate(req.params.id, {
             customer_name,
             last_name,
             phone,
@@ -44,21 +112,35 @@ router.post("/order/add-address", async (req, res) => {
             city,
             state,
             country
-        })
-        await newAddress.save();
-        const saveAddress = await AddressUserModal.findById(newAddress._id).populate("user", "userName email");
-
-        return res.status(200).json({ message: "Address added successfully", address: saveAddress });
+        },);
+        return res.status(200).json({ message: "Address updated successfully", address: updateAddress });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 })
 
+router.get("/order/address/single-address/:id", async (req, res) => {
+    try {
+        const address = await AddressUserModal.findById(req.params.id).populate("user", "userName email");
+        if (!address) {
+            return res.status(404).json({ error: "Address not found" });
+        }
+        return res.status(200).json({ message: "Address fetched successfully", address });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+})
+
+
 router.get("/order/address/:user_id", async (req, res) => {
     try {
-        const { user_id } = req.query;
-        const address = await AddressUserModal.findById(user_id).populate("user", "userName email");
-        return res.status(200).json({ message: "Address fetched successfully", address });
+
+        const address = await AddressUserModal.find({ user: req.params.user_id }).populate("user", "userName email");
+        if (!address) {
+            return res.status(404).json({ error: "Address not found" });
+        }
+
+        return res.status(200).json({ message: "Address fetched successfully", allAddress: address });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

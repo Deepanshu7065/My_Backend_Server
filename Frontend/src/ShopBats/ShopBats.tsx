@@ -23,7 +23,7 @@ const ShopBats = () => {
         limit: limit
     })
     const dispatch = useDispatch()
-    const products = useSelector((state: RootState) => state.ProductId.products)
+    const products = useSelector((state: RootState) => state?.ProductId?.products)
 
     const [selectedProducts, setSelectedProduct] = useState<{ product_id: string; quantity: number; price: number }[]>([]);
 
@@ -127,7 +127,10 @@ const ShopBats = () => {
                         pb: 2,
                     }}>
                         {card?.products?.map((items: ProductTypes, idx: number) => {
-                            const productQuantity = products.find((product) => product.product_id?._id === items._id)?.quantity || 0;
+                           const productQuantity = Array.isArray(products)
+                           ? products.find((product) => product?.product_id?._id === items?._id)?.quantity
+                           : 0;
+                         
                             return (
                                 <Card sx={{
                                     minWidth: { xs: "100%", sm: "30%", md: "30%" },

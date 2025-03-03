@@ -315,3 +315,21 @@ export const AddAddressApi = () => {
     })
 }
 
+
+export const UpdateAddressApi = () => {
+    const queryClient = useQueryClient()
+    const updateAddressApi = async ({ id, data }: any) => {
+        try {
+            const response = await axios.patch(`${baseUrl}/order/update-address/${id}`, data)
+            return response
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    return useMutation({
+        mutationFn: updateAddressApi,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["address"] })
+        }
+    })
+}

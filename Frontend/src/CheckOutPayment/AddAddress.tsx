@@ -11,7 +11,8 @@ import { setProductDetails } from '../Store/ProductDetailsSlice';
 import { SetAddAddress } from '../Store/AddCustomerSaveAddressSlice';
 import { Box, Card, CardContent, Stack, TextField, Typography } from '@mui/material';
 import { AddAddressApi, UpdateAddressApi } from '../AllPostApi';
-import { all } from 'axios';
+import axios, { all } from 'axios';
+import { baseUrl } from '../ApiEndPoint';
 
 const FormGrid = styled(Grid)(() => ({
     display: 'flex',
@@ -22,7 +23,6 @@ const AddAddress = () => {
     const { user } = useSelector((state: RootState) => state?.CustomerUser);
     const [id, setId] = React.useState<string>('');
     const { data: allAddressData } = GetSaveAddressApi({ user_id: user?._id });
-    const { data: saveAdress } = GetSingleAddressByUser({ id: id });
     const { data } = GetCartApi();
     const dispatch = useDispatch();
     const { mutateAsync } = AddAddressApi();
@@ -32,6 +32,7 @@ const AddAddress = () => {
     const [isChecked, setIsChecked] = React.useState(false);
     const [updateChecked, setUpdateChecked] = React.useState(false);
     const [selectedCard, setSelectedCard] = React.useState<string | null>(null);
+    const [saveAdress, setSavedAddress ] = React.useState<any>(null);
     const [updateOrders, setUpdateOrders] = React.useState<{
         customer_name: string;
         last_name: string;
@@ -57,42 +58,39 @@ const AddAddress = () => {
         landmark: '',
         country: ''
     });
-
+    const [savedAddresses, setSavedAddresses] = React.useState<any[]>([]);
 
     React.useEffect(() => {
-        if (saveAdress) {
-            setUpdateOrders({
-                ...updateOrders,
-                customer_name: saveAdress?.address?.customer_name,
-                last_name: saveAdress?.address?.last_name,
-                address: saveAdress?.address?.address,
-                fullAddress: saveAdress?.address?.fullAddress,
-                city: saveAdress?.address?.city,
-                state: saveAdress?.address?.state,
-                pincode: saveAdress?.address?.pincode,
-                phone: saveAdress?.address?.phone,
-                landmark: saveAdress?.address?.landmark,
-                country: saveAdress?.address?.country,
-                user: user?._id
-            });
+        if (allAddressData?.allAddress) {
+            setSavedAddresses(allAddressData.allAddress);
         }
-    }, [saveAdress]);
+    }, [allAddressData]);
+
+
+
+
 
     React.useEffect(() => {
-        dispatch(setProductDetails(data as any));
-    }, [data, saveAdress]);
+        if (data) {
+            dispatch(setProductDetails(data as any));
+        }
+    }, [data]);
 
-    const handleSelectCard = (itemId: string) => {
-        setId(itemId); // API call me delay ho sakta hai, lekin selectedCard ko pehle update karte hain
-        setSelectedCard(itemId);
+
+    const handleSelectCard = async (itemId: string) => {
+        try {
+            const response = await axios.get(`${baseUrl}/order/address/single-address/${itemId}`)
+            setSelectedCard(itemId);
+            setSavedAddress(response.data);
+
+        } catch (error) {
+            console.log(error)
+
+        }
     };
 
-    // Ensure data is retained
-    // React.useEffect(() => {
-    //     if (allAddressData && allAddressData.allAddress?.length > 0 && !selectedCard) {
-    //         setId(allAddressData?.allAddress[0]?._id || "");
-    //     }
-    // }, [allAddressData]);
+
+
 
 
     const validateForm = () => {
@@ -142,13 +140,30 @@ const AddAddress = () => {
             console.log(error)
         }
     }
-
+    React.useEffect(() => {
+        if (saveAdress) {
+            setUpdateOrders(prevState => ({
+                ...prevState,
+                customer_name: saveAdress?.address?.customer_name || '',
+                last_name: saveAdress?.address?.last_name || '',
+                address: saveAdress?.address?.address || '',
+                fullAddress: saveAdress?.address?.fullAddress || '',
+                city: saveAdress?.address?.city || '',
+                state: saveAdress?.address?.state || '',
+                pincode: saveAdress?.address?.pincode || '',
+                phone: saveAdress?.address?.phone || 0,
+                landmark: saveAdress?.address?.landmark || '',
+                country: saveAdress?.address?.country || '',
+                user: user?._id || ''
+            }));
+        }
+    }, [saveAdress]);
 
     return (
         <Box sx={{
             display: "flex",
             gap: 2,
-            width: "70vw",
+            width: "60vw",
             justifyContent: "space-between",
 
         }}>
@@ -351,18 +366,29 @@ const AddAddress = () => {
                     />}
                 </Stack>
             </Grid>
-            <Box sx={{ display: "flex", mt: 10, flexDirection: "column", gap: 2 }}>
-                {allAddressData?.allAddress?.map((item: any, index: number) => (
+            <Box sx={{
+                display: "flex",
+                mt: 10,
+                flexDirection: "column",
+                gap: 2,
+                alignItems: "center",
+                border: "1px solid gray",
+                padding: 2,
+                borderRadius: 2,
+                bgcolor: "lightgray",
+
+            }}>
+                {savedAddresses.map((item: any, index: number) => (
                     <Card
                         sx={{
                             bgcolor: selectedCard === item?._id ? "lightblue" : "white",
                             boxShadow: 3,
-                            width: "400px",
-                            height: 150,
+                            width: "300px",
+                            height: 130,
                             cursor: "pointer",
                             transition: "0.3s",
                             "&:hover": { boxShadow: 6 },
-                            border: selectedCard === item?._id ? "2px solid blue" : "1px solid gray"
+                            border: selectedCard === item?._id ? "1px solid blue" : "0px solid gray"
                         }}
                         onClick={() => handleSelectCard(item?._id)}
                         key={index}

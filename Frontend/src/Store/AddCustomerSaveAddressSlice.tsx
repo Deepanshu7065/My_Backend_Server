@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 interface AddAddressCustomerState {
+    _id: string
     product_id: string[];
     customer_name: string;
     last_name: string;
@@ -17,6 +18,7 @@ interface AddAddressCustomerState {
     country: string
 }
 const initialState: AddAddressCustomerState = {
+    _id: "",
     product_id: [],
     customer_name: "",
     last_name: "",
@@ -37,7 +39,7 @@ const AddAddressCustomerSlice = createSlice({
     initialState,
     reducers: {
         SetAddAddress: (state, action) => {
-            console.log(action.payload)
+            state._id = action.payload
             state.product_id = action.payload
             state.customer_name = action.payload
             state.last_name = action.payload

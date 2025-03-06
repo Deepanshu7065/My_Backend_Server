@@ -6,13 +6,14 @@ import Grid from '@mui/material/Grid2';
 import { styled } from '@mui/material/styles';
 import { RootState } from '../Store';
 import { useDispatch, useSelector } from 'react-redux';
-import { GetCartApi, GetSaveAddressApi, GetSingleAddressByUser } from '../AllGetApi';
+import { GetCartApi, GetSaveAddressApi, } from '../AllGetApi';
 import { setProductDetails } from '../Store/ProductDetailsSlice';
 import { SetAddAddress } from '../Store/AddCustomerSaveAddressSlice';
-import { Box, Card, CardContent, Stack, TextField, Typography } from '@mui/material';
-import { AddAddressApi, UpdateAddressApi } from '../AllPostApi';
-import axios, { all } from 'axios';
+import { Box, Card, CardContent, colors, Stack, TextField, Typography } from '@mui/material';
+import { AddAddressApi, DeleteAddressApi, UpdateAddressApi } from '../AllPostApi';
+import axios from 'axios';
 import { baseUrl } from '../ApiEndPoint';
+import { Delete } from '@mui/icons-material';
 
 const FormGrid = styled(Grid)(() => ({
     display: 'flex',
@@ -21,18 +22,18 @@ const FormGrid = styled(Grid)(() => ({
 
 const AddAddress = () => {
     const { user } = useSelector((state: RootState) => state?.CustomerUser);
-    const [id, setId] = React.useState<string>('');
     const { data: allAddressData } = GetSaveAddressApi({ user_id: user?._id });
     const { data } = GetCartApi();
     const dispatch = useDispatch();
     const { mutateAsync } = AddAddressApi();
     const { mutateAsync: updateAddressByUser } = UpdateAddressApi()
+    const { mutateAsync: deleteAddressByUser } = DeleteAddressApi()
     const [isIconVisible, setIsIconVisible] = React.useState(false);
     const [errors, setErrors] = React.useState<{ [key: string]: string }>({});
     const [isChecked, setIsChecked] = React.useState(false);
     const [updateChecked, setUpdateChecked] = React.useState(false);
     const [selectedCard, setSelectedCard] = React.useState<string | null>(null);
-    const [saveAdress, setSavedAddress ] = React.useState<any>(null);
+    const [saveAdress, setSavedAddress] = React.useState<any>(null);
     const [updateOrders, setUpdateOrders] = React.useState<{
         customer_name: string;
         last_name: string;
@@ -67,9 +68,6 @@ const AddAddress = () => {
     }, [allAddressData]);
 
 
-
-
-
     React.useEffect(() => {
         if (data) {
             dispatch(setProductDetails(data as any));
@@ -88,11 +86,17 @@ const AddAddress = () => {
 
         }
     };
-
-
-
-
-
+    const handleDeleteAddress = async (id: string) => {
+        const isConfirmed = window.confirm('Are you sure you want to delete this address?');
+        if (!isConfirmed) {
+            return;
+        }
+        try {
+            await deleteAddressByUser({ id: id });
+        } catch (error) {
+            console.log(error)
+        }
+    }
     const validateForm = () => {
         let newErrors: { [key: string]: string } = {};
         Object.keys(updateOrders).forEach((key) => {
@@ -144,6 +148,7 @@ const AddAddress = () => {
         if (saveAdress) {
             setUpdateOrders(prevState => ({
                 ...prevState,
+                _id: saveAdress?.address?._id || '',
                 customer_name: saveAdress?.address?.customer_name || '',
                 last_name: saveAdress?.address?.last_name || '',
                 address: saveAdress?.address?.address || '',
@@ -280,7 +285,7 @@ const AddAddress = () => {
                         id="city"
                         name="city"
                         type="city"
-                        placeholder="GURUGRAM"
+                        placeholder="city"
                         autoComplete="City"
                         required
                         size="small"
@@ -298,7 +303,7 @@ const AddAddress = () => {
                         id="state"
                         name="state"
                         type="state"
-                        placeholder="HARYANA"
+                        placeholder="state"
                         autoComplete="State"
                         required
                         size="small"
@@ -316,7 +321,7 @@ const AddAddress = () => {
                         id="zip"
                         name="pincode"
                         type="zip"
-                        placeholder="12345"
+                        placeholder="pincode"
                         autoComplete="shipping postal-code"
                         required
                         size="small"
@@ -334,7 +339,7 @@ const AddAddress = () => {
                         id="country"
                         name="country"
                         type="country"
-                        placeholder="INDIA"
+                        placeholder="country"
                         autoComplete="shipping country"
                         required
                         size="small"
@@ -366,6 +371,8 @@ const AddAddress = () => {
                     />}
                 </Stack>
             </Grid>
+
+
             <Box sx={{
                 display: "flex",
                 mt: 10,
@@ -375,40 +382,95 @@ const AddAddress = () => {
                 border: "1px solid gray",
                 padding: 2,
                 borderRadius: 2,
-                bgcolor: "lightgray",
-
+                bgcolor: colors.grey[100],
+                height: "400px",
+                overflowY: "auto",
+                objectFit: "cover",
+                overflowX: "hidden",
+                "&::-webkit-scrollbar": {
+                    width: "4px",
+                },
+                "&::-webkit-scrollbar-track": {
+                    backgroundColor: "lightgray",
+                },
+                "&::-webkit-scrollbar-thumb": {
+                    backgroundColor: "gray",
+                    borderRadius: "5px",
+                },
             }}>
                 {savedAddresses.map((item: any, index: number) => (
                     <Card
                         sx={{
-                            bgcolor: selectedCard === item?._id ? "lightblue" : "white",
+                            bgcolor: selectedCard === item?._id ? colors.grey[200] : "white",
                             boxShadow: 3,
+                            display: "flex",
                             width: "300px",
-                            height: 130,
+                            minHeight: "100px",
+                            maxHeight: "100px",
                             cursor: "pointer",
                             transition: "0.3s",
                             "&:hover": { boxShadow: 6 },
-                            border: selectedCard === item?._id ? "1px solid blue" : "0px solid gray"
+                            border: selectedCard === item?._id ? "0px solid blue" : "1px solid gray",
+                            flexDirection: "column",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            textAlign: "center",
+                            padding: "7px",
+                            whiteSpace: "normal",
+                            wordWrap: "break-word",
+                            overflow: "auto",
                         }}
                         onClick={() => handleSelectCard(item?._id)}
                         key={index}
                     >
-                        <CardContent>
-                            <Typography gutterBottom variant="h5" component="div">
-                                {item?.address}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                                {item?.fullAddress}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                                {item?.city}, {item?.state}, {item?.pincode}
-                            </Typography>
+
+
+                        <CardContent sx={{ width: "100%", display: "flex", flexDirection: "column", height: "100%" }}>
+                            <Stack
+                                width={"100%"}
+                                direction={"row"}
+                                sx={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                }}>
+                                <Stack width={"100%"}>
+                                    <Typography
+                                        fontSize={12}
+                                        fontFamily="monospace"
+                                    >
+                                        {item?.customer_name}, {item?.phone}
+                                    </Typography>
+                                    <Typography fontFamily={"monospace"} fontSize={12}>
+                                        {item?.address}
+                                    </Typography>
+                                    <Typography fontFamily={"monospace"} fontSize={12} color="text.secondary">
+                                        {item?.fullAddress}
+                                    </Typography>
+                                    <Typography fontSize={12} fontFamily={"monospace"} color="text.secondary">
+                                        {item?.city}, {item?.state}, {item?.pincode}
+                                    </Typography>
+                                </Stack>
+                                <div style={{
+                                    display: "flex",
+                                    justifyContent: "flex-end",
+                                    alignItems: "flex-end",
+                                    width: "10px"
+                                }}>
+                                    <Delete sx={{
+                                        fontSize: "16px"
+                                    }}
+                                        onClick={() => handleDeleteAddress(item?._id)}
+                                    />
+                                </div>
+                            </Stack>
                         </CardContent>
                     </Card>
                 ))}
             </Box>
 
-        </Box>
+
+
+        </Box >
 
     )
 }

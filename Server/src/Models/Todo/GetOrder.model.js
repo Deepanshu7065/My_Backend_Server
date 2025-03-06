@@ -26,50 +26,20 @@ const AddOrder = new mongoose.Schema({
     orderId: {
         type: String
     },
-    phone: {
-        type: Number,
-        required: true
-    },
+   
     address: {
-        type: String,
-        required: true
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Address",
     },
-    fullAddress: {
-        type: String,
-        required: true
-    },
-    landmark: {
-        type: String,
-        required: true
-    },
-    state: {
-        type: String,
-        required: true
-    },
-    city: {
-        type: String,
-        required: true
-    },
-    pincode: {
+    deleveryCharge: {
         type: Number,
-        required: true
+        default: 0
     },
-    customer_name: {
-        type: String,
-        required: true
+    discount: {
+        type: Number,
+        default: 0
     },
-    last_name: {
-        type: String,
-        required: true
-    },
-    reason: {
-        type: String,
-        required: true
-    },
-    country: {
-        type: String,
-        required: true
-    },
+
 },
     { timestamps: true }
 )

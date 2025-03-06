@@ -2,24 +2,18 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import CssBaseline from '@mui/material/CssBaseline';
-import Grid from '@mui/material/Grid2';
-import Stack from '@mui/material/Stack';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import Stepper from '@mui/material/Stepper';
-import Typography from '@mui/material/Typography';
 import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded';
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
-import { AppBar, colors, useMediaQuery } from '@mui/material';
-import { GridGoldenratioTwoTone, Home, Info } from '@mui/icons-material';
-import { grey } from '@mui/material/colors';
+import { colors, } from '@mui/material';
 import CheckAdRenderProduct from './CheckAdRenderProduct';
-import PaymentCheckOut from './PaymentCheckOut';
 import AddAddress from './AddAddress';
-import { useSelector } from 'react-redux';
 import PaymentDetails from './PaymentDetails';
+import { useSelector } from 'react-redux';
+import { RootState } from '../Store';
+import axios from 'axios';
 // import AddressForm from './components/AddressForm';
 // import Info from './components/Info';
 // import InfoMobile from './components/InfoMobile';
@@ -32,24 +26,60 @@ const steps = ['Shipping address', 'Payment details', 'Review your order'];
 function getStepContent(step: number) {
     switch (step) {
         case 0:
-            return (<AddAddress  />)
+            return (<AddAddress />)
         case 1:
             return (<PaymentDetails />)
         case 2:
             return "review"
         default:
-            throw new Error('Unknown step');
+            <>
+            placed Prder
+            </>
     }
 }
 
 
-export default function Checkout(props: { disableCustomTheme?: boolean }) {
-    
+export default function Checkout(_: { disableCustomTheme?: boolean }) {
+
+
     const [activeStep, setActiveStep] = React.useState(0);
-    const handleNext = () => {
-        setActiveStep(activeStep + 1);
-    }; const handleBack = () => {
+    const [orderPlaced, setOrderPlaced] = React.useState(false);
+
+    const handleNext = async () => {
+        if (activeStep === steps.length - 1) {
+            await handleSubmitOrder();  
+        } else {
+            setActiveStep(activeStep + 1);
+        }
+    };
+ 
+    const handleBack = () => {
         setActiveStep(activeStep - 1);
+    };
+
+    const handleSubmitOrder = async () => {
+        try {
+            const orderData = {
+                userId: "USER_ID_HERE",  
+                address: "SELECTED_ADDRESS_HERE", 
+                paymentMethod: "CREDIT_CARD", 
+                products: [
+                    { productId: "PRODUCT_1_ID", quantity: 2 },
+                    { productId: "PRODUCT_2_ID", quantity: 1 }
+                ]
+            };
+
+            const response = await axios.post('/api/order/submit', orderData);
+
+            if (response.status === 200) {
+                setOrderPlaced(true);
+                setActiveStep(activeStep + 1);
+            } else {
+                console.error("Order submission failed");
+            }
+        } catch (error) {
+            console.error("Error submitting order:", error);
+        }
     };
 
     return (

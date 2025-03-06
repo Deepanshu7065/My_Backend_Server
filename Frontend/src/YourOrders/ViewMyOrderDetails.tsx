@@ -1,5 +1,4 @@
 import { Box, Card, CircularProgress, colors, Stack, Step, StepLabel, Stepper, Typography } from '@mui/material'
-import React from 'react'
 import { GetSingleMyOrderApi } from '../AllGetApi'
 import { imageUrl } from '../ApiEndPoint'
 
@@ -10,7 +9,7 @@ const ViewMyOrderDetails = ({ order_id }: { order_id: string }) => {
     }
 
 
-    const totalAmount = data?.order?.product_id?.reduce((total, product) => total + (product?.price ?? 0), 0);
+    const totalAmount = data?.order?.total
 
     const getSteps = (status: string) => {
         if (status === "reject") {
@@ -244,7 +243,7 @@ const ViewMyOrderDetails = ({ order_id }: { order_id: string }) => {
                             letterSpacing: 1,
                             marginLeft: 14
                         }}>
-                            {data?.order?.phone}
+                            {data?.order?.address?.phone}
                         </span>
                     </Typography>
                 </Stack>
@@ -261,7 +260,7 @@ const ViewMyOrderDetails = ({ order_id }: { order_id: string }) => {
                         letterSpacing: 1,
                         marginLeft: 12
                     }}>
-                        {data?.order?.address}
+                        {data?.order?.address?.address}
                     </span>
                 </Typography>
                 <Stack
@@ -282,7 +281,7 @@ const ViewMyOrderDetails = ({ order_id }: { order_id: string }) => {
                             letterSpacing: 1,
                             marginLeft: 14
                         }}>
-                            {data?.order?.fullAddress}
+                            {data?.order?.address?.fullAddress}
                         </span>
                     </Typography>
                 </Stack>
@@ -296,7 +295,7 @@ const ViewMyOrderDetails = ({ order_id }: { order_id: string }) => {
                         letterSpacing: 1,
                         marginLeft: 12
                     }}>
-                        {data?.order?.landmark}
+                        {data?.order?.address?.landmark}
                     </span>
                 </Typography>
                 <Stack mt={2} direction={"row"} justifyContent={"space-between"} width={"100%"}>
@@ -310,7 +309,7 @@ const ViewMyOrderDetails = ({ order_id }: { order_id: string }) => {
                             letterSpacing: 1,
                             marginLeft: 12
                         }}>
-                            {data?.order?.state}
+                            {data?.order?.address?.state}
                         </span>
                     </Typography>
                     <Typography variant="body1" sx={{
@@ -323,7 +322,7 @@ const ViewMyOrderDetails = ({ order_id }: { order_id: string }) => {
                             letterSpacing: 1,
                             marginLeft: 12
                         }}>
-                            {data?.order?.city}
+                            {data?.order?.address?.city}
                         </span>
                     </Typography>
                     <Typography
@@ -338,7 +337,7 @@ const ViewMyOrderDetails = ({ order_id }: { order_id: string }) => {
                             letterSpacing: 1,
                             marginLeft: 12
                         }}>
-                            {data?.order?.pincode}
+                            {data?.order?.address?.pincode}
                         </span>
                     </Typography>
                 </Stack>

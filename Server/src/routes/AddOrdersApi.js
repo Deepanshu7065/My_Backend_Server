@@ -130,7 +130,24 @@ router.get("/order/address/single-address/:id", async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 })
+router.delete("/order/delete-address/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
 
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ error: "Invalid Order ID" });
+        }
+
+        const deletedOrder = await AddressUserModal.findByIdAndDelete(id);
+        if (!deletedOrder) {
+            return res.status(404).json({ error: "Order not found" });
+        }
+
+        return res.json({ message: "Order deleted successfully", order: deletedOrder });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
 
 router.get("/order/address/:user_id", async (req, res) => {
     try {
@@ -153,19 +170,12 @@ router.post("/order/create", async (req, res) => {
             user,
             total,
             quantity,
-            customer_name,
-            last_name,
-            phone,
             address,
-            fullAddress,
-            pincode,
-            landmark,
-            city,
-            state,
-            country
+            deleveryCharge,
+            discount
         } = req.body;
 
-        if (!product_id || !user || !total || !quantity) {
+        if (!product_id || !user || !total || !quantity || !address || !deleveryCharge || !discount) {
             return res.status(400).json({ error: "All fields are required" });
         }
 
@@ -195,24 +205,18 @@ router.post("/order/create", async (req, res) => {
             total,
             quantity,
             orderId,
-            customer_name,
-            phone,
-            address,
-            fullAddress,
-            pincode,
-            landmark,
-            city,
-            state,
             status: "Pending",
-            last_name,
-            country
+            address,
+            deleveryCharge,
+            discount
         });
 
         await orderDetails.save();
 
         const savedOrder = await OrderModal.findById(orderDetails._id)
             .populate("user", "userName email")
-            .populate("product_id");
+            .populate("product_id")
+            .populate("address");
 
         return res.status(201).json({
             message: "Order placed successfully",
@@ -225,6 +229,18 @@ router.post("/order/create", async (req, res) => {
     }
 });
 
+router.get("/order/all_data", async (req, res) => {
+    try {
+        const orders = await OrderModal.find().populate("user", "userName email").populate("product_id").populate("address");
+
+        return res.status(200).json({
+            message: "Orders fetched successfully",
+            orders,
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
 
 router.get("/order", async (req, res) => {
     try {
@@ -236,7 +252,8 @@ router.get("/order", async (req, res) => {
 
         const orders = await OrderModal.find({ user: user_id })
             .populate("user", "userName email")
-            .populate("product_id");
+            .populate("product_id")
+            .populate("address");
 
         return res.status(200).json({
             message: "Orders fetched successfully",
@@ -252,7 +269,8 @@ router.get("/order/:id", async (req, res) => {
     try {
         const order = await OrderModal.findById(req.params.id)
             .populate("user", "userName email")
-            .populate("product_id");
+            .populate("product_id")
+            .populate("address");
         return res.status(200).json({
             message: "Order fetched successfully",
             order,
@@ -261,6 +279,7 @@ router.get("/order/:id", async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 })
+
 
 router.patch("/order/update_status/:id", async (req, res) => {
     try {
@@ -280,19 +299,7 @@ router.patch("/order/update_status/:id", async (req, res) => {
     }
 })
 
-router.get("/order/all", async (req, res) => {
-    try {
-        const orders = await OrderModal.find()
-            .populate("user", "userName email")
-            .populate("product_id");
-        return res.status(200).json({
-            message: "Orders fetched successfully",
-            orders,
-        });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
+
 
 
 export default router

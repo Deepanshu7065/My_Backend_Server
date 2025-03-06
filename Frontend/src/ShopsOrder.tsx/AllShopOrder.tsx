@@ -10,12 +10,14 @@ import {
 } from '@mui/material'
 import React from 'react'
 import { GetALlShopOrderApi } from '../AllGetApi'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { imageUrl } from '../ApiEndPoint'
 import { ChangeStatusOrder } from '../Store/ChangeStatusByOrderSlice'
 import { ChangeShopsStatusOrder } from '../Store/ChangeShopsOrderStatusSlice'
+import { RootState } from '../Store'
 
 const AllShopOrder = () => {
+
     const { data } = GetALlShopOrderApi()
 
     const dispatch = useDispatch()
@@ -23,7 +25,7 @@ const AllShopOrder = () => {
 
     return (
         <Box sx={{
-            mt: 10
+            mt: 11
         }}>
             <Table>
                 <TableHead>

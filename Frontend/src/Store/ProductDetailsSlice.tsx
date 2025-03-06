@@ -22,11 +22,15 @@ interface Product {
 
 interface ProductDetailsState {
     products: Product[];
+    deleveryCharge?: number
+    discount?: number
 
 }
 
 const initialState: ProductDetailsState = {
     products: [],
+    deleveryCharge: 0,
+    discount: 0
 
 };
 
@@ -57,8 +61,21 @@ const ProductDetailsSlice = createSlice({
                 (product) => product.product_id._id !== action.payload
             );
         },
+        setAddDeleveryCharge: (state, action: PayloadAction<number>) => {
+            state.deleveryCharge = action.payload
+        },
+        setDiscountAdd: (state, action: PayloadAction<number>) => {
+            state.discount = action.payload
+        }
     },
 });
 
-export const { setProductDetails, setIncreaseQuantity, setDecreaseQuantity, setRemoveProduct, } = ProductDetailsSlice.actions;
+export const {
+    setProductDetails,
+    setIncreaseQuantity,
+    setDecreaseQuantity,
+    setRemoveProduct,
+    setAddDeleveryCharge,
+    setDiscountAdd,
+} = ProductDetailsSlice.actions;
 export default ProductDetailsSlice.reducer;

@@ -1,7 +1,7 @@
 import { queryOptions, useQuery } from "@tanstack/react-query"
 import axios from "axios"
 import { baseUrl } from "./ApiEndPoint"
-import { AddCartTypes, AllMyOrderCartTypes, AllOrderTypes, AllProductsTypes, AllUserTypes, OrderTypes, ProductTypes } from "./AllTypes"
+import { AddCartTypes, AllMyOrderCartTypes, AllOrderTypes, AllOrderTypesCompleted, AllProductsTypes, AllSingleMyOrderTypes, AllUserTypes, OrderTypes, ProductTypes } from "./AllTypes"
 
 export const getUsers = ({
     search,
@@ -200,7 +200,7 @@ export const GetMyOrderApi = ({ user_id }: { user_id: string }) => {
                     user_id: user_id
                 }
             })
-            return response.data as AllOrderTypes
+            return response.data as AllOrderTypesCompleted
         } catch (error) {
             console.log(error)
         }
@@ -215,14 +215,14 @@ export const GetMyOrderApi = ({ user_id }: { user_id: string }) => {
 export const GetALlShopOrderApi = () => {
     const getMyOrder = async () => {
         try {
-            const response = await axios.get(`${baseUrl}/order/all`)
-            return response.data
+            const response = await axios.get(`${baseUrl}/order/all_data`)
+            return response.data as AllOrderTypesCompleted
         } catch (error) {
             console.log(error)
         }
     }
     return useQuery({
-        queryKey: ["order"],
+        queryKey: ["order",],
         queryFn: getMyOrder,
     })
 }
@@ -231,7 +231,7 @@ export const GetSingleMyOrderApi = ({ id }: { id: string }) => {
     const getMyOrder = async () => {
         try {
             const response = await axios.get(`${baseUrl}/order/${id}`)
-            return response.data as AllMyOrderCartTypes
+            return response.data as AllSingleMyOrderTypes
         } catch (error) {
             console.log(error)
         }

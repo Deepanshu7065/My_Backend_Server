@@ -333,3 +333,21 @@ export const UpdateAddressApi = () => {
         }
     })
 }
+
+export const DeleteAddressApi = () => {
+    const queryClient = useQueryClient()
+    const deleteAddressApi = async ({ id }: any) => {
+        try {
+            const response = await axios.delete(`${baseUrl}/order/delete-address/${id}`)
+            return response
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    return useMutation({
+        mutationFn: deleteAddressApi,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["address"] })
+        }
+    })
+}

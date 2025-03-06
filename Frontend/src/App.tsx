@@ -86,7 +86,7 @@ function App() {
                 <Route path="/users_view" element={<MobileUserView />} />
                 <Route path="all_view_edit_bat" element={<TableRender />} />
               </>)}
-              <Route path="/checkout" element={token ? <PaymentCheckOut /> : <Navigate to="/login" />} />
+              <Route path="/checkouts" element={token ? <PaymentCheckOut /> : <Navigate to="/login" />} />
             </Route>
             <Route path="/login" element={!token ? <AuthContainer /> : <Navigate to="/" />} />
           </Routes>

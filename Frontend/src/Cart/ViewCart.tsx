@@ -24,7 +24,7 @@ const ViewCart = () => {
             navigate("/login")
 
         } else {
-            navigate("/checkout")
+            navigate("/checkouts")
         }
     }
 

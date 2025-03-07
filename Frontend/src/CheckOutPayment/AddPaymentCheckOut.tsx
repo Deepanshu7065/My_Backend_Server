@@ -14,6 +14,9 @@ import PaymentDetails from './PaymentDetails';
 import { useSelector } from 'react-redux';
 import { RootState } from '../Store';
 import axios from 'axios';
+import { DeleteAllCartByUSer, OrderCreateApi } from '../AllPostApi';
+import OrderReview from './OrderReview';
+import OrderPlaced from './OrderPlaced';
 // import AddressForm from './components/AddressForm';
 // import Info from './components/Info';
 // import InfoMobile from './components/InfoMobile';
@@ -23,64 +26,109 @@ import axios from 'axios';
 // import ColorModeIconDropdown from './theme/ColorModeIconDropdown';
 
 const steps = ['Shipping address', 'Payment details', 'Review your order'];
-function getStepContent(step: number) {
+function getStepContent(step: number, orderPlaced: boolean) {
     switch (step) {
         case 0:
-            return (<AddAddress />)
+            return <AddAddress />;
         case 1:
-            return (<PaymentDetails />)
+            return <PaymentDetails />;
         case 2:
-            return "review"
+            return orderPlaced ? <OrderPlaced /> : <OrderReview />;
         default:
-            <>
-            placed Prder
-            </>
+            return <>Placed Order</>;
     }
 }
 
 
 export default function Checkout(_: { disableCustomTheme?: boolean }) {
 
+    const { address } = useSelector((state: RootState) => state?.AddAddressCustomer);
+    const { deleveryCharge, discount } = useSelector((state: RootState) => state.ProductId)
+    const products = useSelector((state: RootState) => state?.ProductId.products);
+    const { user } = useSelector((state: RootState) => state?.CustomerUser);
+
+    const totalPrice = products.reduce((total, product) => total + product.price * product.quantity, 0);
+    const totalQuantity = products.reduce((total, product) => total + product.quantity, 0);
+    const total = (totalPrice + (deleveryCharge ?? 0) - (discount ?? 0))
+
+    const { mutateAsync: orderCreate } = OrderCreateApi()
+    const { mutateAsync: deleteYourCart } = DeleteAllCartByUSer()
 
     const [activeStep, setActiveStep] = React.useState(0);
     const [orderPlaced, setOrderPlaced] = React.useState(false);
 
     const handleNext = async () => {
         if (activeStep === steps.length - 1) {
-            await handleSubmitOrder();  
+            await handleSubmitOrderCreate();
         } else {
             setActiveStep(activeStep + 1);
         }
     };
- 
+
     const handleBack = () => {
         setActiveStep(activeStep - 1);
     };
 
-    const handleSubmitOrder = async () => {
+    const handleDeleteAllCart = async () => {
         try {
-            const orderData = {
-                userId: "USER_ID_HERE",  
-                address: "SELECTED_ADDRESS_HERE", 
-                paymentMethod: "CREDIT_CARD", 
-                products: [
-                    { productId: "PRODUCT_1_ID", quantity: 2 },
-                    { productId: "PRODUCT_2_ID", quantity: 1 }
-                ]
-            };
+            await deleteYourCart({
+                user: user?._id
+            })
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
-            const response = await axios.post('/api/order/submit', orderData);
 
-            if (response.status === 200) {
+    const [submitOrder, setSubmitOrder] = React.useState<{
+        product_id: string[];
+        address: string;
+        deleveryCharge: number;
+        discount: number;
+        total: number;
+        quantity: number;
+        user: string;
+    }>({
+        product_id: [],
+        address: "",
+        deleveryCharge: 0,
+        discount: 0,
+        total: 0,
+        quantity: 0,
+        user: ""
+    })
+
+    React.useEffect(() => {
+        setSubmitOrder({
+            product_id: products?.map((p) => p.product_id._id) || [],
+            address: address?._id || "",
+            deleveryCharge: deleveryCharge ?? 0,
+            discount: discount ?? 0,
+            total,
+            quantity: totalQuantity,
+            user: user?._id
+        })
+    }, [products, user, address])
+
+    const handleSubmitOrderCreate = async () => {
+        try {
+            const res = await orderCreate({
+                data: submitOrder
+            })
+            if (res && res.status === 201) {
                 setOrderPlaced(true);
-                setActiveStep(activeStep + 1);
-            } else {
-                console.error("Order submission failed");
+                setActiveStep(activeStep === steps.length - 1 ? 2 : activeStep + 1);
+                try {
+                    await handleDeleteAllCart()
+                } catch (error) {
+                    console.log(error)
+                }
             }
         } catch (error) {
-            console.error("Error submitting order:", error);
+            console.log(error)
         }
-    };
+    }
+
 
     return (
         <Box sx={{
@@ -126,7 +174,7 @@ export default function Checkout(_: { disableCustomTheme?: boolean }) {
                         minHeight: "80vh",
                         justifyContent: "space-between",
                     }}>
-                        {getStepContent(activeStep)}
+                        {getStepContent(activeStep, orderPlaced)}
                         <Box
                             sx={{
                                 display: 'flex',
@@ -160,20 +208,22 @@ export default function Checkout(_: { disableCustomTheme?: boolean }) {
                                     Previous
                                 </Button>
                             )}
-                            <Button
-                                variant="contained"
-                                endIcon={<ChevronRightRoundedIcon />}
-                                onClick={handleNext}
-                                sx={{
-                                    width: {
-                                        xs: '100%', sm: 'fit-content',
-                                        backgroundColor: colors.grey[800],
-                                        color: "white", fontWeight: "bold"
-                                    }
-                                }}
-                            >
-                                {activeStep === steps.length - 1 ? 'Place order' : 'Next'}
-                            </Button>
+                            {!orderPlaced || activeStep !== steps.length - 1 ? (
+                                <Button
+                                    variant="contained"
+                                    endIcon={<ChevronRightRoundedIcon />}
+                                    onClick={handleNext}
+                                    sx={{
+                                        width: {
+                                            xs: '100%', sm: 'fit-content',
+                                            backgroundColor: colors.grey[800],
+                                            color: "white", fontWeight: "bold"
+                                        }
+                                    }}
+                                >
+                                    {activeStep === steps.length - 1 ? 'Place order' : 'Next'}
+                                </Button>
+                            ) : null}
                         </Box>
                     </Box>
                 </React.Fragment>

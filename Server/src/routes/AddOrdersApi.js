@@ -280,6 +280,19 @@ router.get("/order/:id", async (req, res) => {
     }
 })
 
+router.delete("/order/delete/:id", async (req, res) => {
+    try {
+        const deletedOrder = await OrderModal.findByIdAndDelete(req.params.id);
+        if (!deletedOrder) {
+            return res.status(404).json({ error: "Order not found" });
+        }
+        return res.json({ message: "Order deleted successfully", order: deletedOrder });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+        
+
 
 router.patch("/order/update_status/:id", async (req, res) => {
     try {

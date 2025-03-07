@@ -243,9 +243,9 @@ export const UpdateCartApi = () => {
 
 export const DeleteCart = () => {
     const queryClient = useQueryClient()
-    const DeleteCart = async ({ id }: any) => {
+    const DeleteCart = async ({ id, user }: any) => {
         try {
-            const response = await axios.delete(`${baseUrl}/cart/delete/${id}`)
+            const response = await axios.delete(`${baseUrl}/cart/delete/${id}?user=${user}`)
             return response
         } catch (error) {
             console.log(error)
@@ -348,6 +348,45 @@ export const DeleteAddressApi = () => {
         mutationFn: deleteAddressApi,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["address"] })
+        }
+    })
+}
+
+
+export const DeleteMyOrder = () => {
+    const queryClient = useQueryClient()
+    const deleteMyOrder = async ({ id }: any) => {
+        try {
+            const response = await axios.delete(`${baseUrl}/order/delete/${id}`)
+            return response
+        } catch (error) {
+            console.log(error)
+        }
+
+    }
+    return useMutation({
+        mutationFn: deleteMyOrder,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["order"] })
+        }
+    })
+}
+
+
+export const DeleteAllCartByUSer = () => {
+    const queryClient = useQueryClient()
+    const deleteAllCartByUSer = async ({ user }: any) => {
+        try {
+            const response = await axios.delete(`${baseUrl}/cart/delete-all?user=${user}`)
+            return response
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    return useMutation({
+        mutationFn: deleteAllCartByUSer,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["cart"] })
         }
     })
 }

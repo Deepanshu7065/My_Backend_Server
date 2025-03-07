@@ -15,7 +15,8 @@ const ShopBats = () => {
     const [search, setSearch] = useState("")
     const [page, setPage] = useState(1)
     const [limit, setLimit] = useState(10)
-    const { data, refetch } = GetCartApi()
+    const { user } = useSelector((state: RootState) => state.CustomerUser)
+    const { data, refetch } = GetCartApi({ id: user?._id })
 
     const { data: card } = GetProductApi({
         search: search,
@@ -28,7 +29,7 @@ const ShopBats = () => {
     const [selectedProducts, setSelectedProduct] = useState<{ product_id: string; quantity: number; price: number }[]>([]);
 
     const { mutateAsync } = AddToCart()
-    const handleSubmit = async (selectedProducts: { product_id: string; quantity: number; price: number }) => {
+    const handleSubmit = async (selectedProducts: { product_id: string; quantity: number; price: number, user: string }) => {
         try {
             await mutateAsync({
                 data: selectedProducts
@@ -57,7 +58,8 @@ const ShopBats = () => {
         handleSubmit({
             product_id: product?._id || "",
             quantity: 1,
-            price: product?.price || 0
+            price: product?.price || 0,
+            user: user?._id
         })
     };
 
@@ -127,10 +129,10 @@ const ShopBats = () => {
                         pb: 2,
                     }}>
                         {card?.products?.map((items: ProductTypes, idx: number) => {
-                           const productQuantity = Array.isArray(products)
-                           ? products.find((product) => product?.product_id?._id === items?._id)?.quantity
-                           : 0;
-                         
+                            const productQuantity = Array.isArray(products)
+                                ? products.find((product) => product?.product_id?._id === items?._id)?.quantity
+                                : 0;
+
                             return (
                                 <Card sx={{
                                     minWidth: { xs: "100%", sm: "30%", md: "30%" },

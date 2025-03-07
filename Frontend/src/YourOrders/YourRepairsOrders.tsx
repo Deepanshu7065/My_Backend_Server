@@ -9,13 +9,12 @@ import {
     Button,
     Card,
     CardContent,
-    CardActions,
     useMediaQuery
 } from '@mui/material'
 import { useState } from 'react'
-import { GetRepairAllUserById, GetRepairById } from '../AllGetApi'
+import { GetRepairById } from '../AllGetApi'
 import { imageUrl } from '../ApiEndPoint'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useEffect } from 'react'
 import { DeleteRepair } from '../AllPostApi'
 import { useSelector } from 'react-redux'
@@ -50,7 +49,7 @@ const YourRepairsOrders = () => {
         if (order && order.length > 0 && !orderId) {
             setOrderId(order[0]._id);
         }
-    }, [order]);
+    }, [order, refetch]);
 
     const handleDelete = async (orderId: string) => {
         if (!window.confirm("Are you sure you want to delete this order?")) {

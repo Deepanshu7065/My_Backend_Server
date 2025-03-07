@@ -23,7 +23,7 @@ const FormGrid = styled(Grid)(() => ({
 const AddAddress = () => {
     const { user } = useSelector((state: RootState) => state?.CustomerUser);
     const { data: allAddressData } = GetSaveAddressApi({ user_id: user?._id });
-    const { data } = GetCartApi();
+    const { data } = GetCartApi({ id: user?._id });
     const dispatch = useDispatch();
     const { mutateAsync } = AddAddressApi();
     const { mutateAsync: updateAddressByUser } = UpdateAddressApi()

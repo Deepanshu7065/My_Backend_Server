@@ -176,10 +176,14 @@ export const GetRepairById = ({
 }
 
 
-export const GetCartApi = () => {
+export const GetCartApi = ({ id }: { id: string }) => {
     const getCart = async () => {
         try {
-            const response = await axios.get(`${baseUrl}/cart`)
+            const response = await axios.get(`${baseUrl}/cart`, {
+                params: {
+                    user_id: id
+                }
+            })
             return response.data as AddCartTypes[]
         } catch (error) {
             console.log(error)

@@ -14,7 +14,7 @@ const ViewCart = () => {
     const dispatch = useDispatch()
     const { user } = useSelector((state: RootState) => state.CustomerUser)
     const navigate = useNavigate()
-    const { data, refetch } = GetCartApi()
+    const { data, refetch } = GetCartApi({ id: user?._id })
     const { mutateAsync: increament } = UpdateCartApi()
     const { mutateAsync: deleteCart } = DeleteCart()
 
@@ -31,7 +31,7 @@ const ViewCart = () => {
     const handleIncreament = async (id: string) => {
         try {
             const price = products.find((p: any) => p._id === id)?.price
-            await increament({ id, data: { quantity: + 1, price: price } })
+            await increament({ id, data: { quantity: + 1, price: price, user: user?._id } })
             refetch()
 
         } catch (error) {
@@ -43,7 +43,7 @@ const ViewCart = () => {
     const handleDecrement = async (id: string) => {
         try {
             const price = products.find((p: any) => p._id === id)?.price
-            await increament({ id, data: { quantity: -1, price: price } })
+            await increament({ id, data: { quantity: -1, price: price, user: user?._id } })
             refetch()
 
         } catch (error) {
@@ -53,7 +53,7 @@ const ViewCart = () => {
 
     const handleDelete = async (id: string) => {
         try {
-            await deleteCart({ id })
+            await deleteCart({ id, user: user?._id })
             refetch()
         } catch (error) {
             console.log(error)

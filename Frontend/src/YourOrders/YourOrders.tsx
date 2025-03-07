@@ -18,12 +18,14 @@ import { Delete } from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom'
 import ViewMyOrderDetails from './ViewMyOrderDetails'
 import { useEffect, useState } from 'react'
+import { DeleteMyOrder } from '../AllPostApi'
 
 const YourOrders = () => {
     const navigate = useNavigate()
     const { user } = useSelector((state: RootState) => state.CustomerUser)
     const [orderId, setOrderId] = useState("")
-    const { data, isLoading, } = GetMyOrderApi({ user_id: user._id })
+    const { data, isLoading, refetch } = GetMyOrderApi({ user_id: user._id })
+    const { mutateAsync: deleteOrder, } = DeleteMyOrder()
     const mobile = useMediaQuery("(max-width:600px)")
 
     useEffect(() => {
@@ -31,6 +33,18 @@ const YourOrders = () => {
             setOrderId(data?.orders[0]?._id || "");
         }
     }, [data]);
+
+    const handleDelete = async (orderId: string) => {
+        if (!window.confirm("Are you sure you want to delete this order?")) {
+            return
+        }
+        try {
+            await deleteOrder({ id: orderId })
+            refetch()
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
     return (
         <Box sx={{
@@ -51,43 +65,6 @@ const YourOrders = () => {
                     flexDirection: "column",
                 }}>
                     <>
-                        {/* <Tabs
-                            value={value}
-                            onChange={(_, newValue) => setValue(newValue)}
-                            variant="scrollable"
-                            scrollButtons="auto"
-                            allowScrollButtonsMobile
-                            sx={{
-                                mb: 3,
-                                width: "100%",
-                                maxWidth: 400,
-                            }}>
-                            <Tab sx={{
-                                fontSize: "0.8rem"
-                            }}
-                                label="All"
-                                onClick={() => setStatus("")} />
-                            <Tab sx={{
-                                fontSize: "0.8rem"
-                            }}
-                                label="Pending"
-                                onClick={() => setStatus("pending")} />
-                            <Tab sx={{
-                                fontSize: "0.8rem"
-                            }}
-                                label="PickUp"
-                                onClick={() => setStatus("pickUp")} />
-                            <Tab sx={{
-                                fontSize: "0.8rem"
-                            }}
-                                label="Processing"
-                                onClick={() => setStatus("in_progress")} />
-                            <Tab sx={{
-                                fontSize: "0.8rem"
-                            }}
-                                label="Completed"
-                                onClick={() => setStatus("completed")} />
-                        </Tabs> */}
 
                         {isLoading ? (
                             <CircularProgress />
@@ -153,12 +130,12 @@ const YourOrders = () => {
                                                 direction="row" sx={{
                                                     justifyContent: "space-between"
                                                 }}>
-                                                {item.status === "pending" && (
+                                                {item.status === "Pending" && (
                                                     <Button
                                                         variant="contained"
                                                         color="error"
                                                         startIcon={<Delete />}
-                                                        // onClick={() => handleDelete(item._id)}
+                                                        onClick={() => handleDelete(item._id)}
                                                         sx={{ mt: 0, fontSize: 11 }}
                                                     >
                                                         Delete Order

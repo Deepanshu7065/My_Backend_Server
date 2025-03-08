@@ -114,6 +114,7 @@ export interface AllMyOrderCartTypes {
     createdAt: string
     updatedAt: string
     __v: number
+    reason?: string
 }
 
 export interface ProductId {

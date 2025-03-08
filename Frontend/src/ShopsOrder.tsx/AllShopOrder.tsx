@@ -45,20 +45,20 @@ const AllShopOrder = () => {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {data?.orders?.map((item: any) => (
+                    {data?.orders?.map((item) => (
                         <TableRow key={item._id}>
                             <TableCell>{item.orderId}</TableCell>
-                            <TableCell>{item.createdBy?.userName}</TableCell>
-                            <TableCell>{item.createdBy?.email}</TableCell>
-                            <TableCell>{item.phone}</TableCell>
-                            <TableCell>{item.address}</TableCell>
-                            <TableCell>{item.product_name}</TableCell>
-                            <TableCell>{item?.address}</TableCell>
-                            <TableCell>{item?.amount}</TableCell>
+                            <TableCell>{item.user?.userName}</TableCell>
+                            <TableCell>{item.user?.email}</TableCell>
+                            <TableCell>{item.address?.phone}</TableCell>
+                            <TableCell>{item.address?.address}</TableCell>
+                            <TableCell>{item.product_id[0]?.product_name}</TableCell>
+                            <TableCell>{item?.address?.address}</TableCell>
+                            <TableCell>{item?.quantity}</TableCell>
                             <TableCell>{item?.orderId}</TableCell>
                             <TableCell>{item?.status}</TableCell>
                             <TableCell>
-                                <img src={imageUrl + item.images} alt="Product" style={{ width: "100px", height: "100px" }} />
+                                <img src={imageUrl + item.product_id[0]?.image} alt="Product" style={{ width: "100px", height: "100px" }} />
                             </TableCell>
                             <TableCell>
                                 <button onClick={() => dispatch(ChangeShopsStatusOrder(item._id))}>open</button>

@@ -143,7 +143,7 @@ export default function Checkout(_: { disableCustomTheme?: boolean }) {
                 height: "100%",
                 display: "flex",
                 flexDirection: "column",
-                p: { xs: 1, md: 2 },
+                p: { xs: 0, md: 2 },
                 minHeight: "100vh",
                 bgcolor: colors.grey[50],
                 justifyContent: "center",
@@ -151,11 +151,13 @@ export default function Checkout(_: { disableCustomTheme?: boolean }) {
                 <Stepper
                     id="desktop-stepper"
                     activeStep={activeStep}
-                    sx={{ width: '70%', height: 40, mt: 15 }}
+                    // alternativeLabel is mobile is true and desktop is false 
+                    alternativeLabel
+                    sx={{ width: { xs: '100%', md: "70%" }, height: 40, mt: 15 }}
                 >
                     {steps.map((label) => (
                         <Step
-                            sx={{ ':first-child': { pl: 5 }, ':last-child': { pr: 0 } }}
+                            sx={{ ':first-child': { pl: { xs: 0, md: 5 } }, ':last-child': { pr: 0 } }}
                             key={label}
                         >
                             <StepLabel>{label}</StepLabel>
@@ -171,7 +173,7 @@ export default function Checkout(_: { disableCustomTheme?: boolean }) {
                         flexDirection: "column",
                         bgcolor: colors.grey[50],
                         p: { xs: 1, md: 2 },
-                        minHeight: "80vh",
+                        minHeight: { xs: "50vh", md: "80vh" },
                         justifyContent: "space-between",
                     }}>
                         {getStepContent(activeStep, orderPlaced)}
@@ -182,28 +184,38 @@ export default function Checkout(_: { disableCustomTheme?: boolean }) {
                                 flexDirection: { xs: 'column', sm: 'row' },
                                 pb: { xs: 12, sm: 0 },
                                 mt: { xs: 2, sm: 0 },
-                                mb: '60px',
-                                alignItems: 'end',
-
+                                alignItems: 'center',
+                                position: { xs: "fixed", sm: "static" }, // Mobile pe fixed, desktop pe normal
+                                bottom: { xs: 0, sm: "auto" }, // Mobile pe niche fix
+                                left: 0,
+                                width: { xs: "100%", sm: "auto" }, // Mobile pe full width
+                                bgcolor: { xs: "white", sm: "transparent" }, // Mobile pe background color white
+                                zIndex: 1000, // Ensure it's above other elements
+                                p: { xs: 1, sm: 0 } // Mobile pe padding thoda diya hai
                             }}
                         >
+                            {/* {activeStep !== 0 && (
+                                <Button
+                                    startIcon={<ChevronLeftRoundedIcon />}
+                                    onClick={handleBack}
+                                    variant="text"
+                                    sx={{
+                                        display: { xs: 'none', sm: 'flex' }, // Desktop pe dikhega, mobile pe nahi
+                                        color: "black"
+                                    }}
+                                >
+                                    Previous
+                                </Button>
+                            )} */}
                             {activeStep !== 0 && (
                                 <Button
                                     startIcon={<ChevronLeftRoundedIcon />}
                                     onClick={handleBack}
                                     variant="text"
-                                    sx={{ display: { xs: 'none', sm: 'flex', color: "black" } }}
-                                >
-                                    Previous
-                                </Button>
-                            )}
-                            {activeStep !== 0 && (
-                                <Button
-                                    startIcon={<ChevronLeftRoundedIcon />}
-                                    onClick={handleBack}
-                                    variant="outlined"
-                                    fullWidth
-                                    sx={{ display: { xs: 'flex', sm: 'none', color: "black" } }}
+                                    sx={{
+                                        display: { xs: 'flex', sm: 'flex' }, // Desktop pe dikhega, mobile pe nahi
+                                        color: "black"
+                                    }}
                                 >
                                     Previous
                                 </Button>
@@ -214,11 +226,10 @@ export default function Checkout(_: { disableCustomTheme?: boolean }) {
                                     endIcon={<ChevronRightRoundedIcon />}
                                     onClick={handleNext}
                                     sx={{
-                                        width: {
-                                            xs: '100%', sm: 'fit-content',
-                                            backgroundColor: colors.grey[800],
-                                            color: "white", fontWeight: "bold"
-                                        }
+                                        width: { xs: '100%', sm: 'fit-content' },
+                                        backgroundColor: colors.grey[800],
+                                        color: "white",
+                                        fontWeight: "bold"
                                     }}
                                 >
                                     {activeStep === steps.length - 1 ? 'Place order' : 'Next'}

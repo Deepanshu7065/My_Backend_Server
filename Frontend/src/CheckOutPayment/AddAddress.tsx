@@ -25,15 +25,18 @@ const AddAddress = () => {
     const { data: allAddressData } = GetSaveAddressApi({ user_id: user?._id });
     const { data } = GetCartApi({ id: user?._id });
     const dispatch = useDispatch();
+
     const { mutateAsync } = AddAddressApi();
     const { mutateAsync: updateAddressByUser } = UpdateAddressApi()
     const { mutateAsync: deleteAddressByUser } = DeleteAddressApi()
     const [isIconVisible, setIsIconVisible] = React.useState(false);
+
     const [errors, setErrors] = React.useState<{ [key: string]: string }>({});
     const [isChecked, setIsChecked] = React.useState(false);
     const [updateChecked, setUpdateChecked] = React.useState(false);
     const [selectedCard, setSelectedCard] = React.useState<string | null>(null);
     const [saveAdress, setSavedAddress] = React.useState<any>(null);
+
     const [updateOrders, setUpdateOrders] = React.useState<{
         customer_name: string;
         last_name: string;
@@ -167,12 +170,13 @@ const AddAddress = () => {
     return (
         <Box sx={{
             display: "flex",
+            flexDirection: { xs: "column", md: "row" },
             gap: 2,
-            width: "60vw",
+            width: { xs: "100%", md: "60vw" },
             justifyContent: "space-between",
 
         }}>
-            <Grid container spacing={2} component="form" mt={7} width={"70%"}>
+            <Grid container spacing={2} component="form" mt={7} width={{ xs: "100%", md: "70%" }}>
                 <FormGrid size={{ xs: 12, md: 6 }}>
                     <FormLabel htmlFor="first-name" required>
                         First name
@@ -349,7 +353,13 @@ const AddAddress = () => {
 
                     />
                 </FormGrid>
-                <Stack direction={"row"} width={"50%"} sx={{ display: "flex", justifyContent: "space-between" }}>
+                <Stack direction={"row"}
+                    width={{ xs: "100%", md: "50%" }}
+                    sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        flexDirection: { xs: "column", md: "row" },
+                    }}>
                     <FormControlLabel
                         control={<Checkbox
                             name="saveAddress"
@@ -375,20 +385,22 @@ const AddAddress = () => {
 
             <Box sx={{
                 display: "flex",
-                mt: 10,
-                flexDirection: "column",
+                mt: { xs: 2, md: 10 },
+                flexDirection: { xs: "row", md: "column" },
                 gap: 2,
-                alignItems: "center",
+                // alignItems: "center",
                 border: "1px solid gray",
                 padding: 2,
                 borderRadius: 2,
                 bgcolor: colors.grey[100],
-                height: "400px",
+                height: { xs: "auto", md: "400px" },
                 overflowY: "auto",
                 objectFit: "cover",
-                overflowX: "hidden",
+                overflowX: { xs: "auto", md: "hidden" },
+                whiteSpace: "nowrap",
+                scrollSnapType: "x mandatory",
                 "&::-webkit-scrollbar": {
-                    width: "4px",
+                    height: "4px",
                 },
                 "&::-webkit-scrollbar-track": {
                     backgroundColor: "lightgray",
@@ -397,6 +409,8 @@ const AddAddress = () => {
                     backgroundColor: "gray",
                     borderRadius: "5px",
                 },
+                alignItems: "stretch",
+                mb: { xs: 9, md: 0 }
             }}>
                 {savedAddresses.map((item: any, index: number) => (
                     <Card
@@ -404,8 +418,8 @@ const AddAddress = () => {
                             bgcolor: selectedCard === item?._id ? colors.grey[200] : "white",
                             boxShadow: 3,
                             display: "flex",
-                            width: "300px",
-                            minHeight: "100px",
+                            minWidth: { xs: "80%", sm: "45%", md: "23%" },
+                            minHeight: { xs: "100%", md: "100px" },
                             maxHeight: "100px",
                             cursor: "pointer",
                             transition: "0.3s",
@@ -419,12 +433,14 @@ const AddAddress = () => {
                             whiteSpace: "normal",
                             wordWrap: "break-word",
                             overflow: "auto",
+                            scrollSnapAlign: "start",
+                            "&::-webkit-scrollbar": {
+                                display: "none",
+                            }
                         }}
                         onClick={() => handleSelectCard(item?._id)}
                         key={index}
                     >
-
-
                         <CardContent sx={{ width: "100%", display: "flex", flexDirection: "column", height: "100%" }}>
                             <Stack
                                 width={"100%"}
@@ -434,10 +450,7 @@ const AddAddress = () => {
                                     alignItems: "center",
                                 }}>
                                 <Stack width={"100%"}>
-                                    <Typography
-                                        fontSize={12}
-                                        fontFamily="monospace"
-                                    >
+                                    <Typography fontSize={12} fontFamily="monospace">
                                         {item?.customer_name}, {item?.phone}
                                     </Typography>
                                     <Typography fontFamily={"monospace"} fontSize={12}>
@@ -456,9 +469,7 @@ const AddAddress = () => {
                                     alignItems: "flex-end",
                                     width: "10px"
                                 }}>
-                                    <Delete sx={{
-                                        fontSize: "16px"
-                                    }}
+                                    <Delete sx={{ fontSize: "16px" }}
                                         onClick={() => handleDeleteAddress(item?._id)}
                                     />
                                 </div>
@@ -467,6 +478,7 @@ const AddAddress = () => {
                     </Card>
                 ))}
             </Box>
+
 
 
 

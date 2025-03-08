@@ -362,7 +362,7 @@ export default function AddBatsForm() {
                         <Stack sx={{
                             position: "relative",
                             width: "100%",
-                            bottom: 3,
+                            bottom: 13,
                             height: "100%",
                             justifyContent: "flex-end"
                         }}>
@@ -430,14 +430,14 @@ export default function AddBatsForm() {
                 </Stack>
             )
             }
-            <Box sx={{
+            {!mobile && <Box sx={{
                 position: "fixed",
                 width: "100%",
                 flex: 1,
                 bottom: 1
             }}>
                 <Footer />
-            </Box>
+            </Box>}
         </Box >
     );
 }

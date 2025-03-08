@@ -9,6 +9,7 @@ const OrderPlaced = () => {
       bgcolor: "white",
       mb: 2,
       p: 3,
+      mt: 7,
       borderRadius: "10px",
       display: "flex",
       boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",

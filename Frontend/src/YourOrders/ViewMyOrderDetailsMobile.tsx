@@ -269,32 +269,32 @@ const ViewMyOrderDetailsMobile = () => {
                         <Typography sx={{
                             fontSize: 12
                         }}>
-                            Contact : {data?.order.phone}
+                            Contact : {data?.order?.address?.phone}
                         </Typography>
                         <Typography sx={{
                             fontSize: 12
                         }}>
-                            {data?.order?.address}
+                            {data?.order?.address?.address}
                         </Typography>
                         <Typography sx={{
                             fontSize: 12
                         }}>
-                            {data?.order?.fullAddress}
+                            {data?.order?.address.fullAddress}
                         </Typography>
                         <Typography sx={{
                             fontSize: 12
                         }}>
-                            City : {data?.order?.city}
+                            City : {data?.order?.address.city}
                         </Typography>
                         <Typography sx={{
                             fontSize: 12
                         }}>
-                            State : {data?.order?.state}
+                            State : {data?.order?.address?.state}
                         </Typography>
                         <Typography sx={{
                             fontSize: 12
                         }}>
-                            Pincode : {data?.order?.pincode}
+                            Pincode : {data?.order?.address?.pincode}
                         </Typography>
                     </Stack>
                 </Box>

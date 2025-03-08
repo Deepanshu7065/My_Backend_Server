@@ -8,7 +8,8 @@ import { Box, Button, Card, CardContent, Grid, Stack, TextField, Typography, Car
 import { Footer } from '../User/AddUser';
 
 const PaymentCheckOut = () => {
-    const { data } = GetCartApi();
+    const { user } = useSelector((state: RootState) => state?.CustomerUser);
+    const { data } = GetCartApi({ id: user?._id || '' });
     const mobile = useMediaQuery("(max-width:600px)");
 
     const dispatch = useDispatch();
@@ -19,7 +20,6 @@ const PaymentCheckOut = () => {
     }, [data]);
 
     const products = useSelector((state: RootState) => state?.ProductId.products);
-    const { user } = useSelector((state: RootState) => state?.CustomerUser);
 
     const [updateOrders, setUpdateOrders] = React.useState<{
         product_id: string[];

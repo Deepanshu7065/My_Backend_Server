@@ -78,7 +78,7 @@ const YourOrders = () => {
                                     maxHeight: "70vh",
                                 }}
                             >
-                                {data?.orders?.map((item: any) => (
+                                {data?.orders?.map((item) => (
                                     <Card
                                         key={item.orderId}
                                         sx={{

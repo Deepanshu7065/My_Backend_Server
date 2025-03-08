@@ -3,18 +3,50 @@ import { useSelector } from 'react-redux'
 import { RootState } from '../Store'
 import { Box, CardContent, Card, Typography, TextField, Stack, Button, colors } from '@mui/material';
 import { OrderCreateApi } from '../AllPostApi';
+import { Cancel } from '@mui/icons-material';
 
 const PaymentDetails = () => {
     const { address } = useSelector((state: RootState) => state?.AddAddressCustomer);
 
 
-    // if (!address?._id) {
-    //     return (
-    //         <>
-    //             First use Address Go to AddressPage And check Icon
-    //         </>
-    //     )
-    // }
+    if (!address?._id) {
+        return (
+            <>
+                <Stack sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    height: "100%",
+                    width: "100%",
+                    mt: { xs: 5, md: 0 },
+                    mb: { xs: 5, md: 0 },
+                }}>
+                    <Box sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        height: "70%",
+                        width: { xs: "100%", md: "50%" },
+                        bgcolor: "white",
+                        flexDirection: "column"
+                    }}>
+                        <Cancel sx={{
+                            width: { xs: "100px", md: "200px" },
+                            height: { xs: "100px", md: "200px" },
+                        }} />
+
+                        <Typography sx={{
+                            fontSize: { xs: "1rem", md: "2rem" },
+                            fontWeight: "bold",
+                            fontFamily: "monospace, cursive",
+                        }}>
+                            No Address Found
+                        </Typography>
+                    </Box>
+                </Stack>
+            </>
+        )
+    }
 
 
 
@@ -26,13 +58,13 @@ const PaymentDetails = () => {
             flexDirection: "column",
             p: { xs: 1, md: 2 },
             minHeight: "70%",
-            mb: 2,
+            mb: { xs: 12, md: 0 },
             alignItems: "center",
         }}>
 
             <Card sx={{
-                maxWidth: "600px",
-                minWidth: "600px",
+                maxWidth: { xs: "100%", md: "600px" },
+                minWidth: { xs: "100%", md: "600px" },
                 height: "400px",
                 mt: 5,
                 borderRadius: "10px",

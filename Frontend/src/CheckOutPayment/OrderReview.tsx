@@ -1,4 +1,4 @@
-import { Box, Stack, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Avatar, Button, colors } from '@mui/material';
+import { Box, Stack, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Avatar, Button, colors, useMediaQuery } from '@mui/material';
 import React from 'react';
 import { RootState } from '../Store';
 import { useSelector } from 'react-redux';
@@ -13,6 +13,7 @@ const OrderReview = () => {
   const totalPrice = products.reduce((total, product) => total + product.price * product.quantity, 0);
   const totalQuantity = products.reduce((total, product) => total + product.quantity, 0);
   const totalPayable = totalPrice + (deleveryCharge ?? 0) - (discount ?? 0);
+  const mobile = useMediaQuery('(max-width: 600px)');
 
   if ((products.length ?? 0) === 0) {
     return <Box sx={{
@@ -20,6 +21,7 @@ const OrderReview = () => {
       bgcolor: "white",
       mb: 2,
       p: 3,
+      mt: 7,
       borderRadius: "10px",
       display: "flex",
       boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
@@ -61,12 +63,14 @@ const OrderReview = () => {
       </Stack>
     </Box>
   }
+
   if (address.address === "") {
     return <Box sx={{
       width: "100%",
       bgcolor: "white",
       mb: 2,
       p: 3,
+      mt: 4,
       borderRadius: "10px",
       display: "flex",
       boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
@@ -94,12 +98,14 @@ const OrderReview = () => {
     <Box sx={{
       width: "100%",
       bgcolor: "white",
-      mb: 2,
-      p: 3,
+      p: { xs: 1, md: 3 },
+      mt: 4,
       borderRadius: "10px",
       boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
       minHeight: "auto",
-      maxHeight: "66vh"
+      maxHeight: "80vh",
+      mb: { xs: 9, md: 2 }
+
     }}>
       <Typography sx={{
         fontSize: "1.5rem",
@@ -109,7 +115,8 @@ const OrderReview = () => {
         fontFamily: "monospace",
         color: colors.blue[500],
         letterSpacing: 2,
-        mb: 3
+        mb: 2,
+
       }}>Order Summary</Typography>
 
       {/* Table for Products */}
@@ -132,11 +139,11 @@ const OrderReview = () => {
         }}>
           <TableHead>
             <TableRow sx={{ backgroundColor: "#f5f5f5" }}>
-              <TableCell><strong>Image</strong></TableCell>
-              <TableCell><strong>Product Name</strong></TableCell>
-              <TableCell align="center"><strong>Quantity</strong></TableCell>
-              <TableCell align="right"><strong>Price (₹)</strong></TableCell>
-              <TableCell align="right"><strong>Total (₹)</strong></TableCell>
+              <TableCell sx={{ fontSize: mobile ? "0.7rem" : "0.9rem" }}><strong>{mobile ? "Image" : "Image"}</strong></TableCell>
+              <TableCell sx={{ fontSize: mobile ? "0.7rem" : "0.9rem" }}><strong>{mobile ? "Name" : "Product Name"}</strong></TableCell>
+              <TableCell sx={{ fontSize: mobile ? "0.7rem" : "0.9rem" }} align="center"><strong>{mobile ? "Qty" : "Quantity"}</strong></TableCell>
+              <TableCell sx={{ fontSize: mobile ? "0.7rem" : "0.9rem" }} align="right"><strong>{mobile ? "P (₹)" : "Price (₹)"}</strong></TableCell>
+              <TableCell sx={{ fontSize: mobile ? "0.7rem" : "0.9rem" }} align="right"><strong>{mobile ? "T (₹)" : "Total (₹)"}</strong></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

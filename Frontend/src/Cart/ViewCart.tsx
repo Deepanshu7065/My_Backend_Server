@@ -1,4 +1,4 @@
-import { Box, Button, Card, CardContent, colors, Grid, Stack, Typography, useMediaQuery } from '@mui/material'
+import { Box, Button, Card, CardContent, CircularProgress, colors, Grid, Stack, Typography, useMediaQuery } from '@mui/material'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../Store'
 import { imageUrl } from '../ApiEndPoint'
@@ -15,7 +15,7 @@ const ViewCart = () => {
     const { user } = useSelector((state: RootState) => state.CustomerUser)
     const navigate = useNavigate()
     const { data, refetch } = GetCartApi({ id: user?._id })
-    const { mutateAsync: increament } = UpdateCartApi()
+    const { mutateAsync: increament, isPending: isIncreamentPending } = UpdateCartApi()
     const { mutateAsync: deleteCart } = DeleteCart()
 
     const handleProceed = () => {
@@ -152,7 +152,7 @@ const ViewCart = () => {
                                                         </td>
                                                         <td>
                                                             <Stack direction="row" spacing={2} alignItems={"center"}>
-                                                                <button style={{
+                                                                <Button style={{
                                                                     display: "flex",
                                                                     width: "30px",
                                                                     height: "30px",
@@ -167,14 +167,16 @@ const ViewCart = () => {
                                                                     textAlign: "center",
                                                                     justifyContent: "center"
                                                                 }}
+                                                                    loading={isIncreamentPending}
+                                                                    disabled={isIncreamentPending}
                                                                     onClick={() => handleIncreament(item?._id as string)}
                                                                 >
-                                                                    +
-                                                                </button>
+                                                                    {isIncreamentPending ? <CircularProgress size={20} /> : "+"}
+                                                                </Button>
                                                                 <span style={{ fontWeight: "bold", fontFamily: "Dancing Script" }}>
                                                                     {item.quantity}
                                                                 </span>
-                                                                <button style={{
+                                                                <Button style={{
                                                                     display: "flex",
                                                                     width: "30px",
                                                                     height: "30px",
@@ -189,10 +191,12 @@ const ViewCart = () => {
                                                                     textAlign: "center",
                                                                     justifyContent: "center"
                                                                 }}
+                                                                    disabled={isIncreamentPending}
+                                                                    loading={isIncreamentPending}
                                                                     onClick={() => handleDecrement(item?._id as string)}
                                                                 >
-                                                                    -
-                                                                </button>
+                                                                    {isIncreamentPending ? <CircularProgress size={20} /> : "-"}
+                                                                </Button>
                                                             </Stack>
                                                         </td>
                                                         <td>{item.price}</td>
@@ -300,13 +304,13 @@ const ViewCart = () => {
                                                         </Stack>
 
                                                         {/* Price & Quantity Controls */}
-                                                        <Stack p={2} direction="row" justifyContent="space-between" alignItems="center">
-                                                            <Stack direction="row" spacing={2} alignItems="center">
-                                                                <button style={{
+                                                        <Stack p={1} direction="row" justifyContent="space-between" alignItems="center">
+                                                            <Stack direction="row" spacing={1} alignItems="center">
+                                                                <Button style={{
                                                                     display: "flex",
-                                                                    width: "30px",
-                                                                    height: "30px",
-                                                                    padding: 5,
+                                                                    width: "20px",
+                                                                    height: "20px",
+                                                                    padding: 2,
                                                                     backgroundColor: "white",
                                                                     border: "1px solid rgba(0,0,0,0.1)",
                                                                     color: "rgba(0,0,0,0.5)",
@@ -317,36 +321,46 @@ const ViewCart = () => {
                                                                     textAlign: "center",
                                                                     justifyContent: "center"
                                                                 }}
+                                                                    loading={isIncreamentPending}
+                                                                    disabled={isIncreamentPending}
 
                                                                     onClick={() => handleIncreament(item?._id)}
-                                                                > + </button>
+                                                                >{isIncreamentPending ? <CircularProgress size={20} /> : "+"} </Button>
                                                                 <span style={{ fontWeight: "bold", fontFamily: "Dancing Script" }}>
                                                                     {item.quantity}
                                                                 </span>
-                                                                <button style={{
+                                                                <Button style={{
                                                                     display: "flex",
-                                                                    width: "30px",
-                                                                    height: "30px",
-                                                                    padding: 5,
+                                                                    width: "20px",
+                                                                    height: "20px",
+                                                                    padding: 0,
                                                                     backgroundColor: "white",
                                                                     border: "1px solid rgba(0,0,0,0.1)",
                                                                     color: "rgba(0,0,0,0.5)",
-                                                                    fontSize: "1.5rem",
+                                                                    fontSize: "1.6rem",
                                                                     borderRadius: "5px",
                                                                     cursor: "pointer",
                                                                     alignItems: "center",
                                                                     textAlign: "center",
                                                                     justifyContent: "center"
                                                                 }}
+                                                                    loading={isIncreamentPending}
+                                                                    disabled={isIncreamentPending}
 
                                                                     onClick={() => handleDecrement(item?._id)}
-                                                                > - </button>
+                                                                > {
+                                                                        isIncreamentPending ? <CircularProgress size={20} /> : "-"
+                                                                    } </Button>
                                                             </Stack>
 
                                                             <Delete sx={{
                                                                 cursor: "pointer",
-                                                                color: "rgb(0,0,0,0.8)",
+                                                                color: "red",
                                                                 fontSize: "1.5rem",
+                                                                zIndex: 1,
+                                                                position: "absolute",
+                                                                right: 10,
+                                                                top: 10,
 
                                                             }}
                                                                 onClick={() => handleDelete(item?._id)}

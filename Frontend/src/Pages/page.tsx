@@ -36,6 +36,10 @@ export const pages = [
     {
         title: "ShopOrders",
         path: "/shop_orders",
+    },
+    {
+        title: "All Tickets",
+        path: "/all_tickets",
     }
 ]
 

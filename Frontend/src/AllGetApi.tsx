@@ -1,7 +1,7 @@
 import { queryOptions, useQuery } from "@tanstack/react-query"
 import axios from "axios"
 import { baseUrl } from "./ApiEndPoint"
-import { AddCartTypes, AllMyOrderCartTypes, AllOrderTypes, AllOrderTypesCompleted, AllProductsTypes, AllSingleMyOrderTypes, AllUserTypes, OrderTypes, ProductTypes } from "./AllTypes"
+import { AddCartTypes, AllMyOrderCartTypes, AllOrderTypes, AllOrderTypesCompleted, AllProductsTypes, AllSingleMyOrderTypes, AllUserTypes, ContactsAllTypes, OrderTypes, ProductTypes } from "./AllTypes"
 
 export const getUsers = ({
     search,
@@ -274,6 +274,41 @@ export const GetSingleAddressByUser = ({ id }: { id: string }) => {
     return useQuery({
         queryKey: ["address"],
         queryFn: getMyOrder,
+        enabled: !!id
+    })
+}
+
+export const GetContactByUser = ({ user }: { user: string }) => {
+    const getAllUser = async () => {
+        try {
+            const response = await axios.get(`${baseUrl}/contact`, {
+                params: {
+                    user
+                }
+            })
+            return response?.data as ContactsAllTypes[] 
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    return useQuery({
+        queryKey: ["user", user],
+        queryFn: getAllUser,
+    })
+}
+
+export const GetSingleContactTickets = ({ id, ticketId }: { id: string, ticketId: string }) => {
+    const getAllUser = async () => {
+        try {
+            const response = await axios.get(`${baseUrl}/contact/${id}/${ticketId}`)
+            return response.data as ContactsAllTypes
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    return useQuery({
+        queryKey: ["user", id],
+        queryFn: getAllUser,
         enabled: !!id
     })
 }

@@ -13,6 +13,7 @@ import userGetRoutes from "./routes/UserGetAndUpdate.js"
 import uploadsRepairs from "./routes/UploadDetailsForRepair.js"
 import AddToCart from "./routes/AddCartApi.js"
 import orderCreateRoutes from "./routes/AddOrdersApi.js"
+import ContactApi from "./routes/contactApi.js"
 
 const app = express();
 app.use(morgan("dev"));
@@ -31,6 +32,7 @@ app.use("/api/v1", authenticate, orderCreateRoutes)
 app.use("/api/v1", authenticate, userGetRoutes)
 app.use("/api/v1", authenticate, imageRoutes);
 app.use("/api/v1", authenticate, uploadsRepairs);
+app.use("/api/v1", authenticate, ContactApi)
 app.use("/uploads", express.static("uploads"));
 
 

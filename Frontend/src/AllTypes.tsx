@@ -98,7 +98,7 @@ export interface AllOrderTypesCompleted {
 
 export interface AllSingleMyOrderTypes {
     order: AllMyOrderCartTypes
-    message : string
+    message: string
 }
 export interface AllMyOrderCartTypes {
     _id: string
@@ -156,4 +156,26 @@ export interface Address {
     state: string
     country: string
     __v: number
+}
+
+
+export interface ContactsAllTypes {
+    _id: string
+    name: string
+    last_name: string
+    phone: string
+    message: string
+    user: User
+    createdAt: string
+    updatedAt: string
+    __v: number
+    status: string
+    ticketId: string
+}
+
+export interface User {
+    _id: string
+    userName: string
+    email: string
+
 }

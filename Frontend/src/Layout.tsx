@@ -14,7 +14,7 @@ import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { pages } from './Pages/page';
-import { ShoppingCart } from '@mui/icons-material';
+import { AirplaneTicket, ShoppingCart } from '@mui/icons-material';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from './Store';
 import { Button } from '@mui/material';
@@ -250,6 +250,15 @@ const Navbar = () => {
                                         Login
                                     </Button>
                                 )}
+                            {user?.userType !== "Customer" && (
+                                <Tooltip title="Your Tickets" onClick={() => navigate("/tickets")}>
+                                    <img src="public/imagesHelp.png" alt="" style={{
+                                        width: "30px",
+                                        height: "30px",
+                                        borderRadius: "50%"
+                                    }} />
+                                </Tooltip>
+                            )}
 
 
                             <Menu

@@ -390,3 +390,40 @@ export const DeleteAllCartByUSer = () => {
         }
     })
 }
+
+export const ContactDetailsPostApi = () => {
+    const queryClient = useQueryClient()
+    const contactDetailsPostApi = async ({ data }: any) => {
+        try {
+            const response = await axios.post(`${baseUrl}/contact/add`, data)
+            return response
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    return useMutation({
+        mutationFn: contactDetailsPostApi,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["contact"] })
+        }
+    })
+}
+
+
+export const ContactSendMessage = () => {
+    const queryClient = useQueryClient()
+    const contactSendMessage = async ({ data, id }: any) => {
+        try {
+            const response = await axios.post(`${baseUrl}/contact/send/${id}`, data)
+            return response
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    return useMutation({
+        mutationFn: contactSendMessage,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["contact"] })
+        }
+    })
+}

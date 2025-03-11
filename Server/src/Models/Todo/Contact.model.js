@@ -13,13 +13,15 @@ const ContactModel = new mongoose.Schema({
         type: String,
         required: true
     },
-    message: [{
+    message: {
         type: String,
         required: true
-    }],
+    },
+    title :{
+        type: String,
+    },
     user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
+        type: mongoose.Schema.Types.ObjectId, ref: "User",
         required: true
     },
     status: {
@@ -29,8 +31,26 @@ const ContactModel = new mongoose.Schema({
     ticketId: {
         type: String
     },
-    send_message: [{ type: String, default: [] }],  
-    recieve_message: [{ type: String, default: [] }]  
+    send_message: [{
+        message: {
+            type: String,
+            required: true
+        },
+        timestamp: {
+            type: Date,
+            default: Date.now
+        }
+    }],
+    recieve_message: [{
+        message: {
+            type: String,
+            required: true
+        },
+        timestamp: {
+            type: Date,
+            default: Date.now
+        }
+    }]
 }, { timestamps: true });
 
 export const ContactModal = mongoose.model("Contact", ContactModel);

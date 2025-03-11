@@ -169,8 +169,17 @@ export interface ContactsAllTypes {
     createdAt: string
     updatedAt: string
     __v: number
+    title: string
     status: string
     ticketId: string
+    send_message: sendMessage[]
+    recieve_message: sendMessage[]
+}
+
+export interface sendMessage {
+    message: string
+    _id: number
+    timestamp: string
 }
 
 export interface User {

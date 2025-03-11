@@ -239,7 +239,8 @@ const ShopBats = () => {
                                                                 color: "green",
                                                             }}
                                                         >
-                                                            $ {items.price}
+                                                            {/* ruppes */}
+                                                            &#x20B9; {items.price}
                                                         </Typography>
                                                         <Button
                                                             style={{

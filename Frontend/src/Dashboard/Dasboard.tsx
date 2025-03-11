@@ -233,7 +233,8 @@ const Dashboard = () => {
                         fontFamily: "Poppins, sans-serif",
                         fontSize: { xs: "0.9rem", sm: "1rem", md: "1.2rem" },
                         '&:hover': { bgcolor: "#ddd" }
-                    }}>
+                    }} 
+                    onClick={() => navigate("/contact")}>
                         Help
                     </Button>
                 </Box>

@@ -122,7 +122,7 @@ const ViewMyOrderDetails = ({ order_id }: { order_id: string }) => {
                                             Price: {item.price}
                                         </Typography>
                                         <Typography fontSize={"14px"}>
-                                            Quantity: {item.quantity}
+                                            Quantity: {data?.order?.quantity}
                                         </Typography>
                                     </Stack>
                                 </div>

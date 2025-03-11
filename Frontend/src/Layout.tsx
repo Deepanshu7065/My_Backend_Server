@@ -52,12 +52,15 @@ const Navbar = () => {
     const { user } = useSelector((state: RootState) => state?.CustomerUser)
     const filteredPages = pages.filter(page =>
         !(page.title === "Users" && (!user?.userName || user?.userType === "Customer")) &&
-        !(page.title === "AddBat" && (!user?.userName || user?.userType === "Customer"))
+        !(page.title === "AddBat" && (!user?.userName || user?.userType === "Customer")) &&
+        !(page.title === "All Tickets" && (!user?.userName || user?.userType === "Customer")) &&
+        !(page.title === "RepairOrders" && (!user?.userName || user?.userType === "Customer")) &&
+        !(page.title === "ShopOrders" && (!user?.userName || user?.userType === "Customer"))
     );
 
 
     const handleLogout = () => {
-        dispatch(logoutCustomerUser())
+        dispatch(logoutCustomerUser())  
         setAnchorElUser(null)
     }
 
@@ -250,15 +253,15 @@ const Navbar = () => {
                                         Login
                                     </Button>
                                 )}
-                            {user?.userType !== "Customer" && (
-                                <Tooltip title="Your Tickets" onClick={() => navigate("/tickets")}>
-                                    <img src="public/imagesHelp.png" alt="" style={{
-                                        width: "30px",
-                                        height: "30px",
-                                        borderRadius: "50%"
-                                    }} />
-                                </Tooltip>
-                            )}
+                            {/* {user?.userType !== "Customer" && ( */}
+                            <Tooltip title="Your Tickets" onClick={() => navigate("/tickets")}>
+                                <img src="public/imagesHelp.png" alt="" style={{
+                                    width: "30px",
+                                    height: "30px",
+                                    borderRadius: "50%"
+                                }} />
+                            </Tooltip>
+                            {/* )} */}
 
 
                             <Menu

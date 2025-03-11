@@ -412,9 +412,9 @@ export const ContactDetailsPostApi = () => {
 
 export const ContactSendMessage = () => {
     const queryClient = useQueryClient()
-    const contactSendMessage = async ({ data, id }: any) => {
+    const contactSendMessage = async ({ data, }: any) => {
         try {
-            const response = await axios.post(`${baseUrl}/contact/send/${id}`, data)
+            const response = await axios.post(`${baseUrl}/contact/send`, data)
             return response
         } catch (error) {
             console.log(error)
@@ -422,6 +422,45 @@ export const ContactSendMessage = () => {
     }
     return useMutation({
         mutationFn: contactSendMessage,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["contact"] })
+        }
+    })
+}
+
+export const ContactReplMessage = () => {
+    const queryClient = useQueryClient()
+    const contactReplMessage = async ({ data, }: any) => {
+        try {
+            const response = await axios.post(`${baseUrl}/contact/reply`, data)
+            return response
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    return useMutation({
+        mutationFn: contactReplMessage,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["contact"] })
+        }
+    })
+}
+
+
+export const TicketStatusChange = () => {
+    const queryClient = useQueryClient()
+    const ticketStatusChange = async ({ status, id }: any) => {
+        try {
+            const response = await axios.patch(`${baseUrl}/contact/update/${id}`, {
+                status: status  
+            })
+            return response
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    return useMutation({
+        mutationFn: ticketStatusChange,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["contact"] })
         }

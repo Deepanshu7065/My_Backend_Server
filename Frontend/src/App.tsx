@@ -32,6 +32,9 @@ import ViewMyOrderDetailsMobile from "./YourOrders/ViewMyOrderDetailsMobile";
 import Checkout from "./CheckOutPayment/AddPaymentCheckOut";
 import Contact from "./Contact";
 import YourTickets from "./Tickets/YourTickets";
+import AllTickets from "./Tickets/AllTickets";
+import MobileViewAllTickes from "./Tickets/MobileViewAllTickes";
+import MobileViewYourTickets from "./Tickets/MobileViewYourTickets";
 
 
 function App() {
@@ -75,6 +78,9 @@ function App() {
               <Route path="/shop_orders" element={<AllShopOrder />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/tickets" element={<YourTickets />} />
+              <Route path="/all_tickets" element={<AllTickets />} />
+              <Route path="/ticket_all" element={<MobileViewAllTickes />} />
+              <Route path="/ticket_your" element={<MobileViewYourTickets />} />
               <Route path="/orders" element={<OrderList />} >
                 <Route path="/orders" element={<YourRepairsOrders />} />
                 <Route path="/orders/your_orders" element={<YourOrders />} />

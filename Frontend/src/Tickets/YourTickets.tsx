@@ -1,38 +1,46 @@
-import { Box, Button, Card, CardContent, colors, Stack, TextField, Typography } from '@mui/material'
-import React, { useEffect, useState } from 'react'
+import { Box, Button, Card, CardContent, colors, LinearProgress, Skeleton, Stack, TextField, Typography, useMediaQuery } from '@mui/material'
+import { useEffect, useRef, useState } from 'react'
 import { GetContactByUser, GetSingleContactTickets } from '../AllGetApi'
 import { RootState } from '../Store'
 import { useSelector } from 'react-redux'
 import moment from 'moment'
 import { ContactSendMessage } from '../AllPostApi'
+import { useNavigate } from 'react-router-dom'
+import { ThumbUp } from '@mui/icons-material'
 
 const YourTickets = () => {
     const { user } = useSelector((state: RootState) => state.CustomerUser)
-    const { data = [] } = GetContactByUser({ user: user._id })
-    const [id, setId] = useState("")
+    const messagesEndRef = useRef<HTMLDivElement | null>(null)
+    const { data = [], refetch, isLoading } = GetContactByUser({ user: user._id })
     const [ticketId, setTicketId] = useState("")
-    const { data: singleContact } = GetSingleContactTickets({ id: id, ticketId: ticketId })
+    const [sendMessage, setSendMessage] = useState("")
+    const isMobile = useMediaQuery("(max-width: 800px)")
+    const navigate = useNavigate()
+
     useEffect(() => {
         if (data?.length !== 0) {
-            setId(data?.length === 0 ? "" : data[0]?._id)
-            setTicketId(data?.length === 0 ? "" : data[0]?.ticketId)
+            setTicketId(data[0]?.ticketId || "")
         }
     }, [data])
-    const { mutateAsync } = ContactSendMessage()
-    const [sendMessage, setSendMessage] = useState("")
 
-    const handleSendMessage = async ({ id }: { id: string }) => {
+    const { data: singleContact, refetch: singleRefetch, isLoading: singleLoading } = GetSingleContactTickets({ ticketId })
+    const { mutateAsync, isPending } = ContactSendMessage()
+
+    const handleSendMessage = async ({ ticketId }: { ticketId: string }) => {
         try {
-            const response = await mutateAsync({
-                data: { send_message: sendMessage, user: user._id, },
-                id: id
-            })
-            setId("")
+            await mutateAsync({ data: { send_message: sendMessage, user: user._id, ticketId } })
+            refetch()
+            singleRefetch()
+            setSendMessage("")
+            setTicketId(ticketId)
         } catch (error) {
             console.log(error)
         }
     }
 
+    useEffect(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+    }, [singleContact])
 
     return (
         <Box sx={{
@@ -40,179 +48,232 @@ const YourTickets = () => {
             height: "100vh",
             display: "flex",
             flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center"
+            justifyContent: isMobile ? "" : "center",
+            alignItems: "center",
+            p: { xs: 1, md: 2 }
         }}>
-            <Stack mt={9} width={{ xs: "100%", md: "90%" }}>
-                <Typography sx={{
-                    fontSize: { xs: "1.5rem", md: "2rem" },
-                    fontWeight: "bold"
-                }}>Your Tickets</Typography>
-
-                <Typography sx={{
-                    fontSize: { xs: "1rem", md: "1.2rem" },
-                    color: "gray"
-                }}>Your tickets will be displayed here</Typography>
+            <Stack mt={9} width={{ xs: "100%", md: "90%" }} textAlign={isMobile ? "center" : "left"}>
+                <Typography sx={{ fontSize: { xs: "1.5rem", md: "2rem" }, fontWeight: "bold", fontFamily: "monospace" }}>
+                    Your Tickets
+                </Typography>
+                <Typography sx={{ fontSize: { xs: "1rem", md: "1.2rem" }, color: "gray", fontFamily: "monospace" }}>
+                    Your tickets will be displayed here
+                </Typography>
             </Stack>
+
             <Box width={{ xs: "100%", md: "90%" }} sx={{
                 display: "flex",
-                justifyContent: "center",
+                flexDirection: isMobile ? "column" : "row",
                 mt: 2,
-                jusifyItems: "center",
                 gap: 2
             }}>
-
-                <Box width={"20%"}>
-                    {data?.length === 0 ? <Typography sx={{
-                        fontSize: { xs: "1rem", md: "1.2rem" },
-                        color: "gray"
-                    }}>
-                        No tickets found
-                    </Typography> : (
+                <Box width={isMobile ? "100%" : "25%"} sx={{ overflowY: "auto", maxHeight: "400px" }}>
+                    {isLoading ? (
+                        Array.from({ length: 3 }).map((_, idx) => (
+                            <Skeleton key={idx} width={"100%"} height={150} sx={{ my: 1 }} />
+                        ))
+                    ) : data?.length === 0 ? (
+                        <Typography sx={{ fontSize: "1rem", color: "gray", fontFamily: "monospace" }}>No tickets found</Typography>
+                    ) : (
                         data?.map((item, idx) => (
-                            <Card sx={{
-                                width: { xs: "100%", md: "100%" },
-                                height: "150px",
-                                bgcolor: colors.grey[50],
-                                boxShadow: "0px 4px 0px rgba(0, 0, 0, 0.1)",
-                                mt: 1
-                            }}
-                                onClick={() => {
-                                    setId(item._id)
-                                    setTicketId(item.ticketId)
-                                }}
+                            <Card
                                 key={idx}
+                                sx={{
+                                    width: "100%",
+                                    borderRadius: "10px",
+                                    my: 1,
+                                    cursor: "pointer",
+                                    transition: "0.3s",
+                                    "&:hover": { bgcolor: "grey.200" },
+                                    bgcolor: "grey.100"
+                                }}
+                                onClick={() => {
+                                    setTicketId(item.ticketId)
+                                    if (isMobile) {
+                                        navigate(`/ticket_your?ticketId=${item.ticketId}`)
+                                    }
+                                }}
                             >
                                 <CardContent>
-                                    <Typography>
-                                        {item?.message}
-                                    </Typography>
-                                    <Typography>
-                                        {item?.status}
-                                    </Typography>
-                                    <Typography>
-                                        {item?.ticketId}
-                                    </Typography>
+                                    <Stack direction="row" sx={{
+                                        width: "100%",
+                                        justifyContent: "space-between",
+                                        alignItems: "center"
+                                    }}>
+                                        <Typography
+                                            variant='h6'
+                                            sx={{
+                                                fontFamily: "monospace",
+                                                color: "red"
+                                            }}
+                                        >
+                                            {item.ticketId}
+                                        </Typography>
+                                        <Typography
+                                            variant='body2'
+                                            sx={{
+                                                color: "gray",
+                                                fontFamily: "monospace",
+                                                fontSize: "0.8rem",
+                                                p: 1,
+                                                bgcolor: colors.green[100],
+                                                borderRadius: "10px"
+                                            }}>
+                                            {item?.status}
+                                        </Typography>
+                                    </Stack>
+                                    <Typography variant='body2' sx={{ color: "gray" }}>{item.title}</Typography>
                                 </CardContent>
                             </Card>
                         ))
                     )}
                 </Box>
-                {/* {id && ( */}
-                <Box sx={{
-                    width: "80%",
-                    height: "80vh",
-                    bgcolor: "grey.100",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center"
-                }}>
+                {!isMobile && (
                     <Box sx={{
-                        width: "90%",
-                        height: "100%",
+                        width: "80%",
+                        height: "80vh",
+                        bgcolor: "grey.100",
                         display: "flex",
                         flexDirection: "column",
-                        mt: 4
+                        p: 2,
+                        borderRadius: 2
                     }}>
                         <Stack alignItems={"flex-start"} width={"100%"}>
-                            <Typography sx={{
-                                fontSize: "1.5rem",
-                                color: "red",
-                                fontFamily: "monospace"
-                            }}>
-                                Your Ticket Id  : {singleContact?.ticketId}
+                            <Typography sx={{ fontSize: "1.5rem", color: "red", fontFamily: "monospace" }}>
+                                Your Ticket Id: {singleContact?.ticketId}
                             </Typography>
                         </Stack>
 
-                        <Box
-                            sx={{
-                                width: "100%",
-                                height: "65vh",
-                                bgcolor: "white",
-                                mt: 2,
+                        {singleLoading && <LinearProgress sx={{ my: 2 }} />}
+
+                        <Box sx={{
+                            width: "100%",
+                            height: "100%",
+                            display: "flex",
+                            flexDirection: "column",
+                            flexGrow: 1,
+                            overflow: "hidden",
+                        }}>
+                            <Box sx={{
+                                flexGrow: 1,
+                                overflowY: "auto",
+                                paddingBottom: "10px",
+                                p: 2,
                                 display: "flex",
                                 flexDirection: "column",
-                                justifyContent: "flex-end",
-                                p: 2,
-                                overflowY: "auto",
-                            }}
-                        >
-                            {/* Received Message */}
-                            <Box
-                                sx={{
-                                    maxWidth: "60%",
-                                    bgcolor: "grey.300",
-                                    p: 1.5,
-                                    m: 1,
+                                "&::-webkit-scrollbar": {
+                                    width: "5px",
+                                    height: "25px",
+                                },
+                                "&::-webkit-scrollbar-track": {
+                                    backgroundColor: "transparent",
+                                },
+                                "&::-webkit-scrollbar-thumb": {
+                                    backgroundColor: "grey",
                                     borderRadius: "10px",
-                                    alignSelf: "flex-start",
-                                }}
-                            >
-                                <Typography>{singleContact?.message}</Typography>
-                                <span
-                                    style={{
-                                        fontSize: 10,
-                                        display: "flex",
-                                        justifyContent: "flex-end",
-                                        color: "grey",
-                                        marginTop: 4,
-                                    }}
-                                >
-                                    {moment(singleContact?.createdAt).format("DD-MM-YYYY HH:mm")}
-                                </span>
-                            </Box>
+                                },
+                            }}>
+                                <Box sx={{
+                                    width: "100%",
+                                    justifyContent: "center",
+                                    display: "flex",
+                                    fontSize: "0.8rem",
+                                }}>
+                                    <Box sx={{
+                                        width: "fit-content",
+                                        p: 2,
+                                        bgcolor: "white",
+                                        borderRadius: "10px"
 
-
-                            <Box
-                                sx={{
-                                    maxWidth: "60%",
-                                    bgcolor: colors.blue[500],
-                                    p: 1.5,
-                                    color: "white",
-                                    m: 1,
-                                    borderRadius: "10px",
-                                    alignSelf: "flex-end",
-                                }}
-                            >
-
-                                <Typography>{singleContact?.message}</Typography>
-                                <span
-                                    style={{
-                                        fontSize: 10,
-                                        display: "flex",
-                                        justifyContent: "flex-end",
-                                        marginTop: 4,
-                                    }}
-                                >
-                                    {moment(singleContact?.createdAt).format("DD-MM-YYYY HH:mm")}
-                                </span>
+                                    }}>
+                                        <Typography sx={{ fontFamily: "monospace", }}>
+                                            {singleContact?.message}
+                                        </Typography>
+                                    </Box>
+                                </Box>
+                                {[...(singleContact?.send_message?.map(msg => ({ ...msg, type: "send" })) || []),
+                                ...(singleContact?.recieve_message?.map(msg => ({ ...msg, type: "receive" })) || [])]
+                                    .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime())
+                                    .map((item, idx) => (
+                                        <Box
+                                            key={idx}
+                                            sx={{
+                                                maxWidth: "40%",
+                                                bgcolor: item.type === "send" ? colors.blue[500] : "grey.300",
+                                                p: 1.5,
+                                                m: 1,
+                                                borderRadius: "10px",
+                                                alignSelf: item.type === "send" ? "flex-end" : "flex-start",
+                                                color: item.type === "send" ? "white" : "black"
+                                            }}
+                                        >
+                                            <Typography>{item?.message}</Typography>
+                                            <span
+                                                style={{
+                                                    fontSize: 10,
+                                                    display: "flex",
+                                                    justifyContent: "flex-end",
+                                                    color: item.type === "send" ? "white" : "grey",
+                                                    marginTop: 4,
+                                                }}
+                                            >
+                                                {moment(item?.timestamp).format("DD-MM-YYYY HH:mm")}
+                                            </span>
+                                        </Box>
+                                    ))}
+                                <div ref={messagesEndRef} />
                             </Box>
                         </Box>
 
-                        <Stack mt={2} direction={"row"} spacing={1}>
-                            <TextField
-                                fullWidth
-                                multiline
-                                sx={{
-                                    bgcolor: "white",
-                                    borderRadius: "10px",
-                                    border: "none",
-                                    height: "40px"
-                                }}
-                                variant="standard"
-                                value={sendMessage}
-                                onChange={(e) => setSendMessage(e.target.value)}
-                            />
-                            <Button variant='contained' onClick={() => handleSendMessage({ id: id })}>send</Button>
-                        </Stack>
+                        {singleContact?.status === "Resolved" ? (
+                            <Stack sx={{ width: "100%", justifyContent: "center", }} >
+                                <Stack direction={"row"} style={{
+                                    fontSize: "0.8rem",
+                                    color: "green",
+                                    textAlign: "center",
+                                    alignItems: "center",
+                                    gap: 2,
+                                    justifyContent: "center"
+                                }}>
+                                    <>
+                                        <ThumbUp />
+                                    </>
+                                    <>
+                                        YOUR TICKET IS RESOLVED
+                                    </>
+                                </Stack>
+                            </Stack>
+                        ) : (
+                            <Stack mt={2} direction={"row"} spacing={1}>
+                                <TextField
+                                    fullWidth
+                                    multiline
+                                    sx={{
+                                        bgcolor: "white",
+                                        borderRadius: "10px",
+                                        border: "none",
+                                        height: "40px"
+                                    }}
+                                    variant="standard"
+                                    value={sendMessage}
+                                    onChange={(e) => setSendMessage(e.target.value)}
+                                    disabled={isPending}
+                                />
+                                <Button
+                                    variant='contained'
+                                    disabled={isPending || !sendMessage.trim()}
+                                    onClick={() => handleSendMessage({ ticketId })}
+                                >
+                                    {isPending ? "Sending..." : "Send"}
+                                </Button>
+                            </Stack>
+                        )}
+
                     </Box>
+                )}
 
-                </Box>
-
-                {/* )} */}
             </Box>
-
-        </Box >
+        </Box>
     )
 }
 

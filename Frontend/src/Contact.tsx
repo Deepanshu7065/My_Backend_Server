@@ -4,7 +4,6 @@ import React, { useEffect } from 'react'
 import { ContactDetailsPostApi } from './AllPostApi'
 import { useSelector } from 'react-redux'
 import { RootState } from './Store'
-import { GetContactByUser } from './AllGetApi'
 
 const Contact = () => {
     const mobile = useMediaQuery("(max-width:800px)")
@@ -14,6 +13,7 @@ const Contact = () => {
         last_name: "",
         phone: "",
         message: "",
+        title: "",
         user: user._id
     })
     useEffect(() => {
@@ -87,7 +87,7 @@ const Contact = () => {
                             </Stack>
                             <Box sx={{
                                 width: "600px",
-                                height: "600px",
+                                height: "750px",
                                 backgroundColor: "white",
                                 borderRadius: "10px",
                                 mt: 40,
@@ -147,6 +147,21 @@ const Contact = () => {
                                             name="phone"
                                             onChange={handleChange}
                                             placeholder='Enter Your Phone' />
+                                    </Stack>
+                                    <Stack mt={3} spacing={2}>
+                                        <Typography sx={{
+                                            fontSize: "0.8rem",
+                                            fontFamily: "monospace, cursive"
+                                        }}>
+                                            Title
+                                        </Typography>
+                                        <TextField
+                                            placeholder='Enter Your Title'
+                                            multiline
+                                            name="title"
+                                            onChange={handleChange}
+                                            variant='outlined'
+                                        />
                                     </Stack>
                                     <Stack mt={3} spacing={2}>
                                         <Typography sx={{
@@ -331,7 +346,7 @@ const Contact = () => {
                         }}>
                             <Box sx={{
                                 width: "600px",
-                                height: "600px",
+                                height: "750px",
                                 backgroundColor: "white",
                                 borderRadius: "10px",
                                 mt: 40,
@@ -391,6 +406,21 @@ const Contact = () => {
                                             name="phone"
                                             onChange={handleChange}
                                             placeholder='Enter Your Phone' />
+                                    </Stack>
+                                    <Stack mt={3} spacing={2}>
+                                        <Typography sx={{
+                                            fontSize: "0.8rem",
+                                            fontFamily: "monospace, cursive"
+                                        }}>
+                                            Title
+                                        </Typography>
+                                        <TextField
+                                            placeholder='Enter Your Title'
+                                            multiline
+                                            name="title"
+                                            onChange={handleChange}
+                                            variant='outlined'
+                                        />
                                     </Stack>
                                     <Stack mt={3} spacing={2}>
                                         <Typography sx={{

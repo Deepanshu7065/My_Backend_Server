@@ -281,12 +281,8 @@ export const GetSingleAddressByUser = ({ id }: { id: string }) => {
 export const GetContactByUser = ({ user }: { user: string }) => {
     const getAllUser = async () => {
         try {
-            const response = await axios.get(`${baseUrl}/contact`, {
-                params: {
-                    user
-                }
-            })
-            return response?.data as ContactsAllTypes[] 
+            const response = await axios.get(`${baseUrl}/contact/${user}`, )
+            return response?.data as ContactsAllTypes[]
         } catch (error) {
             console.log(error)
         }
@@ -297,18 +293,33 @@ export const GetContactByUser = ({ user }: { user: string }) => {
     })
 }
 
-export const GetSingleContactTickets = ({ id, ticketId }: { id: string, ticketId: string }) => {
+export const GetSingleContactTickets = ({  ticketId }: {  ticketId: string }) => {
     const getAllUser = async () => {
         try {
-            const response = await axios.get(`${baseUrl}/contact/${id}/${ticketId}`)
+            const response = await axios.get(`${baseUrl}/contact_single/${ticketId}`)
             return response.data as ContactsAllTypes
         } catch (error) {
             console.log(error)
         }
     }
     return useQuery({
-        queryKey: ["user", id],
+        queryKey: ["user",  ticketId],
         queryFn: getAllUser,
-        enabled: !!id
+        enabled: !!ticketId
+    })
+}
+
+export const GetAllTicketsApi = () => {
+    const getAllUser = async () => {
+        try {
+            const response = await axios.get(`${baseUrl}/contact`)
+            return response.data as ContactsAllTypes[]
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    return useQuery({
+        queryKey: ["user"],
+        queryFn: getAllUser,
     })
 }

@@ -1,11 +1,18 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from "vite";
+import viteImagemin from "vite-plugin-imagemin";
 
-// https://vite.dev/config/
-export default {
+export default defineConfig({
   server: {
-      watch: {
-          ignored: ['**/node_modules/**', '**/assets/**']
-      }
-  }
-}
+    watch: {
+      ignored: ['**/node_modules/**', '**/assets/**']
+    }
+  },
+  plugins: [
+    viteImagemin({
+      mozjpeg: { quality: 60 },
+      pngquant: { quality: [0.2, 0.5] },
+      gifsicle: { optimizationLevel: 2 },
+      svgo: { plugins: [{ removeViewBox: false }] }
+    })
+  ]
+});

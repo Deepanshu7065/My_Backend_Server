@@ -19,6 +19,7 @@ import { useNavigate } from 'react-router-dom'
 import ViewMyOrderDetails from './ViewMyOrderDetails'
 import { useEffect, useState } from 'react'
 import { DeleteMyOrder } from '../AllPostApi'
+import { LazyImage } from '../App'
 
 const YourOrders = () => {
     const navigate = useNavigate()
@@ -118,7 +119,7 @@ const YourOrders = () => {
                                                     {moment(item.createdAt).format("DD-MM-YYYY")}</Typography>
                                                 < Box >
 
-                                                    <img
+                                                    <LazyImage
                                                         src={`${imageUrl}/${item?.product_id?.[0].image}`}
                                                         alt={`Image ${item?.orderId}`}
                                                         style={{ width: 50, height: 50, objectFit: "cover" }}

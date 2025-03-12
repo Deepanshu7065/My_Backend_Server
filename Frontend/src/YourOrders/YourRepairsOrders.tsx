@@ -22,6 +22,7 @@ import { RootState } from '../Store'
 import moment from 'moment'
 import ViewOrderDetails from './ViewOrderDetails'
 import { Delete } from '@mui/icons-material'
+import { LazyImage } from '../App'
 
 const YourRepairsOrders = () => {
     const { user } = useSelector((state: RootState) => state.CustomerUser);
@@ -168,7 +169,7 @@ const YourRepairsOrders = () => {
                                                 {moment(item.createdAt).format("DD-MM-YYYY")}</Typography>
                                             < Box >
 
-                                                <img
+                                                <LazyImage
                                                     src={`${imageUrl}/${item?.images[0]}`}
                                                     alt={`Image ${item.orderId}`}
                                                     style={{ width: 50, height: 50, objectFit: "cover" }}

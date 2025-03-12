@@ -15,6 +15,7 @@ import { imageUrl } from '../ApiEndPoint'
 import { ChangeStatusOrder } from '../Store/ChangeStatusByOrderSlice'
 import { ChangeShopsStatusOrder } from '../Store/ChangeShopsOrderStatusSlice'
 import { RootState } from '../Store'
+import { LazyImage } from '../App'
 
 const AllShopOrder = () => {
 
@@ -58,7 +59,7 @@ const AllShopOrder = () => {
                             <TableCell>{item?.orderId}</TableCell>
                             <TableCell>{item?.status}</TableCell>
                             <TableCell>
-                                <img src={imageUrl + item.product_id[0]?.image} alt="Product" style={{ width: "100px", height: "100px" }} />
+                                <LazyImage src={imageUrl + item.product_id[0]?.image} alt="Product" style={{ width: "100px", height: "100px" }} />
                             </TableCell>
                             <TableCell>
                                 <button onClick={() => dispatch(ChangeShopsStatusOrder(item._id))}>open</button>

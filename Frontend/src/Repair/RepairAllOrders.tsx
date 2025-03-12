@@ -6,6 +6,7 @@ import { useDispatch } from 'react-redux'
 import { ChangeStatusOrder } from '../Store/ChangeStatusByOrderSlice'
 import { useState } from 'react'
 import { UploadRepairStatus } from '../AllPostApi'
+import { LazyImage } from '../App'
 
 const RepairAllOrders = () => {
     const { data } = GetRepairAllApi()
@@ -48,7 +49,7 @@ const RepairAllOrders = () => {
                             <TableCell>{item?.orderId}</TableCell>
                             <TableCell>{item?.status}</TableCell>
                             <TableCell>
-                                <img src={imageUrl + item.images} alt="Product" style={{ width: "100px", height: "100px" }} />
+                                <LazyImage src={imageUrl + item.images} alt="Product" style={{ width: "100px", height: "100px" }} />
                             </TableCell>
                             <TableCell>
                                 <button onClick={() => dispatch(ChangeStatusOrder(item._id))}>open</button>

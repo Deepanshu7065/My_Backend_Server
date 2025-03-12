@@ -1,6 +1,7 @@
 import { Box, Button, colors, Stack, Typography } from '@mui/material'
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { LazyImage } from '../App'
 
 const OrderPlaced = () => {
   return (
@@ -18,7 +19,7 @@ const OrderPlaced = () => {
       alignItems: "center"
     }}>
       <Stack alignItems={"center"}>
-        <img src='public/order-management-featured-image.jpg' alt='order' style={{
+        <LazyImage src='public/order-management-featured-image.jpg' alt='order' style={{
           width: "100%",
           height: "100%",
           marginBottom: "12px"

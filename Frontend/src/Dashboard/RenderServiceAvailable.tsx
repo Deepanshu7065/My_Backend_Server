@@ -1,5 +1,6 @@
 import { Box, Card, CardActions, CardContent, Stack, useMediaQuery } from '@mui/material'
 import React from 'react'
+import { LazyImage } from '../App'
 
 const RenderServiceAvailable = () => {
     const mobile = useMediaQuery("(max-width:600px)")
@@ -26,7 +27,7 @@ const RenderServiceAvailable = () => {
                 }
             }}>
                 <Stack width="100%" height={"90%"}>
-                    <img src='./Cricket-Bat-Ball.jpg' alt='repair' style={{ width: "100%", height: "100%" }} />
+                    <LazyImage src='/src/assets/Cricket-Bat-Ball.jpg' alt='repair' style={{ width: "100%", height: "100%" }} />
                 </Stack>
 
                 <Stack width="100%" height="10%" bgcolor={"white"} direction="row" spacing={2}>
@@ -62,7 +63,7 @@ const RenderServiceAvailable = () => {
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                 }}>
-                    <img src='./reapirweb.webp' alt='repair' style={{ width: "100%", height: "100%" }} />
+                    <LazyImage src='/src/assets/reapirweb.webp' alt='repair' style={{ width: "100%", height: "100%" }} />
                 </Stack>
 
                 <Stack width="100%" height="10%" bgcolor={"white"} direction="row" spacing={2}>

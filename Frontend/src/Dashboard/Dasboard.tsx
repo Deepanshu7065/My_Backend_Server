@@ -1,29 +1,30 @@
 import { Box, Paper, Typography, Button, colors, Card } from "@mui/material";
 import RenderServiceAvailable from "./RenderServiceAvailable";
 import { useNavigate } from "react-router-dom";
+import { LazyImage } from "../App";
 
 const Dashboard = () => {
     const navigate = useNavigate()
 
     const CardData = [
         {
-            image: "./kiko.webp",
+            image: "/src/assets/kiko.webp",
             title: "Quality Guarantee",
             label: "Premium materials and expert craftsmanship in every bat",
         },
         {
-            image: "./grade.webp",
+            image: "/src/assets/grade.webp",
             title: "Professional Grade",
             label: "Trusted ametaure and professional players",
         },
         {
             title: "Bat Repair",
-            image: "./repair.webp",
+            image: "/src/assets/repair.webp",
             label: "Quick and efficient repair services",
         },
         {
             title: "Fast Services",
-            image: "./serviceFast.jpg",
+            image: "/src/assets/serviceFast.jpg",
             label: "Quick turnaround on all repairs service",
         }
     ]
@@ -162,7 +163,7 @@ const Dashboard = () => {
                             boxShadow: "0px 8px 40px rgba(0, 0, 0, 0.4)"
                         }
                     }}>
-                        <img src={card.image} alt={card.title} style={{ width: "100px", height: "100px" }} />
+                        <LazyImage src={card.image} alt={card.title} style={{ width: "100px", height: "100px" }} />
                         <Typography sx={{
                             color: colors.grey[800],
                             fontSize: { xs: "1.2rem", sm: "1.5rem" },
@@ -233,8 +234,8 @@ const Dashboard = () => {
                         fontFamily: "Poppins, sans-serif",
                         fontSize: { xs: "0.9rem", sm: "1rem", md: "1.2rem" },
                         '&:hover': { bgcolor: "#ddd" }
-                    }} 
-                    onClick={() => navigate("/contact")}>
+                    }}
+                        onClick={() => navigate("/contact")}>
                         Help
                     </Button>
                 </Box>

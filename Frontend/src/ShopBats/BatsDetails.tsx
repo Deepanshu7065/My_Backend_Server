@@ -3,6 +3,7 @@ import { GetProductById } from "../AllGetApi"
 import { imageUrl } from "../ApiEndPoint";
 import { useState } from "react";
 import { ArrowBack } from "@mui/icons-material";
+import { LazyImage } from "../App";
 
 const BatsDetails = () => {
     const queryParams = new URLSearchParams(window.location.search);
@@ -55,7 +56,7 @@ const BatsDetails = () => {
                                 overflow: "hidden",
                                 boxShadow: "0px 2px 5px rgba(0,0,0,0.2)"
                             }}>
-                                <img
+                                <LazyImage
                                     src={`${imageUrl}${data?.image}`}
                                     alt="Product"
                                     style={{
@@ -87,7 +88,7 @@ const BatsDetails = () => {
                                 {isLoading ? (
                                     <Skeleton variant="rectangular" width="100%" height="100%" />
                                 ) : (
-                                    <img
+                                    <LazyImage
                                         src={`${imageUrl}${data?.image}`}
                                         alt="Thumbnail"
                                         style={{
@@ -163,10 +164,10 @@ const BatsDetails = () => {
                             gap: { xs: "1rem", md: "2rem" }
                         }}>
                             {[
-                                { img: "/5637246.png", text: "Home Delivery" },
-                                { img: "/replace-pictures.png", text: "7 Days Replacement" },
-                                { img: "/Business-icons-06-512.webp", text: "Cash On Delivery" },
-                                { img: "/imagesSecure.png", text: "Secure Payment" }
+                                { img: "/src/assets/5637246.png", text: "Home Delivery" },
+                                { img: "/src/assets/replace-pictures.png", text: "7 Days Replacement" },
+                                { img: "/src/assets/Business-icons-06-512.webp", text: "Cash On Delivery" },
+                                { img: "/src/assets/imagesSecure.png", text: "Secure Payment" }
                             ].map((item, index) => (
                                 <Box key={index} sx={{
                                     display: "flex",
@@ -174,7 +175,7 @@ const BatsDetails = () => {
                                     alignItems: "center",
                                     width: { xs: "40px", sm: "70px", md: "80px" }
                                 }}>
-                                    <img
+                                    <LazyImage
                                         src={item.img}
                                         alt={item.text}
                                         style={{

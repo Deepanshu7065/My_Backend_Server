@@ -6,6 +6,7 @@ import { GetCartApi } from '../AllGetApi';
 import { OrderCreateApi } from '../AllPostApi';
 import { Box, Button, Card, CardContent, Grid, Stack, TextField, Typography, CardMedia, Table, TableHead, TableRow, TableCell, TableBody, Paper, colors, useMediaQuery } from '@mui/material';
 import { Footer } from '../User/AddUser';
+import { LazyImage } from '../App';
 
 const PaymentCheckOut = () => {
     const { user } = useSelector((state: RootState) => state?.CustomerUser);
@@ -292,7 +293,7 @@ const PaymentCheckOut = () => {
                             justifyContent: "center",
                             alignItems: "center"
                         }}>
-                            <img src={"COD.webp"} alt="" style={{
+                            <LazyImage src={"COD.webp"} alt="" style={{
                                 width: "60%",
                                 height: "70%",
                                 borderRadius: "50%"

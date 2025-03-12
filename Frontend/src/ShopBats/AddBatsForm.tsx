@@ -9,6 +9,7 @@ import { setEditProductId } from '../Store/EditProductSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../Store';
 import { Footer } from '../User/AddUser';
+import { LazyImage } from '../App';
 
 const steps = [
     { label: 'Product Details' },
@@ -396,7 +397,7 @@ export default function AddBatsForm() {
                             justifyContent: "flex-start",
                         }}
                     >
-                        <img src={"public/cricket.avif"}
+                        <LazyImage src={"/src/assets/cricket.avif"}
                             alt=''
                             style={{
                                 width: "100%",
@@ -542,7 +543,7 @@ export const TableRender = () => {
                                         borderBottom: "1px solid #ddd",
                                     }}>
                                         <td align="left" style={{ padding: "1px" }}>
-                                            <img src={`${imageUrl}${product.image}`} alt={product.product_name} style={{ width: "50px" }} />
+                                            <LazyImage src={`${imageUrl}${product.image}`} alt={"product Name"} style={{ width: "50px" }} />
                                         </td>
                                         <td style={{
                                             fontFamily: "monospace",

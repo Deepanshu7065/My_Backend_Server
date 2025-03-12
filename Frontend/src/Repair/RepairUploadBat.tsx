@@ -5,14 +5,15 @@ import { Footer } from '../User/AddUser';
 import { UploadRepairDetails } from '../AllPostApi';
 import { useSelector } from 'react-redux';
 import { RootState } from '../Store';
+import { LazyImage } from '../App';
 
 
 const imagesData = [
-    { src: '/public/BatRepairHd.webp', text: 'Secure & Easy Bat Repair' },
-    { src: '/public/HomeDel.webp', text: 'Pick up & Delivery Service' },
-    { src: '/public/CustomerHome.webp', text: 'Delvery to Your Home ' },
-    { src: '/public/Quality.webp', text: '100% Quality Bat Repair' },
-    { src: '/public/VanDel.webp', text: 'Services and repair at your doorstep' }
+    { src: '/src/assets/BatRepairHd.webp', text: 'Secure & Easy Bat Repair' },
+    { src: '/src/assets/HomeDel.webp', text: 'Pick up & Delivery Service' },
+    { src: '/src/assets/CustomerHome.webp', text: 'Delvery to Your Home ' },
+    { src: '/src/assets/Quality.webp', text: '100% Quality Bat Repair' },
+    { src: '/src/assets/VanDel.webp', text: 'Services and repair at your doorstep' }
 ];
 
 const RepairUploadBat = () => {
@@ -100,7 +101,7 @@ const RepairUploadBat = () => {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            backgroundImage: "url(public/pngtree-icc-cricket-world-match-background-image_13943187.jpg)",
+            backgroundImage: "url(/src/assets/pngtree-icc-cricket-world-match-background-image_13943187.jpg)",
             backgroundSize: "cover",
             backgroundPosition: "center",
             position: "relative",
@@ -155,7 +156,7 @@ const RepairUploadBat = () => {
                                         alignItems: 'center',
 
                                     }}>
-                                        <img
+                                        <LazyImage
                                             src={img.src}
                                             alt={`Slide ${index}`}
                                             style={{
@@ -290,7 +291,7 @@ const RepairUploadBat = () => {
                                         {mobile && <Box sx={{ mt: 2, display: "flex", flexWrap: "wrap", gap: 2, justifyContent: "center" }}>
                                             {images.map((image, index) => (
                                                 <Box key={index} sx={{ position: "relative" }}>
-                                                    <img
+                                                    <LazyImage
                                                         src={URL.createObjectURL(image)}
                                                         alt={`Upload Preview ${index}`}
                                                         style={{ width: "50px", height: "50px", borderRadius: "8px", objectFit: "cover", cursor: "pointer" }}
@@ -312,7 +313,7 @@ const RepairUploadBat = () => {
                             {!mobile && <Box sx={{ mt: 2, display: "flex", flexWrap: "wrap", gap: 2, justifyContent: "center" }}>
                                 {images.map((image, index) => (
                                     <Box key={index} sx={{ position: "relative" }}>
-                                        <img
+                                        <LazyImage
                                             src={URL.createObjectURL(image)}
                                             alt={`Upload Preview ${index}`}
                                             style={{ width: "90px", height: "90px", borderRadius: "8px", objectFit: "cover", cursor: "pointer" }}
@@ -355,7 +356,7 @@ const RepairUploadBat = () => {
                                         alignItems: 'center',
 
                                     }}>
-                                        <img
+                                        <LazyImage
                                             src={img.src}
                                             alt={`Slide ${index}`}
                                             style={{
@@ -379,7 +380,7 @@ const RepairUploadBat = () => {
 
                 <Dialog open={Boolean(selectedImage)} onClose={() => setSelectedImage(null)}>
                     <DialogContent>
-                        {selectedImage && <img src={URL.createObjectURL(selectedImage)} alt="Selected" style={{ width: "100%" }} />}
+                        {selectedImage && <LazyImage src={URL.createObjectURL(selectedImage)} alt="Selected" style={{ width: "100%" }} />}
                     </DialogContent>
                 </Dialog>
             </Paper >

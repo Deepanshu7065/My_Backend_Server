@@ -1,6 +1,7 @@
 import { Box, CircularProgress, Stack, Typography, Stepper, Step, StepLabel, colors } from '@mui/material';
 import { GetRepairAllUserById } from '../AllGetApi';
 import { imageUrl } from '../ApiEndPoint';
+import { LazyImage } from '../App';
 
 const ViewOrderDetails = ({ orderId }: { orderId: string }) => {
     const { data, isLoading } = GetRepairAllUserById({ id: orderId });
@@ -73,11 +74,10 @@ const ViewOrderDetails = ({ orderId }: { orderId: string }) => {
                     </Typography>
                 )}
                 <Box sx={{ width: "90%", height: "300px", mb: 2 }}>
-                    <img
+                    <LazyImage
                         src={`${imageUrl}${data?.images[0] || ""}`}
                         alt='repair'
                         style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: 8 }}
-                        loading='lazy'
                     />
                 </Box>
                 <Typography

@@ -8,6 +8,7 @@ import { Delete, Edit, Forward, } from "@mui/icons-material"
 import { useDispatch } from "react-redux"
 import { setUserId } from "../Store/EditUserSlice"
 import { CustomPagination } from "../ShopBats/AddBatsForm"
+import { LazyImage } from "../App"
 
 
 const User = () => {
@@ -387,7 +388,7 @@ const User = () => {
                         flexDirection: "column",
                         gap: 2
                     }}>
-                        <img src="public/user_view.png" alt="bat" style={{
+                        <LazyImage src="/src/assets/user_view.png" alt="bat" style={{
                             width: "50%",
                             borderRadius: "50%"
                         }} />

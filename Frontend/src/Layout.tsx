@@ -19,6 +19,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from './Store';
 import { Button } from '@mui/material';
 import { logoutCustomerUser, setCustomerUser } from './Store/CustomerUserSaveSlice';
+import { LazyImage } from './App';
 
 
 const Navbar = () => {
@@ -60,7 +61,7 @@ const Navbar = () => {
 
 
     const handleLogout = () => {
-        dispatch(logoutCustomerUser())  
+        dispatch(logoutCustomerUser())
         setAnchorElUser(null)
     }
 
@@ -254,12 +255,19 @@ const Navbar = () => {
                                     </Button>
                                 )}
                             {/* {user?.userType !== "Customer" && ( */}
-                            <Tooltip title="Your Tickets" onClick={() => navigate("/tickets")}>
-                                <img src="public/imagesHelp.png" alt="" style={{
-                                    width: "30px",
-                                    height: "30px",
-                                    borderRadius: "50%"
-                                }} />
+                            <Tooltip title="Your Tickets" sx={{
+                            }} onClick={() => navigate("/tickets")}>
+                                <div>
+
+                                    <LazyImage src="/src/assets/imagesHelp.png" alt="" style={{
+                                        width: "30px",
+                                        height: "30px",
+                                        borderRadius: "50%",
+                                        cursor: "pointer"
+                                    }}
+
+                                    />
+                                </div>
                             </Tooltip>
                             {/* )} */}
 

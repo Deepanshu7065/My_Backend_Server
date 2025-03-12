@@ -4,6 +4,7 @@ import { useLocation } from 'react-router-dom'
 import { GetSingleMyOrderApi } from '../AllGetApi';
 import { Forward } from '@mui/icons-material';
 import { imageUrl } from '../ApiEndPoint';
+import { LazyImage } from '../App';
 
 const ViewMyOrderDetailsMobile = () => {
     const location = useLocation();
@@ -124,11 +125,10 @@ const ViewMyOrderDetailsMobile = () => {
                                 display: "flex",
                                 flexDirection: "column",
                             }}>
-                                <img
+                                <LazyImage
                                     src={`${imageUrl}${data?.image || ""}`}
                                     alt='repair'
                                     style={{ width: "300px", height: "200px", objectFit: "cover", borderRadius: 4 }}
-                                    loading='lazy'
                                 />
                                 <Stack sx={{ width: "100%" }} >
                                     <Typography sx={{

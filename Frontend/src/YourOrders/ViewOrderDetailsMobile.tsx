@@ -4,6 +4,7 @@ import { imageUrl } from '../ApiEndPoint';
 import { useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 import { Forward } from '@mui/icons-material';
+import { LazyImage } from '../App';
 
 const ViewOrderDetailsMobile = () => {
     const location = useLocation()
@@ -99,11 +100,10 @@ const ViewOrderDetailsMobile = () => {
 
                 )}
                 <Box sx={{ width: "90%", height: "300px", mb: 2 }}>
-                    <img
+                    <LazyImage
                         src={`${imageUrl}${data?.images[0] || ""}`}
                         alt='repair'
                         style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: 8 }}
-                        loading='lazy'
                     />
                 </Box>
                 <Typography sx={{

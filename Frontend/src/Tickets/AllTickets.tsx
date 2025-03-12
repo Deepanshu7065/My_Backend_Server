@@ -1,15 +1,26 @@
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { GetAllTicketsApi, GetSingleContactTickets } from '../AllGetApi'
-import { Box, Button, Card, CardContent, colors, Dialog, DialogActions, DialogContent, DialogTitle, Divider, LinearProgress, Skeleton, Stack, TextField, Typography, useMediaQuery } from '@mui/material'
-import { useSelector } from 'react-redux'
-import { RootState } from '../Store'
+import { Box, Button, Card, CardContent, colors, Dialog, DialogActions, DialogContent, DialogTitle, LinearProgress, Skeleton, Stack, TextField, Typography, useMediaQuery } from '@mui/material'
+// import { useSelector } from 'react-redux'
+// import { RootState } from '../Store'
 import moment from 'moment'
+import io from "socket.io-client"
 import { ContactReplMessage, TicketStatusChange } from '../AllPostApi'
 import { useNavigate } from 'react-router-dom'
 import { ThumbUp } from '@mui/icons-material'
 
+const SOCKET_URL = "ws://172.30.2.67:5000";
+
+const socket = io(SOCKET_URL, {
+    transports: ["websocket"],
+    reconnectionAttempts: 5,
+    timeout: 5000,
+});
+
+
+
 const AllTickets = () => {
-    const { user } = useSelector((state: RootState) => state.CustomerUser)
+    // const { user } = useSelector((state: RootState) => state.CustomerUser)
     const navigate = useNavigate()
     const { data = [], refetch, isLoading } = GetAllTicketsApi()
     const [ticketId, setTicketId] = useState("")
@@ -17,33 +28,81 @@ const AllTickets = () => {
     const messagesEndRef = useRef<HTMLDivElement | null>(null)
     const [status, setStatus] = useState("Pending")
     const [open, setOpen] = useState(false)
+    const [messages, setMessages] = useState<any[]>([]);
 
     const { mutateAsync: updateStatus } = TicketStatusChange()
     const { mutateAsync, isPending } = ContactReplMessage()
 
     const isMobile = useMediaQuery("(max-width: 800px)")
 
+    const { data: singleTickets, refetch: singleRefetch, isLoading: singleLoading } = GetSingleContactTickets({ ticketId })
     useEffect(() => {
         if (data?.length > 0) {
             setTicketId(data[0]?.ticketId)
         }
     }, [data])
 
-    const { data: singleTickets, refetch: singleRefetch, isLoading: singleLoading } = GetSingleContactTickets({ ticketId })
-
-    const handleSendMessage = async ({ ticketId }: { ticketId: string }) => {
-        try {
-            await mutateAsync({
-                data: { recieve_message: replyMessage, ticketId: ticketId },
-            })
-            setReplyMessage("")
+    useEffect(() => {
+        if (ticketId) {
+            socket.emit("joinTicket", ticketId);
             singleRefetch()
-            refetch()
-            setTicketId(ticketId)
-        } catch (error) {
-            console.log(error)
         }
-    }
+    }, [ticketId]);
+
+
+    useEffect(() => {
+        const handleNewMessage = (message: any) => {
+            console.log("New message received: ", message);
+            if (message.ticketId === ticketId) {
+                setMessages((prev) => [...prev, message]);
+                // messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+            }
+        };
+
+        socket.on("newMessage", handleNewMessage);
+
+        return () => {
+            socket.off("newMessage", handleNewMessage);
+        };
+    }, [ticketId]);
+
+    useEffect(() => {
+        if (ticketId) {
+            singleRefetch().then(() => {
+                setMessages([
+                    ...singleTickets?.send_message?.map(msg => ({ ...msg, type: "send" })) || [],
+                    ...singleTickets?.recieve_message?.map(msg => ({ ...msg, type: "receive" })) || []
+                ].sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()));
+            });
+        }
+    }, [ticketId, singleRefetch]);
+
+    const handleSendMessage = async () => {
+        if (!replyMessage.trim()) return;
+
+        try {
+            const messageData = {
+                ticketId,
+                message: replyMessage,
+                timestamp: new Date().toISOString(),
+                type: "recieve"
+            };
+
+            await mutateAsync({
+                data: {
+                    recieve_message: replyMessage,
+                    ticketId
+                }
+            });
+
+            socket.emit("sendMessage", messageData);
+            setMessages((prev) => [...prev, messageData]);
+            setReplyMessage("");
+            singleRefetch()
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     const handleUpdateStatus = async ({ ticketId, status }: { ticketId: string, status: string }) => {
         try {
@@ -243,7 +302,7 @@ const AllTickets = () => {
                                         }}
                                     >
                                         <Typography>{item?.message}</Typography>
-                                        <Typography sx={{ fontSize: 10, textAlign: "right", color: "white", mt: 1 }}>
+                                        <Typography sx={{ fontSize: 10, textAlign: "right", color: item.type === "send" ? "white" : "black", mt: 1 }}>
                                             {moment(item?.timestamp).format("DD-MM-YYYY HH:mm")}
                                         </Typography>
                                     </Box>
@@ -290,7 +349,7 @@ const AllTickets = () => {
                                     disabled={isPending}
                                     variant='contained'
                                     sx={{ fontSize: { xs: "12px", md: "14px" } }}
-                                    onClick={() => handleSendMessage({ ticketId: ticketId })}
+                                    onClick={handleSendMessage}
                                 >
                                     Reply
                                 </Button>

@@ -7,6 +7,7 @@ import { DeleteTodo } from "../AllPostApi"
 import { useDispatch } from "react-redux"
 import { setEditProductId } from "../Store/EditProductSlice"
 import { CustomPagination } from "./AddBatsForm"
+import { LazyImage } from "../App"
 
 
 const RenderMobileEditBats = () => {
@@ -150,8 +151,8 @@ const RenderMobileEditBats = () => {
                                         </div>
                                     </Box>
                                     <Box>
-                                        <img src={`${imageUrl}${product.image}`}
-                                            alt={product.product_name}
+                                        <LazyImage src={`${imageUrl}${product.image}`}
+                                            alt={product.product_name || "Image"}
                                             style={{ width: "100px", height: "100px" }}
                                         />
 

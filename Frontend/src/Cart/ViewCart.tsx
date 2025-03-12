@@ -8,6 +8,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { GetCartApi } from '../AllGetApi'
 import { useEffect } from 'react'
 import { DeleteCart, UpdateCartApi, } from '../AllPostApi'
+import { LazyImage } from '../App'
 
 const ViewCart = () => {
     const products = useSelector((state: RootState) => state.ProductId.products)
@@ -128,7 +129,7 @@ const ViewCart = () => {
                                             <th style={{ width: "20%" }}>Remove</th>
                                         </tr>
                                         <tbody>
-                                            {products?.map((item) => {
+                                            {products?.map((item: any) => {
                                                 const totalPrice = Number(item?.quantity) * Number(item?.price ?? 0)
                                                 return (
                                                     <tr key={item.product_id?._id}>
@@ -136,7 +137,7 @@ const ViewCart = () => {
                                                             fontFamily: "monospace, cursive"
                                                         }}>
                                                             <Stack direction="row" alignContent={"center"} alignItems={"center"} spacing={1}>
-                                                                <img src={`${imageUrl}${item?.product_id?.image}`} alt={item?.product_id?.product_name} style={{ width: "50px", height: "50px" }} />
+                                                                <LazyImage src={`${imageUrl}${item?.product_id?.image}`} alt={item?.product_id?.product_name} style={{ width: "50px", height: "50px" }} />
                                                                 <div style={{
                                                                     display: "flex",
                                                                     flexDirection: "column"
@@ -262,7 +263,7 @@ const ViewCart = () => {
 
 
                                 <Grid container spacing={2} pb={8}>
-                                    {products?.map((item) => {
+                                    {products?.map((item: any) => {
                                         const totalPrice = Number(item.quantity) * Number(item.price ?? 0);
                                         return (
                                             <Grid item xs={6} sm={6} md={4} key={item?.product_id?._id}>

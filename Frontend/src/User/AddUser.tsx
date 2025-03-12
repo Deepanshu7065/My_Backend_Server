@@ -2,6 +2,7 @@ import { ForwardSharp } from "@mui/icons-material";
 import { Box, Paper, Stack, TextField, Button, Typography, MenuItem } from "@mui/material";
 import { useEffect, useState } from "react";
 import { postUser } from "../AllPostApi";
+import { LazyImage } from "../App";
 
 // const image = [
 //     "public/cricket.avif",
@@ -113,8 +114,8 @@ const AddUser = () => {
                     overflow: "hidden",
                     position: "relative",
                 }}>
-                    <img
-                        src={"public/cricket.avif"}
+                    <LazyImage
+                        src={"/src/assets/cricket.avif"}
                         alt="Slider"
                         style={{
                             width: "100%",

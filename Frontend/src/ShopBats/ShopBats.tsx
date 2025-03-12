@@ -9,6 +9,7 @@ import { RootState } from '../Store'
 import { useEffect, useState } from 'react'
 import { CustomPagination } from './AddBatsForm'
 import { AddToCart } from '../AllPostApi'
+import { LazyImage } from '../App'
 
 const ShopBats = () => {
     const navigate = useNavigate()
@@ -167,7 +168,7 @@ const ShopBats = () => {
                                             >
                                                 <Box key={idx} sx={{ position: "relative", overflow: "hidden" }}>
                                                     <div style={{ position: "relative" }}>
-                                                        <img
+                                                        <LazyImage
                                                             src={`${imageUrl}${items.image}`}
                                                             style={{
                                                                 width: "100%",
@@ -176,6 +177,7 @@ const ShopBats = () => {
                                                                 objectFit: "cover",
                                                                 filter: "blur(1px)",
                                                             }}
+                                                            alt='no image'
                                                         />
                                                         <div
                                                             style={{

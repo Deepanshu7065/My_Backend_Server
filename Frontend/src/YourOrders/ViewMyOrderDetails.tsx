@@ -1,6 +1,7 @@
 import { Box, Card, CircularProgress, colors, Stack, Step, StepLabel, Stepper, Typography } from '@mui/material'
 import { GetSingleMyOrderApi } from '../AllGetApi'
 import { imageUrl } from '../ApiEndPoint'
+import { LazyImage } from '../App'
 
 const ViewMyOrderDetails = ({ order_id }: { order_id: string }) => {
     const { data, isLoading } = GetSingleMyOrderApi({ id: order_id })
@@ -94,7 +95,7 @@ const ViewMyOrderDetails = ({ order_id }: { order_id: string }) => {
                                 alignItems: "center",
                                 gap: "10px"
                             }}>
-                                <img
+                                <LazyImage
                                     src={imageUrl + (item.image || "")}
                                     style={{
                                         width: "350px",
@@ -102,6 +103,7 @@ const ViewMyOrderDetails = ({ order_id }: { order_id: string }) => {
                                         objectFit: "contain",
                                         borderRadius: "8px"
                                     }}
+                                    alt='image'
                                 />
                                 <div style={{
 

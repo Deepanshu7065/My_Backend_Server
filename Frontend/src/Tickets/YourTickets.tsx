@@ -7,6 +7,16 @@ import moment from 'moment'
 import { ContactSendMessage } from '../AllPostApi'
 import { useNavigate } from 'react-router-dom'
 import { ThumbUp } from '@mui/icons-material'
+import io from "socket.io-client"
+
+
+const SOCKET_URL = "ws://172.30.2.67:5000";
+
+const socket = io(SOCKET_URL, {
+    transports: ["websocket"],
+    reconnectionAttempts: 5,
+    timeout: 5000,
+});
 
 const YourTickets = () => {
     const { user } = useSelector((state: RootState) => state.CustomerUser)
@@ -16,6 +26,7 @@ const YourTickets = () => {
     const [sendMessage, setSendMessage] = useState("")
     const isMobile = useMediaQuery("(max-width: 800px)")
     const navigate = useNavigate()
+    const [messages, setMessages] = useState<any[]>([]);
 
     useEffect(() => {
         if (data?.length !== 0) {
@@ -26,9 +37,44 @@ const YourTickets = () => {
     const { data: singleContact, refetch: singleRefetch, isLoading: singleLoading } = GetSingleContactTickets({ ticketId })
     const { mutateAsync, isPending } = ContactSendMessage()
 
-    const handleSendMessage = async ({ ticketId }: { ticketId: string }) => {
+    useEffect(() => {
+        const handleNewMessage = (message: any) => {
+            if (message.ticketId === ticketId) {
+                setMessages((prev) => [...prev, message]);
+                messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+            }
+        };
+
+        socket.on("newMessage", handleNewMessage);
+
+        return () => {
+            socket.off("newMessage", handleNewMessage);
+        };
+    }, [ticketId])
+
+    useEffect(() => {
+        if (ticketId) {
+            singleRefetch();
+        }
+    }, [ticketId, singleRefetch]);
+
+    const handleSendMessage = async () => {
+        if (!sendMessage.trim()) return;
         try {
-            await mutateAsync({ data: { send_message: sendMessage, user: user._id, ticketId } })
+            const messageData = {
+                ticketId,
+                message: sendMessage,
+                timestamp: new Date().toISOString(),
+            };
+            await mutateAsync({
+                data: {
+                    send_message: sendMessage,
+                    user: user._id,
+                    ticketId
+                }
+            })
+
+            socket.emit("sendMessage", { ...messageData });
             refetch()
             singleRefetch()
             setSendMessage("")
@@ -262,7 +308,7 @@ const YourTickets = () => {
                                 <Button
                                     variant='contained'
                                     disabled={isPending || !sendMessage.trim()}
-                                    onClick={() => handleSendMessage({ ticketId })}
+                                    onClick={handleSendMessage}
                                 >
                                     {isPending ? "Sending..." : "Send"}
                                 </Button>

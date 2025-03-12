@@ -8,6 +8,7 @@ import { useDispatch } from 'react-redux'
 import { setUserId } from '../Store/EditUserSlice'
 import { DeleteUser } from '../AllPostApi'
 import { CustomPagination } from '../ShopBats/AddBatsForm'
+import { LazyImage } from '../App'
 
 const MobileUserView = () => {
 
@@ -229,7 +230,7 @@ const MobileUserView = () => {
                                         </Typography>
                                     </div>
                                     <div>
-                                        <img src='public/user_view.png' alt='user' style={{ width: "50px", height: "50px" }} />
+                                        <LazyImage src='/src/assets/user_view.png' alt='user' style={{ width: "50px", height: "50px" }} />
                                     </div>
                                 </Stack>
                                 <Chip sx={{

@@ -154,15 +154,28 @@ router.patch("/upload_repair_status/:id", async (req, res) => {
 
 router.delete("/upload_repair/:id", async (req, res) => {
     try {
-        const repair = await RepairDetailsModal.findByIdAndDelete(req.params.id);
+        const repair = await RepairDetailsModal.findById(req.params.id);
         if (!repair) {
             return res.status(404).json({ error: "Repair order not found" });
         }
-        res.json({ message: "Repair order deleted successfully", repair });
+
+        if (repair.images && repair.images.length > 0) {
+            repair.images.forEach((image) => {
+                const filename = path.basename(image); 
+                const imagePath = path.join(uploadDir, filename); 
+
+                if (fs.existsSync(imagePath)) {
+                    fs.unlinkSync(imagePath); 
+                }
+            });
+        }
+
+        await RepairDetailsModal.findByIdAndDelete(req.params.id);
+
+        res.json({ message: "Repair order and all associated images deleted successfully." });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
-})
-
+});
 
 export default router

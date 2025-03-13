@@ -159,9 +159,8 @@ const MobileViewYourTickets = () => {
                 </Box>
         
 
-            {/* Message Input */}
             {singleContact?.status === "Resolved" ? (
-               <Stack position={"absolute"} bottom={0} sx={{ width: "100%", justifyContent: "center", }} >
+               <Stack position={"sticky"} bottom={0} sx={{ width: "100%", justifyContent: "center", }} >
                <Stack direction={"row"} style={{
                    fontSize: "0.8rem",
                    color: "green",

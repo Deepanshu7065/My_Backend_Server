@@ -18,6 +18,7 @@ const ViewCart = () => {
     const { data, refetch } = GetCartApi({ id: user?._id })
     const { mutateAsync: increament, isPending: isIncreamentPending } = UpdateCartApi()
     const { mutateAsync: deleteCart } = DeleteCart()
+ 
 
     const handleProceed = () => {
         if (user?.userName === "") {

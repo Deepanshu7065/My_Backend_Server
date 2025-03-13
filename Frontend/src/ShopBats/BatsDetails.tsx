@@ -1,16 +1,73 @@
-import { Box, colors, Divider, FormControl, Input, Skeleton, Stack, TextField, Typography } from "@mui/material"
-import { GetProductById } from "../AllGetApi"
+import { Box, Button, CircularProgress, colors, Divider, FormControl, Input, Skeleton, Snackbar, Stack, TextField, Typography } from "@mui/material"
+import { GetCartApi, GetProductById } from "../AllGetApi"
 import { imageUrl } from "../ApiEndPoint";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowBack } from "@mui/icons-material";
 import { LazyImage } from "../App";
+import { AddToCart } from "../AllPostApi";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../Store";
+import { useNavigate } from "react-router-dom";
+import { setProductDetails } from "../Store/ProductDetailsSlice";
 
 const BatsDetails = () => {
     const queryParams = new URLSearchParams(window.location.search);
+    const { user } = useSelector((state: RootState) => state.CustomerUser)
     const productId = queryParams.get("id");
     const [quantity, setQuantity] = useState(1);
+    const { data, isLoading, isLoading: isLoadingProduct, refetch: refetchProduct } = GetProductById({ id: productId || "" });
+    const { mutateAsync, isPending } = AddToCart()
+    const navigate = useNavigate()
+    const dispatch = useDispatch()
+    const { data: allData, refetch } = GetCartApi({ id: user?._id })
+    const { products } = useSelector((state: RootState) => state.ProductId)
+    const [openSnackbar, setOpenSnackbar] = useState(false);
 
-    const { data, isLoading } = GetProductById({ id: productId || "" });
+    const handleQuantityChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const newQuantity = parseInt(event.target.value);
+        if (!isNaN(newQuantity) && newQuantity > 0) {
+            setQuantity(newQuantity);
+        }
+    };
+
+
+    const handleAddToCart = async () => {
+        if (!productId || !user?._id) {
+            console.error("Missing productId or user ID");
+            return;
+        }
+
+        try {
+            await mutateAsync({
+                data: {
+                    product_id: productId,
+                    quantity: quantity,
+                    user: user?._id,
+                    price: data?.price
+                }
+            });
+            refetch()
+            refetchProduct()
+            setOpenSnackbar(true)
+        } catch (error) {
+            console.error("Error adding to cart:", error);
+        }
+    };
+
+    useEffect(() => {
+        if (!data || !products || !productId) return;
+
+        dispatch(setProductDetails(allData as any));
+
+        const foundProductA = Array.isArray(products) ?
+            products.find((product) => product?.product_id?._id === productId) : null;
+        const productQuantity = foundProductA?.quantity ?? 1;
+
+        if (quantity === 1) {
+            setQuantity(productQuantity);
+        }
+    }, [data, products, productId]);
+    if (isLoadingProduct) return <CircularProgress />
 
     return (
         <Box sx={{
@@ -129,12 +186,11 @@ const BatsDetails = () => {
                         textAlign: "left",
                         color: colors.grey[600]
                     }}>
-                        Kashmir Willow Cricket Bat |
-                        Second Grade |
+                        {data?.description} |
+                        {data?.more_details} |
                         57mm Thick Edges |
-                        Powerful & Lightweight |
                         Strong Cane Handle |
-                        Ideal for Leather Ball Cricket
+                        Ideal for Tennis Ball Cricket
                     </Typography>
                     <Divider sx={{ my: 2, backgroundColor: colors.grey[600] }} />
 
@@ -201,11 +257,11 @@ const BatsDetails = () => {
                             <tbody>
                                 <tr>
                                     <td style={{ fontWeight: "bold" }}> size </td>
-                                    <td> M </td>
+                                    <td> {data?.size} </td>
                                 </tr>
                                 <tr>
                                     <td style={{ fontWeight: "bold" }}> Brand </td>
-                                    <td> Kashmir Willow </td>
+                                    <td> {data?.brand} </td>
                                 </tr>
                                 <tr>
                                     <td style={{ fontWeight: "bold" }}> Sports </td>
@@ -213,7 +269,7 @@ const BatsDetails = () => {
                                 </tr>
                                 <tr>
                                     <td style={{ fontWeight: "bold" }}> Weight </td>
-                                    <td> 500g </td>
+                                    <td> {data?.weight} </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -225,6 +281,12 @@ const BatsDetails = () => {
                         width: "100%",
                         mt: 3
                     }}>
+                        <Snackbar
+                            open={openSnackbar}
+                            autoHideDuration={3000}
+                            onClose={() => setOpenSnackbar(false)}
+                            message="Product added to cart!"
+                        />
                         <Typography sx={{
                             display: "flex",
                             flexDirection: { xs: "column", sm: "row" },
@@ -247,7 +309,7 @@ const BatsDetails = () => {
                                     size="small"
                                     type="number"
                                     value={quantity}
-                                    onChange={(e: any) => setQuantity(parseInt(e.target.value))}
+                                    onChange={(e: any) => handleQuantityChange(e)}
                                     sx={{ width: { xs: "100%", sm: "80px" } }}
                                 />
                             </FormControl>
@@ -258,7 +320,7 @@ const BatsDetails = () => {
                             display: "flex",
                             alignItems: { xs: "center", sm: "flex-start" },
                         }}>
-                            <button style={{
+                            <Button style={{
                                 backgroundColor: colors.green[600],
                                 color: "white",
                                 padding: "6px",
@@ -269,10 +331,20 @@ const BatsDetails = () => {
                                 fontFamily: "monospace, cursive",
                                 width: "100%",
                                 maxWidth: "200px"
-
-                            }}>
-                                Add to Cart
-                            </button>
+                            }}
+                                loading={isPending}
+                                onClick={() => handleAddToCart()}
+                                disabled={isPending}
+                                loadingPosition="center"
+                            >
+                                {isPending ? (
+                                    <CircularProgress size={20} color="inherit" />
+                                ) : (
+                                    <>
+                                        Add to Cart
+                                    </>
+                                )}
+                            </Button>
 
                             <button style={{
                                 backgroundColor: colors.blue[600],
@@ -285,7 +357,16 @@ const BatsDetails = () => {
                                 fontFamily: "monospace, cursive",
                                 width: "100%",
                                 maxWidth: "200px"
-                            }}>
+                            }}
+                                onClick={() => {
+
+                                    if ((allData?.length ?? 0) > 0) {
+                                        navigate("/checkouts")
+                                    } else {
+                                        alert("Please add product to cart first")
+                                    }
+                                }}
+                            >
                                 Buy Now
                             </button>
                         </Stack>

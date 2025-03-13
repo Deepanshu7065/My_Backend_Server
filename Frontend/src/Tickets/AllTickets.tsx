@@ -1,14 +1,16 @@
 import { useEffect, useRef, useState } from 'react'
 import { GetAllTicketsApi, GetSingleContactTickets } from '../AllGetApi'
-import { Box, Button, Card, CardContent, colors, Dialog, DialogActions, DialogContent, DialogTitle, LinearProgress, Skeleton, Stack, TextField, Typography, useMediaQuery } from '@mui/material'
+import { Box, Button, Card, CardContent, colors, LinearProgress, Skeleton, Stack, TextField, Typography, useMediaQuery } from '@mui/material'
 // import { useSelector } from 'react-redux'
 // import { RootState } from '../Store'
 import moment from 'moment'
 import io from "socket.io-client"
-import { ContactReplMessage, TicketStatusChange } from '../AllPostApi'
+import { ContactReplMessage,  } from '../AllPostApi'
 import { useNavigate } from 'react-router-dom'
 import { ThumbUp } from '@mui/icons-material'
 import { socketUrl } from '../ApiEndPoint'
+import { useDispatch } from 'react-redux'
+import { updateTicketStatus } from '../Store/UpdateTicketStatus'
 
 
 export const socket = io(socketUrl, {
@@ -22,15 +24,12 @@ export const socket = io(socketUrl, {
 const AllTickets = () => {
     // const { user } = useSelector((state: RootState) => state.CustomerUser)
     const navigate = useNavigate()
-    const { data = [], refetch, isLoading } = GetAllTicketsApi()
+    const { data = [],  isLoading } = GetAllTicketsApi()
     const [ticketId, setTicketId] = useState("")
     const [replyMessage, setReplyMessage] = useState("")
     const messagesEndRef = useRef<HTMLDivElement | null>(null)
-    const [status, setStatus] = useState("Pending")
-    const [open, setOpen] = useState(false)
-    const [messages, setMessages] = useState<any[]>([]);
+    const dispatch = useDispatch()
 
-    const { mutateAsync: updateStatus } = TicketStatusChange()
     const { mutateAsync, isPending } = ContactReplMessage()
 
     const isMobile = useMediaQuery("(max-width: 800px)")
@@ -55,10 +54,6 @@ const AllTickets = () => {
     }, []);
 
 
-
-
-
-
     const handleSendMessage = async () => {
         if (!replyMessage.trim()) return;
 
@@ -78,22 +73,12 @@ const AllTickets = () => {
             });
 
             socket.emit("sendMessage", messageData);
-            setMessages((prev) => [...prev, messageData]);
             setReplyMessage("");
             singleRefetch()
         } catch (error) {
             console.log(error);
         }
     };
-
-    const handleUpdateStatus = async ({ ticketId, status }: { ticketId: string, status: string }) => {
-        try {
-            await updateStatus({ id: ticketId, status: status })
-            refetch()
-        } catch (error) {
-            console.log(error)
-        }
-    }
 
     useEffect(() => {
         if (messagesEndRef.current) {
@@ -184,31 +169,11 @@ const AllTickets = () => {
                                     </CardContent>
                                 </Card>
                                 <div>
-                                    <Button variant="contained" onClick={() => setOpen(true)}>
+                                    <Button variant="contained" onClick={() => dispatch(updateTicketStatus(item?._id))}>
                                         Change Status
                                     </Button>
                                 </div>
-                                <Dialog open={open} onClose={() => setOpen(false)}>
-                                    <DialogTitle>Change Status</DialogTitle>
-                                    <DialogContent>
-                                        <TextField
-                                            autoFocus
-                                            margin="dense"
-                                            id="name"
-                                            label="Status"
-                                            type="text"
-                                            fullWidth
-                                            variant="standard"
-                                            value={status}
-                                            onChange={(e) => setStatus(e.target.value)}
-                                        />
-                                    </DialogContent>
-                                    <DialogActions>
-                                        <Button onClick={() => setOpen(false)}>Cancel</Button>
-                                        <Button onClick={() => handleUpdateStatus({ ticketId: item._id, status: status })}>Update</Button>
-                                    </DialogActions>
 
-                                </Dialog>
                             </>
 
                         ))

@@ -4,6 +4,7 @@ import EditModalUser from './User/EditModalUser'
 import EditProductDetails from './ShopBats/EditProductDetails'
 import EditModalRepairByAdmin from './Repair/EditModalRepairByAdmin'
 import ChangeShopStatus from './ShopsOrder.tsx/ChangeShopStatus'
+import UpdateTicketStatusByAdmin from './Tickets/UpdateTicketStatusByAdmin'
 
 const AllModalList = () => {
     return (
@@ -12,6 +13,7 @@ const AllModalList = () => {
             <EditProductDetails />
             <EditModalRepairByAdmin />
             <ChangeShopStatus />
+            <UpdateTicketStatusByAdmin />
         </>
     )
 }

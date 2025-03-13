@@ -8,10 +8,10 @@ import io from "socket.io-client"
 import { ContactReplMessage, TicketStatusChange } from '../AllPostApi'
 import { useNavigate } from 'react-router-dom'
 import { ThumbUp } from '@mui/icons-material'
+import { socketUrl } from '../ApiEndPoint'
 
-const SOCKET_URL = "ws://172.30.2.67:5000";
 
-const socket = io(SOCKET_URL, {
+export const socket = io(socketUrl, {
     transports: ["websocket"],
     reconnectionAttempts: 5,
     timeout: 5000,
@@ -43,39 +43,21 @@ const AllTickets = () => {
     }, [data])
 
     useEffect(() => {
-        if (ticketId) {
-            socket.emit("joinTicket", ticketId);
-            singleRefetch()
-        }
-    }, [ticketId]);
-
-
-    useEffect(() => {
-        const handleNewMessage = (message: any) => {
-            console.log("New message received: ", message);
-            if (message.ticketId === ticketId) {
-                setMessages((prev) => [...prev, message]);
-                // messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-            }
+        const handleNewMessage = async () => {
+            await singleRefetch()
         };
 
-        socket.on("newMessage", handleNewMessage);
+        socket.on("get-message", handleNewMessage);
 
         return () => {
-            socket.off("newMessage", handleNewMessage);
+            socket.off("get-message", handleNewMessage);
         };
-    }, [ticketId]);
+    }, []);
 
-    useEffect(() => {
-        if (ticketId) {
-            singleRefetch().then(() => {
-                setMessages([
-                    ...singleTickets?.send_message?.map(msg => ({ ...msg, type: "send" })) || [],
-                    ...singleTickets?.recieve_message?.map(msg => ({ ...msg, type: "receive" })) || []
-                ].sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()));
-            });
-        }
-    }, [ticketId, singleRefetch]);
+
+
+
+
 
     const handleSendMessage = async () => {
         if (!replyMessage.trim()) return;
@@ -114,8 +96,10 @@ const AllTickets = () => {
     }
 
     useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
-    }, [singleTickets])
+        if (messagesEndRef.current) {
+            messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+        }
+    }, [singleTickets]);;
 
     return (
         <Box sx={{

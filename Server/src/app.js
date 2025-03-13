@@ -2,7 +2,7 @@ import express, { urlencoded } from "express";
 import cors from "cors";
 import morgan from "morgan";
 import bodyParser from "body-parser";
-import http from "http";
+import http from "http"; 
 import { Server } from "socket.io";
 import authenticate from "./middlewares/authenticat.js";
 import productsRoutes from "./routes/products.js";
@@ -52,7 +52,7 @@ const io = new Server(server, {
 });
 
 io.on("connection", (socket) => {
-  console.log(`Client connected`);
+  console.log(`Client connected with id`);
 
   // Handle socket events
   orderSocketHandler(socket, io);

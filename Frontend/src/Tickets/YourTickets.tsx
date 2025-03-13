@@ -8,15 +8,7 @@ import { ContactSendMessage } from '../AllPostApi'
 import { useNavigate } from 'react-router-dom'
 import { ThumbUp } from '@mui/icons-material'
 import io from "socket.io-client"
-
-
-const SOCKET_URL = "ws://172.30.2.67:5000";
-
-const socket = io(SOCKET_URL, {
-    transports: ["websocket"],
-    reconnectionAttempts: 5,
-    timeout: 5000,
-});
+import { socket } from './AllTickets'
 
 const YourTickets = () => {
     const { user } = useSelector((state: RootState) => state.CustomerUser)
@@ -26,7 +18,6 @@ const YourTickets = () => {
     const [sendMessage, setSendMessage] = useState("")
     const isMobile = useMediaQuery("(max-width: 800px)")
     const navigate = useNavigate()
-    const [messages, setMessages] = useState<any[]>([]);
 
     useEffect(() => {
         if (data?.length !== 0) {
@@ -38,25 +29,18 @@ const YourTickets = () => {
     const { mutateAsync, isPending } = ContactSendMessage()
 
     useEffect(() => {
-        const handleNewMessage = (message: any) => {
-            if (message.ticketId === ticketId) {
-                setMessages((prev) => [...prev, message]);
-                messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-            }
+        const handleNewMessage = async () => {
+            await singleRefetch()
         };
 
-        socket.on("newMessage", handleNewMessage);
+        socket.on("get-message", handleNewMessage);
 
         return () => {
-            socket.off("newMessage", handleNewMessage);
+            socket.off("get-message", handleNewMessage);
         };
-    }, [ticketId])
+    }, []);
 
-    useEffect(() => {
-        if (ticketId) {
-            singleRefetch();
-        }
-    }, [ticketId, singleRefetch]);
+
 
     const handleSendMessage = async () => {
         if (!sendMessage.trim()) return;
@@ -83,10 +67,11 @@ const YourTickets = () => {
             console.log(error)
         }
     }
-
     useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
-    }, [singleContact])
+        if (messagesEndRef.current) {
+            messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+        }
+    }, [singleContact]);;
 
     return (
         <Box sx={{

@@ -7,31 +7,56 @@ import { GetAllTicketsApi, GetSingleContactTickets } from '../AllGetApi'
 import { ContactReplMessage } from '../AllPostApi'
 import { useLocation } from 'react-router-dom'
 import { ThumbUp } from '@mui/icons-material'
+import { socket } from './AllTickets'
 
 const MobileViewAllTickes = () => {
     const location = useLocation()
     const searchParams = new URLSearchParams(location.search)
     const ticketId = searchParams.get('ticketId')
 
-    const { data = [], refetch, isLoading } = GetAllTicketsApi()
     const [replyMessage, setReplyMessage] = useState("")
     const { mutateAsync, isPending } = ContactReplMessage()
     const messagesEndRef = useRef<HTMLDivElement | null>(null)
 
-    const isMobile = useMediaQuery("(max-width: 600px)")
 
     const { data: singleTickets, refetch: singleRefetch, isLoading: singleLoading } = GetSingleContactTickets({ ticketId: ticketId || "" })
 
+
+    useEffect(() => {
+        const handleNewMessage = async () => {
+            await singleRefetch()
+        };
+
+        socket.on("get-message", handleNewMessage);
+
+        return () => {
+            socket.off("get-message", handleNewMessage);
+        };
+    }, []);
+
     const handleSendMessage = async ({ ticketId }: { ticketId: string }) => {
+        if (!replyMessage.trim()) return;
+
         try {
+            const messageData = {
+                ticketId,
+                message: replyMessage,
+                timestamp: new Date().toISOString(),
+                type: "recieve"
+            };
+
             await mutateAsync({
-                data: { recieve_message: replyMessage, ticketId: ticketId },
-            })
-            setReplyMessage("")
+                data: {
+                    recieve_message: replyMessage,
+                    ticketId
+                }
+            });
+
+            socket.emit("sendMessage", messageData);
+            setReplyMessage("");
             singleRefetch()
-            refetch()
         } catch (error) {
-            console.log(error)
+            console.log(error);
         }
     }
 

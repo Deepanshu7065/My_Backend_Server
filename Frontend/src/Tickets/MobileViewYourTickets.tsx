@@ -8,6 +8,7 @@ import { useLocation } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { RootState } from '../Store'
 import { ThumbUp } from '@mui/icons-material'
+import { socket } from './AllTickets'
 
 const MobileViewYourTickets = () => {
     const location = useLocation()
@@ -21,9 +22,37 @@ const MobileViewYourTickets = () => {
     const { data: singleContact, refetch: singleRefetch, isLoading: singleLoading } = GetSingleContactTickets({ ticketId: ticketId || "" })
     const { mutateAsync, isPending } = ContactSendMessage()
 
-    const handleSendMessage = async ({ ticketId }: { ticketId: string }) => {
+    useEffect(() => {
+        const handleNewMessage = async () => {
+            await singleRefetch()
+        };
+
+        socket.on("get-message", handleNewMessage);
+
+        return () => {
+            socket.off("get-message", handleNewMessage);
+        };
+    }, []);
+
+
+
+    const handleSendMessage = async () => {
+        if (!sendMessage.trim()) return;
         try {
-            await mutateAsync({ data: { send_message: sendMessage, user: user._id, ticketId } })
+            const messageData = {
+                ticketId,
+                message: sendMessage,
+                timestamp: new Date().toISOString(),
+            };
+            await mutateAsync({
+                data: {
+                    send_message: sendMessage,
+                    user: user._id,
+                    ticketId
+                }
+            })
+
+            socket.emit("sendMessage", { ...messageData });
             singleRefetch()
             setSendMessage("")
         } catch (error) {
@@ -58,18 +87,12 @@ const MobileViewYourTickets = () => {
 
             {singleLoading && <LinearProgress sx={{ my: 2 }} />}
 
-            <Box sx={{
-                width: "100%",
-                height: "100%",
-                display: "flex",
-                flexDirection: "column",
-                flexGrow: 1,
-            }}>
+      
                 <Box sx={{
                     flexGrow: 1,
                     overflowY: "auto",
                     paddingBottom: "10px",
-                    p: 1,
+                    p: 0,
                     display: "flex",
                     flexDirection: "column",
                     "&::-webkit-scrollbar": {
@@ -92,7 +115,7 @@ const MobileViewYourTickets = () => {
                     }}>
                         <Box sx={{
                             width: "fit-content",
-                            p: 2,
+                            p: 0,
                             bgcolor: "white",
                             borderRadius: "10px"
 
@@ -134,27 +157,27 @@ const MobileViewYourTickets = () => {
                         ))}
                     <div ref={messagesEndRef} />
                 </Box>
-            </Box>
+        
 
             {/* Message Input */}
             {singleContact?.status === "Resolved" ? (
-                <Stack sx={{ width: "100%", justifyContent: "center", position: "sticky", bottom: 0,  bgcolor: "white" }} >
-                    <Stack direction={"row"} style={{
-                        fontSize: "0.8rem",
-                        color: "green",
-                        textAlign: "center",
-                        alignItems: "center",
-                        gap: 2,
-                        justifyContent: "center"
-                    }}>
-                        <>
-                            <ThumbUp />
-                        </>
-                        <>
-                            YOUR TICKET IS RESOLVED
-                        </>
-                    </Stack>
-                </Stack>
+               <Stack position={"absolute"} bottom={0} sx={{ width: "100%", justifyContent: "center", }} >
+               <Stack direction={"row"} style={{
+                   fontSize: "0.8rem",
+                   color: "green",
+                   textAlign: "center",
+                   alignItems: "center",
+                   gap: 2,
+                   justifyContent: "center"
+               }}>
+                   <>
+                       <ThumbUp />
+                   </>
+                   <>
+                       YOUR TICKET IS RESOLVED
+                   </>
+               </Stack>
+           </Stack>
             ) : (
                 <Stack mt={2} direction={"row"} spacing={1} position={"sticky"} bottom={0} m={1}>
                     <TextField
@@ -175,7 +198,7 @@ const MobileViewYourTickets = () => {
                         disabled={isPending}
                         variant='contained'
                         sx={{ fontSize: { xs: "12px", md: "14px" } }}
-                        onClick={() => handleSendMessage({ ticketId: ticketId || "" })}
+                        onClick={() => handleSendMessage()}
                     >
                         {isPending ? "Sending..." : "Send"}
                     </Button>

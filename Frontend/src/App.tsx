@@ -30,7 +30,8 @@ import YourTickets from "./Tickets/YourTickets";
 import AllTickets from "./Tickets/AllTickets";
 import MobileViewAllTickes from "./Tickets/MobileViewAllTickes";
 import MobileViewYourTickets from "./Tickets/MobileViewYourTickets";
-import React, { lazy, Suspense, useEffect, useState } from "react";
+import React, { lazy, Suspense, useState } from "react";
+import Temp from "./Temp";
 interface LazyImageProps {
   src: string;
   alt: string;
@@ -42,6 +43,8 @@ interface LazyImageProps {
 
 export const LazyImage: React.FC<LazyImageProps> = ({ src, alt, className, style }) => {
   const [loaded, setLoaded] = useState(false);
+
+
 
   return (
     <img
@@ -88,7 +91,20 @@ function App() {
   const token = localStorage.getItem("token" as string);
   const { user } = useSelector((state: RootState) => state.CustomerUser)
 
+  const age = [2, 4, 5, 6, 7, 8, 89, 2, 6.6, 6, 9]
 
+  //  sum in array 
+  // find array in fifth element 
+  let sum = 0
+  let fifthElement;
+  for (let index = 0; index < age.length; index++) {
+    sum += age[index]
+    if (index < age[index] ) {
+      fifthElement = age[index]
+    }
+  }
+  console.log(sum);
+  console.log(fifthElement);
 
   return (
     <ThemeProvider theme={createThemeI}>
@@ -117,6 +133,7 @@ function App() {
             <Routes>
               <Route element={<Navbar />} >
                 <Route path="/" element={<Dashboard />} />
+                <Route path="/temp" element={<Temp />} />
                 <Route path="/shop_bats" element={<ShopBats />} />
                 <Route path="/details" element={<BatsDetails />} />
                 <Route path="/cart" element={<ViewCart />} />

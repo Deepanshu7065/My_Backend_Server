@@ -91,20 +91,20 @@ function App() {
   const token = localStorage.getItem("token" as string);
   const { user } = useSelector((state: RootState) => state.CustomerUser)
 
-  const age = [2, 4, 5, 6, 7, 8, 89, 2, 6.6, 6, 9]
+  // const age = [2, 4, 5, 6, 7, 8, 89, 2, 6.6, 6, 9]
 
-  //  sum in array 
-  // find array in fifth element 
-  let sum = 0
-  let fifthElement;
-  for (let index = 0; index < age.length; index++) {
-    sum += age[index]
-    if (index < age[index] ) {
-      fifthElement = age[index]
-    }
-  }
-  console.log(sum);
-  console.log(fifthElement);
+  // //  sum in array 
+  // // find array in fifth element 
+  // let sum = 0
+  // let fifthElement;
+  // for (let index = 0; index < age.length; index++) {
+  //   sum += age[index]
+  //   if (index < age[index] ) {
+  //     fifthElement = age[index]
+  //   }
+  // }
+  // console.log(sum);
+  // console.log(fifthElement);
 
   return (
     <ThemeProvider theme={createThemeI}>

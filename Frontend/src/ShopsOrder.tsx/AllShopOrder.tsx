@@ -1,21 +1,23 @@
 import {
     Box,
     Button,
+    Dialog,
+    DialogContent,
     Table,
     TableBody,
     TableCell,
     TableHead,
-    TableRow
+    TableRow,
+    TextField
 
 } from '@mui/material'
-import React from 'react'
+import  { useState } from 'react'
 import { GetALlShopOrderApi } from '../AllGetApi'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch,  } from 'react-redux'
 import { imageUrl } from '../ApiEndPoint'
-import { ChangeStatusOrder } from '../Store/ChangeStatusByOrderSlice'
 import { ChangeShopsStatusOrder } from '../Store/ChangeShopsOrderStatusSlice'
-import { RootState } from '../Store'
 import { LazyImage } from '../App'
+import { ChangeShopsOrderStatus } from '../AllPostApi'
 
 const AllShopOrder = () => {
 
@@ -63,7 +65,7 @@ const AllShopOrder = () => {
                             </TableCell>
                             <TableCell>
                                 <button onClick={() => dispatch(ChangeShopsStatusOrder(item._id))}>open</button>
-                                {/* <RejectStatus order_id={item._id || ""} /> */}
+                                <RejectStatus order_id={item._id || ""} />
                             </TableCell>
                         </TableRow>
                     ))}
@@ -75,3 +77,46 @@ const AllShopOrder = () => {
 }
 
 export default AllShopOrder
+
+const RejectStatus = ({ order_id }: any) => {
+    const { mutateAsync } = ChangeShopsOrderStatus()
+    const [open, setOpen] = useState(false);
+    const [updateStatus, setUpdateStatus] = useState({
+        status: "",
+        reason: ""
+    })
+
+    const handleSubmit = async () => {
+        try {
+            await mutateAsync({ id: order_id, data: updateStatus });
+            setOpen(false)
+        } catch (error) {
+            console.error("Update failed:", error);
+        }
+    };
+
+
+    return (
+        <>
+            <button onClick={() => setOpen(true)}>
+                Reject
+            </button>
+            <Dialog open={open} onClose={() => setOpen(false)} sx={{
+                "& .MuiDialog-paper": {
+                    width: "50%",
+                    height: "auto"
+                }
+            }}>
+                <DialogContent>
+                    <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                        <TextField label="Status" name="status" onChange={(e) => setUpdateStatus({ ...updateStatus, status: e.target.value })} />
+                        <TextField label="Reason" name="reason" onChange={(e) => setUpdateStatus({ ...updateStatus, reason: e.target.value })} />
+                        <Button onClick={handleSubmit} variant="contained" color="primary">Submit</Button>
+                    </Box>
+                </DialogContent>
+            </Dialog>
+        </>
+    )
+
+
+}

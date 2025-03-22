@@ -291,17 +291,18 @@ router.delete("/order/delete/:id", async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
-        
+
 
 
 router.patch("/order/update_status/:id", async (req, res) => {
     try {
-        const { status } = req.body;
+        const { status, reason } = req.body;
         const order = await OrderModal.findById(req.params.id);
         if (!order) {
             return res.status(404).json({ error: "Order not found" });
         }
         order.status = status;
+        order.reason = reason
         await order.save();
         return res.status(200).json({
             message: "Order status updated successfully",

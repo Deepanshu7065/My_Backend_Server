@@ -54,6 +54,28 @@ const ViewMyOrderDetails = ({ order_id }: { order_id: string }) => {
             }}>
                 Your All Items ({data?.order?.product_id?.length})
             </Typography>
+            {data?.order?.status === "pending" && (
+                <Typography sx={{
+                    color: "green"
+                }}>Your order will be picked up within 1-2 days.</Typography>
+            )}
+            {data?.order?.status === "pickUp" && (
+                <Typography sx={{
+                    color: "green"
+                }}>Your order has been picked up. It will be repaired within 2 days.</Typography>
+            )}
+            {data?.order?.status === "in_progress" && (
+                <Typography sx={{
+                    color: "green"
+                }}>Your order is being repaired. It will be completed within 2 days. </Typography>
+            )}
+            {data?.order?.status === "reject" && (
+                <Typography sx={{
+                    color: "red"
+                }}>
+                    Your order is rejected. {data?.order?.reason},please try again
+                </Typography>
+            )}
             <Box sx={{
                 maxHeight: "400px",
                 minHeight: "300px",

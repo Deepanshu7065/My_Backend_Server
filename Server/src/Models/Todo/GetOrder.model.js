@@ -26,7 +26,7 @@ const AddOrder = new mongoose.Schema({
     orderId: {
         type: String
     },
-   
+
     address: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Address",
@@ -39,6 +39,9 @@ const AddOrder = new mongoose.Schema({
         type: Number,
         default: 0
     },
+    reason: {
+        type: String
+    }
 
 },
     { timestamps: true }
